@@ -1,0 +1,5 @@
+name = "globe-partners"
+pages_build_output_dir = "./public"
+compatibility_date = "2026-11-19"
+# Access team domain, AUD and partner email allowlist are configured in Cloudflare.
+# Do not add secrets, private addresses or documents to this public repository.

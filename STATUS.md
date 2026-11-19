@@ -16,7 +16,7 @@ Updated 20 November 2026. The organization-domain deployment is being finalized;
 | Workbook | 30 draft rows imported locally; no private fields exported, no approximate coordinates promoted. Separate local preview only |
 | Google Sheets | Synthetic canonical and workbook-schema pipeline tests passed; live read-only authentication and real sheet ID not configured |
 | GitHub | Previous LDoni Pages release and full CI passed. Organization root-domain repository created; final push/deployment verification pending |
-| Cloudflare | Workflow retained and gated; account not authenticated, no deployment claimed |
+| Cloudflare | Separate Pages partner canary, signed-JWT middleware and local security tests prepared; account not authenticated, no cloud deployment or live access-policy verification claimed |
 | shinyapps.io | App bundle/deployment script prepared and gated; actual account, plan and usage not verified; no cloud Shiny URL |
 | Copernicus | Adapter gates, geometry and rollback tested; live extraction disabled pending credentials and reviewed station–cell mappings |
 | Join | Browser-verified local email draft; no server send or delivery confirmation. Approved recipient still needed |

@@ -29,8 +29,7 @@ async def main():
    await page.set_viewport_size({"width":width,"height":900})
    await page.evaluate("Shiny.setInputValue('tabs','ENSO Overview')")
    await page.evaluate("document.querySelector('[data-value=\"ENSO Overview\"]').click()")
-   await page.wait_for_timeout(700)
-   assert await page.evaluate("document.documentElement.scrollWidth <= innerWidth+1"),width
+   await page.wait_for_function("document.documentElement.scrollWidth <= innerWidth+1",timeout=10000)
    Path("test-results").mkdir(exist_ok=True)
    await page.screenshot(path=f"test-results/shiny-{width}.png",full_page=True)
   assert not await page.locator('.shiny-output-error:not(.shiny-output-error-validation)').count()

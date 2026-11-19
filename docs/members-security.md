@@ -12,7 +12,7 @@ For a private Pages project, a policy on a custom domain alone is insufficient. 
 
 A preferable origin arrangement, where supported by existing institutional infrastructure, is an authenticated institutional document service with no public storage endpoint. If using a Worker/private bucket, verify Access JWT signatures and `iss`, `aud`, expiration and authorization at the origin as well; refuse requests when the token is missing or invalid. Disable `workers.dev` and preview endpoints or protect them equivalently. Do not rely on a supplied email header without cryptographic verification of the identity assertion. Keep the bucket private and never produce public document URLs.
 
-No separate private infrastructure or bucket has been provisioned by this release. This document is an architectural specification, not a deployed access-control claim.
+The separate `partners-portal/` Pages canary and origin middleware are now prepared. Synthetic local tests cover signed assertions, expected issuer/audience, expiration, partner allowlists and fail-closed behavior. No Cloudflare infrastructure or authenticated deployment has been completed. See [the concrete deployment guide](../partners-portal/README.md); live account and hostname tests remain mandatory before confidential upload.
 
 ## Alternative for a larger group
 
