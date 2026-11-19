@@ -1,4 +1,5 @@
 # Run from repo root. Credentials are kept in the runner's rsconnect config only.
+if(Sys.getenv('SHINY_ACCOUNT_VERIFIED')!='true') stop('Verify the actual shinyapps.io account plan and usage before deployment')
 required <- c('SHINYAPPS_ACCOUNT','SHINYAPPS_TOKEN','SHINYAPPS_SECRET')
 if(any(!nzchar(Sys.getenv(required)))) stop('shinyapps.io deployment credentials are required')
 source('R/prepare_shiny_cache.R')

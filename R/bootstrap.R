@@ -4,6 +4,8 @@ pins <- c('jsonlite@1.8.9','googlesheets4@1.1.1','shiny@1.9.1','leaflet@2.2.2','
 # Do not reuse a cached empty CRAN index after an offline attempt.
 Sys.setenv(R_AVAILABLE_PACKAGES_CACHE_CONTROL_MAX_AGE='0')
 options(repos=c(CRAN='https://cloud.r-project.org'),timeout=300)
+# fs >= 2.0 can use its bundled libuv on machines without libuv development headers.
+if(!nzchar(Sys.getenv('USE_BUNDLED_LIBUV'))) Sys.setenv(USE_BUNDLED_LIBUV='1')
 if(!requireNamespace('renv',quietly=TRUE)) install.packages('renv',repos='https://cloud.r-project.org')
 lock <- renv::lockfile_read('renv.lock')
 bootstrap <- isTRUE(lock$GLOBE$Bootstrap)
@@ -13,7 +15,7 @@ if(!file.exists('renv/activate.R')) {
 }
 if(bootstrap) {
   renv::install(pins)
-  renv::snapshot(type='explicit',prompt=FALSE)
+  renv::snapshot(type='all',prompt=FALSE)
 } else {
   renv::restore(prompt=FALSE)
 }

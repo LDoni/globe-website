@@ -27,4 +27,36 @@ class CacheTests(unittest.TestCase):
     ends=[r['period_end'] for r in data['records']];self.assertEqual(ends,sorted(set(ends)));self.assertTrue(data['source_url'].startswith('https://www.cpc.ncep.noaa.gov/'))
  def test_distance(self):
     self.assertEqual(cop.distance_km(0,0,0,0),0);self.assertAlmostEqual(cop.distance_km(0,0,0,1),111.195,places=2)
+    self.assertAlmostEqual(cop.distance_km(0,179.9,0,-179.9),22.239,places=2)
+ def test_copernicus_gates_preserve_cache_without_optional_client(self):
+    import datetime,os
+    from unittest.mock import patch
+    paths=[ROOT/'data/monitoring/station-environment.csv',ROOT/'data/monitoring/station-environment.meta.json']
+    before=[p.read_bytes() for p in paths]
+    day=datetime.date(2026,11,1)
+    with patch.dict(os.environ,{},clear=True):
+      with self.assertRaisesRegex(ValueError,'credentials'):cop.run(day,day)
+    with patch.dict(os.environ,{'COPERNICUSMARINE_SERVICE_USERNAME':'SYNTHETIC','COPERNICUSMARINE_SERVICE_PASSWORD':'SYNTHETIC'},clear=True):
+      with self.assertRaisesRegex(ValueError,'No reviewed'):cop.run(day,day)
+    self.assertEqual(before,[p.read_bytes() for p in paths])
+ def test_noaa_update_failure_preserves_live_cache(self):
+    from unittest.mock import patch
+    path=ROOT/'data/monitoring/sst.json';before=path.read_bytes()
+    with patch.object(sst,'fetch',side_effect=OSError('Synthetic network failure')):
+      with self.assertRaises(OSError):sst.update()
+    self.assertEqual(before,path.read_bytes())
+ def test_copernicus_pair_rolls_back_after_second_file_failure(self):
+    from unittest.mock import patch
+    with tempfile.TemporaryDirectory() as directory:
+      a,b=Path(directory)/'series.csv',Path(directory)/'meta.json'
+      a.write_text('old series');b.write_text('old metadata')
+      replace=cop.os.replace;calls=0
+      def failing_replace(source,target):
+        nonlocal calls
+        calls+=1
+        if calls==2:raise OSError('Synthetic second replacement failure')
+        return replace(source,target)
+      with patch.object(cop.os,'replace',side_effect=failing_replace):
+        with self.assertRaises(OSError):cop.publish_pair({a:'new series',b:'new metadata'})
+      self.assertEqual(a.read_text(),'old series');self.assertEqual(b.read_text(),'old metadata')
 if __name__=='__main__':unittest.main()

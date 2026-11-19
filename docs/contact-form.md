@@ -8,4 +8,4 @@ This initial portable implementation requires no additional account, paid servic
 
 Before enabling the destination, confirm its publication, the responsible institution's privacy notice and retention policy. Do not request unpublished research results or confidential attachments through this enquiry form. An enquiry is not membership approval.
 
-Pure draft-generation tests run with `node --test tests/contact.test.cjs`. Browser validation is included in `tests/browser.py`, but remains unexecuted in the restricted development environment.
+Pure draft-generation tests run with `node --test tests/contact.test.cjs`. Browser validation is included in `tests/browser.py`, and passed locally and against the public GitHub Pages site.

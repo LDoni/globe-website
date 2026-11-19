@@ -1,6 +1,6 @@
 # Station register and coordinator workflow
 
-Use one worksheet named `stations`, one header row, and one row per station. IDs must remain stable when names or affiliations change. Store the sheet ID as `GLOBE_SHEET_ID`; select the tab with `GLOBE_SHEET_TAB`.
+Use one worksheet named `Stations`, one header row, and one row per station. IDs must remain stable when names or affiliations change. Store the sheet ID as `GLOBE_SHEET_ID`; select the tab with `GLOBE_SHEET_TAB`.
 
 | Column | Required for approval | Allowed content |
 | --- | --- | --- |
@@ -42,3 +42,23 @@ A public read-only sheet avoids credentials only when **every sheet cell is publ
 Validation and serialization finish before published files are replaced. Local rollback restores both previous outputs if file publication fails. Workflow failures before the commit leave the repository and live website unchanged. GitHub Actions records a failed run and summary; maintainers can enable GitHub's own failed-workflow notifications. Raw sheet contents and credentials are not uploaded as diagnostic artifacts.
 
 Tests use synthetic records and verify approval filtering, invalid metadata, private-column exclusion and byte-for-byte preservation after validation failure. A real Google Sheets connection has not yet been tested.
+
+
+## Supplied workbook and future Google Sheet
+
+The supplied local workbook has 30 rows, all `draft`, and separate schematic map coordinates. It is excluded from Git and deployment. Its 24 raw country labels are not substituted for the declared 23-country project scope without review.
+
+```bash
+python3 scripts/import_station_workbook.py GLOBE_sampling_stations.xlsx
+# Validate the canonical intake without publishing it:
+Rscript -e 'source("R/validate_stations.R"); print(nrow(validate_stations(read.csv(".local-data/stations-input.csv"))))'
+quarto render
+python3 scripts/build_workbook_preview.py
+python3 -m http.server 8768 --directory _local_preview
+```
+
+`.local-data` and `_local_preview` are local-only and excluded from Git. Never deploy `_local_preview`. It contains unapproved schematic locations and is provided for coordinator review.
+
+When the workbook is converted to Google Sheets, set `GLOBE_SHEET_ID` and use the `Stations` tab. Both the canonical schema above and the supplied workbook schema are accepted. `map_label` maps to `station_name`, and category labels are normalized. `latitude` and `longitude` must contain verified sampling coordinates before approval: `map_latitude_approx` and `map_longitude_approx` are never used as replacements. Ambiguous ocean regions require an explicit `ocean_basin`; institutions and category approval remain required. `notes`, `contact_name`, `contact_email` and schematic coordinate columns are excluded from the approved export.
+
+Add partners as new rows with stable unique IDs; no station count or coordinate list is hard-coded in the map or Shiny modules. The declared initial scope is 30 stations; live approved counts and filters follow the published registry. The existing 29-point demo is a legacy demonstration and is not the workbook intake.

@@ -1,6 +1,5 @@
 library(shiny)
 library(leaflet)
-library(jsonlite)
 for(f in list.files('modules',pattern='\\.R$',full.names=TRUE)) source(f,local=TRUE)
 read_cache <- function(name, fallback) {
   path <- file.path('cache',name)

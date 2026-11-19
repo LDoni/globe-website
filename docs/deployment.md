@@ -1,21 +1,12 @@
 # Deployment and account setup
 
-No external account was authenticated during development. These instructions are executable setup steps, not evidence of a deployed service.
+The primary repository is [globe-ocean/globe-ocean.github.io](https://github.com/globe-ocean/globe-ocean.github.io), reusing the existing project and history. Its GitHub Pages hostname is [globe-ocean.github.io](https://globe-ocean.github.io/). The original [LDoni/globe-website](https://github.com/LDoni/globe-website) is retained; no repository was transferred or deleted. Make future content and data changes in the organization repository. `.github/workflows/deploy-pages.yml` uploads only rendered `_site`. Account credentials remain outside the project. See STATUS.md for deployment and browser verification.
 
-## GitHub
+## GitHub Pages
 
-Create `globe-website` in the authorized GLOBE organization if one exists. Otherwise use the selected account; do not invent an organization. No GitHub connection is active here, and the available GitHub integration is disabled by the workspace administrator. The prepared directory has a local Git repository on `main`; no remote is configured.
+GitHub Pages is enabled with the Actions build type. Pushes to `main` run a Quarto build, output/security checks and browser tests before publishing. The NOAA data-refresh workflow calls Pages explicitly after its data commit. The website is static; Shiny runs separately. GitHub Pages does not apply the Cloudflare-specific `_headers` file; confidential material must never enter either public artifact.
 
-The downloadable archive excludes Git history and build caches. If starting from that archive, first run `git init -b main`, `git add .` and `git commit -m "Initialize GLOBE website"`.
-
-From an authenticated workstation:
-
-```bash
-gh auth login
-gh repo create ACTUAL-OWNER/globe-website --public --source=. --remote=origin --push
-```
-
-Choose the real owner. If the remote already exists, add its URL instead of creating another repository. Check Actions results before enabling deployment. Keep public code and public metadata here; use a separate private repository/service for restricted content.
+The independent R/Shiny validation workflow verifies the complete application. See STATUS.md for observed run URLs. No personal token is committed or used by the scheduled data updater.
 
 ## Cloudflare Pages
 
@@ -26,7 +17,7 @@ Use a Pages Direct Upload project, built in GitHub Actions. Official reference: 
 3. Configure GitHub environment `production` if desired, and repository variable `CLOUDFLARE_DEPLOY_ENABLED=true`. The deployment job stays off otherwise, while build validation can still run.
 4. Run `Validate and deploy public website`. It bootstraps R, validates public data, runs R/Python/JavaScript checks, starts Shiny for an HTTP smoke test, renders Quarto, checks rendered links, runs browser behavior tests, and uploads `_site` before Wrangler deployment.
 5. Record the actual returned production URL. Set `website.site-url` to it in `_quarto.yml`. Verify desktop/mobile rendering, external basemap tiles, links, security headers and data requests on that hostname.
-6. Retrieve and commit the first resolved `renv.lock` artifact. Repeat the restore-based build before considering dependency reproducibility verified.
+6. Use the committed complete `renv.lock`; confirm the restore-based CI checks before enabling this deployment.
 
 Only `_site` is deployed. `docs`, `R`, `shiny`, tests, configuration source, private directories and credential files must not appear in that output. The output checker detects accidental source/private inclusion. Public caches and approved/demo location exports are deliberately included.
 
@@ -62,14 +53,7 @@ The app is public and cache-only, so its initial functionality does not require 
 
 Official references: [plans](https://www.shinyapps.io/), [application resources](https://docs.posit.co/shinyapps.io/guide/applications/index.html), [account billing](https://docs.posit.co/shinyapps.io/guide/billing_and_account_management/).
 
-| Capability from published documentation | Basic | Standard |
-| --- | --- | --- |
-| Included active hours/month | 500 | 2,000 |
-| Built-in user authentication | Not included | Included |
-| Maximum instance count | 3 | 5 |
-| Default instance memory | 1,024 MB | 1,024 MB |
-
-These are provider documentation figures, not a verification of the user's subscription or a capacity guarantee. Worker/instance settings and actual usage determine concurrency and cost exposure. Target one default-size instance initially; measure startup, resident memory and representative concurrent sessions before tuning. No paid upgrade has been made.
+No subscription-dependent capability has been selected. Published plan examples are not a substitute for inspecting the actual account. The public cache-only app has been started locally and its four modules checked through a real browser/WebSocket session.
 
 1. Inspect Account > Billing, current Usage, and the app's available instance/worker settings. Record actual plan and limits in the deployment record.
 2. Configure `SHINYAPPS_ACCOUNT`, `SHINYAPPS_TOKEN`, `SHINYAPPS_SECRET` as GitHub secrets obtained securely from the account's Tokens page. Do not paste credentials into QMD or include them in app files.

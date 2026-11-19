@@ -4,5 +4,4 @@ Version: 0.1.0
 Description: Public website, station registry validation and cached ocean monitoring.
 License: MIT
 Encoding: UTF-8
-Imports: jsonlite, googlesheets4, shiny, leaflet, rsconnect
-Suggests: testthat, withr, renv
+Imports: jsonlite, googlesheets4, shiny, leaflet, rsconnect, testthat, withr, renv

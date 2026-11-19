@@ -3,7 +3,24 @@ public_station_fields <- c('station_id','station_name','country','latitude','lon
   'institution','category','ocean_basin','sampling_status','public_description',
   'institution_url','coordinate_status','publication_status')
 
+# Accept the supplied workbook's columns when it later becomes a Google Sheet.
+# Approximate map coordinates and private notes are never publication fallbacks.
+normalize_station_input <- function(x) {
+  if(!'map_label' %in% names(x)) return(x)
+  x$station_name <- x$map_label
+  if(!'category' %in% names(x)) x$category <- tolower(x$station_category)
+  if(!'ocean_basin' %in% names(x)) {
+    region <- x$ocean_region
+    x$ocean_basin <- ifelse(grepl('Pacific',region),'Pacific',ifelse(grepl('Mediterranean',region),'Mediterranean',ifelse(grepl('Atlantic',region)&!grepl('Indian',region),'Atlantic',ifelse(region %in% c('Indian Ocean','Persian Gulf','Red Sea'),'Indian',''))))
+  }
+  x$sampling_status <- tolower(x$sampling_status)
+  x$sampling_status[x$sampling_status=='not confirmed'] <- 'unconfirmed'
+  for(k in c('public_description','institution_url')) if(!k %in% names(x)) x[[k]] <- ''
+  x
+}
+
 validate_stations <- function(x, categories_file = 'config/station-categories.json') {
+  if(is.data.frame(x)) x <- normalize_station_input(x)
   required <- setdiff(public_station_fields, c('public_description','institution_url'))
   if (!is.data.frame(x) || !all(required %in% names(x)))
     stop('Station schema: required columns missing', call. = FALSE)

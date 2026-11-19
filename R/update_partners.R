@@ -9,7 +9,7 @@ update_partners <- function() {
     if(!nzchar(credentials) || !file.exists(credentials)) stop('Private sheet requires a service account credential file')
     googlesheets4::gs4_auth(path=credentials,scopes='https://www.googleapis.com/auth/spreadsheets.readonly')
   }
-  x <- as.data.frame(googlesheets4::read_sheet(sheet,sheet=Sys.getenv('GLOBE_SHEET_TAB','stations'),col_types='c'),stringsAsFactors=FALSE)
+  x <- as.data.frame(googlesheets4::read_sheet(sheet,sheet=Sys.getenv('GLOBE_SHEET_TAB','Stations'),col_types='c'),stringsAsFactors=FALSE)
   count <- publish_registry(x)
   message('Published ',count,' approved stations. Private columns excluded.')
 }

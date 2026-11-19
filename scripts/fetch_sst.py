@@ -30,7 +30,7 @@ def parse_csv(text):
     if dt.date.fromisoformat(observed)>dt.datetime.now(dt.timezone.utc).date():raise ValueError('Future observation')
     return observed,cells
 
-def update():
+def update(observation_date=None):
     cfg=json.loads((ROOT/'config/ocean-products.json').read_text())['noaa'];base=cfg['erddap'];dataset=cfg['dataset_id']
     meta=json.loads(fetch(f'{base}/info/{dataset}/index.json'))['table'];columns=meta['columnNames'];data=[dict(zip(columns,row)) for row in meta['rows']]
     attrs={(r['Variable Name'],r['Attribute Name']):r['Value'] for r in data if r['Row Type']=='attribute'}
@@ -38,13 +38,20 @@ def update():
     if attrs.get(('NC_GLOBAL','product_version'))!='3.1':raise ValueError('Product changed; baseline review required')
     observed=attrs[('NC_GLOBAL','time_coverage_end')];stamp=observed.split('T')[0]
     if dt.date.fromisoformat(stamp)>dt.datetime.now(dt.timezone.utc).date():raise ValueError('Future metadata timestamp')
+    if observation_date:
+        requested=dt.date.fromisoformat(observation_date)
+        if not dt.date.fromisoformat(attrs[('NC_GLOBAL','time_coverage_start')].split('T')[0])<=requested<=dt.date.fromisoformat(stamp):raise ValueError('Requested date outside official coverage')
+        observed=observation_date+'T'+observed.split('T')[1]
     # Index stride follows native array order (north to south, 0–360 east).
     query=f"{cfg['variable']}[({observed}):1:({observed})][0:{cfg['stride']}:3599][0:{cfg['stride']}:7199]"
     url=f'{base}/griddap/{dataset}.csv?'+urllib.parse.quote(query,safe='[]():,')
-    observed,cells=parse_csv(fetch(url))
+    expected=observed.split('T')[0];observed,cells=parse_csv(fetch(url))
+    if observed!=expected:raise ValueError('Returned NOAA date differs from requested date')
     frame={'observation_date':observed,'source':'NOAA Coral Reef Watch','source_url':url,'metadata_url':f'{base}/info/{dataset}/index.html','product_id':dataset,'product_version':'3.1','units':'degree_C','baseline':cfg['baseline'],'baseline_url':cfg['baseline_url'],'retrieved_at':dt.datetime.now(dt.timezone.utc).isoformat(),'native_resolution_deg':cfg['native_resolution_deg'],'grid_spacing_deg':cfg['native_resolution_deg']*cfg['stride'],'method':'Native grid subsampling; no spatial averaging. Broad ocean context only.','cells':cells}
     path=ROOT/'data/monitoring/sst.json';previous=json.loads(path.read_text()) if path.exists() else {'frames':[]}
     frames={f['observation_date']:f for f in previous.get('frames',[])};frames[observed]=frame
     cache={'status':'available','frames':[frames[d] for d in sorted(frames,reverse=True)[:cfg['retain_frames']]]}
     atomic_json(cache,path);print(f'NOAA SST cache updated: {observed}; {len(cells)} cells')
-if __name__=='__main__':update()
+if __name__=='__main__':
+    import argparse
+    parser=argparse.ArgumentParser();parser.add_argument('--date',help='Optional YYYY-MM-DD within official product coverage');args=parser.parse_args();update(args.date)

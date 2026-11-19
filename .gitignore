@@ -18,5 +18,10 @@
 __pycache__/
 *.pyc
 /.venv/
+/GLOBE_sampling_stations.xlsx
+/.local-data/
+/_local_preview/
 
 **/*.quarto_ipynb
+
+/GLOBE Climate Earth Wordmark.png

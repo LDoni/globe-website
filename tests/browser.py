@@ -21,6 +21,12 @@ async def main():
   await page.locator('.station-item').click();await page.locator('.leaflet-popup-content').wait_for();assert 'approximate' in await page.locator('.leaflet-popup-content').inner_text()
   await page.click('[data-reset]');await page.select_option('[data-category]','incursion');assert await page.locator('.station-item').count()==9
   await page.click('[data-mode="observed"]');status=(await page.locator('[data-status]').inner_text()).lower();assert any(t in status for t in ['unavailable','observed-data analysis'])
+  assert await page.locator('.leaflet-stationMarkers-pane path').count()==9
+  await page.uncheck('[data-show-stations]');assert await page.locator('.leaflet-stationMarkers-pane path').count()==0
+  await page.check('[data-show-stations]');assert await page.locator('.leaflet-stationMarkers-pane path').count()==9
+  if await page.locator('[data-date] option').count()>1:
+   second=await page.locator('[data-date] option').nth(1).inner_text()
+   await page.select_option('[data-date]','1');assert second in await page.locator('[data-status]').inner_text()
   await page.click('[data-mode="network"]');assert 'DEMONSTRATION' in await page.locator('[data-status]').inner_text()
   # Injected scientific cache tests the quantitative layer without pretending it is live data.
   fixture={'frames':[{'observation_date':'2024-01-01','source':'SYNTHETIC TEST FIXTURE','product_id':'TEST-ONLY','units':'degree_C','baseline':'test only','retrieved_at':'2024-01-02T00:00:00Z','grid_spacing_deg':2,'cells':[{'lat':0,'lon':-140,'value':1.25}]}]}
@@ -40,6 +46,12 @@ async def main():
   assert 'no message has been sent' in (await page.locator('[data-join-status]').inner_text()).lower()
   await page.fill('#join-message','Updated synthetic text');assert await page.locator('[data-join-draft]').is_hidden()
   await page.goto(BASE+'/pages/monitoring.html');await page.locator('[data-enso-summary] strong').wait_for();assert await page.locator('[data-enso-chart] svg').count()==1
+  await page.select_option('[data-enso-view]','comparison');assert await page.locator('[data-enso-chart] path').count()==3
+  assert await page.locator('[data-enso-years]').is_visible()
+  async with page.expect_download() as download:
+   await page.click('[data-enso-export]')
+  exported=await download.value;assert exported.suggested_filename.endswith('.svg')
+  await page.select_option('[data-enso-view]','timeline')
   for width in [375,768,1440]:
    await page.set_viewport_size({'width':width,'height':900});await page.goto(BASE+'/index.html')
    await page.locator('[data-status]').filter(has_text='No approved').wait_for()

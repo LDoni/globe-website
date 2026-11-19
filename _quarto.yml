@@ -14,6 +14,7 @@ project:
     - 'data/monitoring/**'
     - '_headers'
 website:
+  site-url: https://globe-ocean.github.io/
   title: GLOBE
   description: A Global Initiative to Uncover Ocean Microbiome Responses to Super El Niño in a Warming World
   favicon: assets/favicon.svg

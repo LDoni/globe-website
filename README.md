@@ -4,30 +4,30 @@ A Global Initiative to Uncover Ocean Microbiome Responses to Super El Niño in a
 
 This release extends the supplied GLOBE starter into a public Quarto website, Leaflet network explorer, validated Google Sheets publication pipeline, cached NOAA integration and modular Shiny application. GLOBE is represented as an independent international collaboration. The Italian Omics Observatory Network is one participant.
 
-**Release status (19 November 2026):** real Quarto render and Chromium interaction tests passed locally. Official NOAA SST and the full RONI series have been downloaded. R dependency restoration and Shiny verification are in progress. GitHub Pages publication is being prepared at the owner’s request. Read [STATUS.md](STATUS.md) for verified outcomes.
+**Release status (20 November 2026):** the site is moving to **https://globe-ocean.github.io/**, backed by the organization repository `globe-ocean/globe-ocean.github.io`. The preceding release at `https://ldoni.github.io/globe-website/` passed public browser tests; check [STATUS.md](STATUS.md) for final domain validation. Real Quarto builds, NOAA retrievals, Python/Node/R checks and a real Shiny browser session have passed. Shiny deployment requires shinyapps.io account/plan verification. See [STATUS.md](STATUS.md) for evidence and limitations.
 
 ## Quick start
 
-Use R 4.4.3, Quarto 1.8.27, Python 3.10+ and Node 22. The public website has no runtime R dependency; R is used for preprocessing and the separate Shiny application.
+Locally verified: R 4.3.3, Quarto 1.11.9, Python 3.12.3, Node 24.14.0 and Chromium 159. CI also verifies R 4.4.3, Quarto 1.8.27 and Node 22. The public website has no runtime R dependency; R is used for preprocessing and the separate Shiny application.
 
 ```bash
 Rscript R/bootstrap.R
-quarto preview
+quarto preview --host 127.0.0.1 --port 8765
 ```
 
-The initial `renv.lock` pins direct R dependencies only. The first bootstrap resolves and snapshots transitive packages. Retrieve `resolved-renv-lock` from the first successful CI run and commit it. Subsequent bootstraps restore that complete lock. Fully resolved, verified dependency reproducibility remains a release gate.
+`renv.lock` contains resolved production and test dependencies. `R/bootstrap.R` restores it into an isolated project library. The bootstrap renews the CRAN index after offline failures and uses bundled libuv if development headers are unavailable.
 
 Build and test:
 
 ```bash
 bash scripts/ci-check.sh
-python3 tests/shiny-startup.py
 python3 -m venv .venv
 .venv/bin/pip install -r requirements-test.txt
 .venv/bin/python -m playwright install chromium
 python3 -m http.server 8765 --directory _site
 # In another terminal:
 .venv/bin/python tests/browser.py
+GLOBE_SHINY_BROWSER=true .venv/bin/python tests/shiny-startup.py
 ```
 
 If only Pandoc is installed, the same QMD bodies can be previewed without claiming a Quarto render:
@@ -38,6 +38,15 @@ python3 -m http.server 8765 --directory _preview
 ```
 
 `python3 scripts/build_standalone_preview.py` creates a single HTML preview after the Pandoc build. It embeds only public caches. Esri basemap tiles require internet; without them the grid, Niño region, controls and station list still function. The standalone preview is a convenience artifact, not the production renderer.
+
+Start the separate dashboard with:
+
+```bash
+Rscript R/prepare_shiny_cache.R
+Rscript -e 'shiny::runApp("shiny/globe-monitoring",host="127.0.0.1",port=8766)'
+```
+
+The Data Explorer is an explicit future-results placeholder. Station Explorer correctly reports no approved stations; it displays no invented station measurements.
 
 ## Repository map
 
@@ -59,7 +68,7 @@ python3 -m http.server 8765 --directory _preview
 
 ## Map and station publication
 
-The default map uses only the approved registry. Switch explicitly to the demo registry to inspect approximate starter points. Labels and category assignments are provisional transcriptions, not verified station metadata. Some starter coordinates are inland; they must never be used for extraction or sampling. The counts 29 stations and 23 countries are supplied project-scope figures, not inferred from the empty registry or validated from the demo.
+The default map uses only the approved registry. Switch explicitly to the demo registry to inspect approximate starter points. Labels and category assignments are provisional transcriptions, not verified station metadata. Some starter coordinates are inland; they must never be used for extraction or sampling. The counts 30 stations and 23 countries are supplied project-scope figures, not inferred from the empty registry or validated from the demo.
 
 `config/station-categories.json` preserves `incursion`, `pacific` and `reference` but marks the scientific categories unconfirmed. Until an approved original figure/definition is supplied, production accepts `unclassified` only. Once confirmed, set `confirmed: true` and review every station assignment.
 
@@ -96,16 +105,25 @@ For a publication add a link such as `https://doi.org/ACTUAL-DOI`. Store only ap
 
 ## Deployment and account connections
 
-[Deployment guide](docs/deployment.md) covers GitHub, Cloudflare Pages, Google and shinyapps.io. Build with GitHub Actions, upload only `_site` to Cloudflare Pages using Wrangler. This keeps hosting portable and avoids dependence on Quarto availability in Cloudflare's build image. Deployment remains disabled until the appropriate repository variables and secrets are set.
+[Deployment guide](docs/deployment.md) covers GitHub, Cloudflare Pages, Google and shinyapps.io. Build with GitHub Actions, upload only `_site` to Cloudflare Pages using Wrangler. This keeps hosting portable and avoids dependence on Quarto availability in Cloudflare's build image. Cloudflare deployment remains disabled until its account secrets are supplied. GitHub Pages is active through a separate workflow, as subsequently requested by the owner.
 
 Google Sheets and NOAA updates run daily at 06:17 UTC when configured, plus manually. A bot push using `GITHUB_TOKEN` does not start another push workflow, so the refresh workflow explicitly calls the reusable deployment workflow. Shiny is deployed separately and does not self-update its local filesystem. After a cache update, manually run the Shiny deployment workflow; an authenticated scheduled redeployment can be enabled after checking account usage.
 
 The restricted area is a public access-information page only. Private documents must go in a separate authenticated service, not this repository or build. See [Members Area security architecture](docs/members-security.md).
 
-No paid plan changes, domain registration, account invitations or external publication have been performed.
+GitHub Pages publication was authorized and completed. No paid plan changes, domain registration or account invitations have been performed.
 
 ## Scientific framing and contact update
 
 The supplied project figure confirms a focus on resident and introduced Vibrio lineages, including pathogenic lineages, within a broader marine microbiome context. Homepage, About and Research now reflect that emphasis, while retaining the original official project title. Sampling frequency is described as planned in the supplied project text, without presenting expected responses as results.
 
 The Join page is linked from the main navigation, homepage and partner page. It prepares an enquiry locally; an approved destination email is still required. See [contact form setup](docs/contact-form.md).
+
+
+## Current partner register and Climate Pulse
+
+The initial scope is now 30 stations. The supplied XLSX is a local intake file, excluded from Git. See [the workbook/Sheets workflow](docs/station-register.md) for repeatable import and the separate local preview of its unapproved approximate locations. Adding approved rows to the connected Sheet updates station lists, filters and maps automatically.
+
+GLOBE is a free and independent network of scientists, open to new partners and proposals for coordinated sampling during exceptional ocean events. Participation and campaign planning are agreed with the relevant teams.
+
+The monitoring page includes a year-comparison RONI chart, pointer readout and SVG export. It links to the official C3S/ECMWF Climate Pulse application for ERA5 analyses. Climate Pulse currently sends `frame-ancestors 'self'` and `X-Frame-Options: SAMEORIGIN`, so it is linked rather than embedded. NOAA RONI and ERA5 indicators retain separate definitions and attribution.

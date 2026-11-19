@@ -42,7 +42,7 @@ jobs:
         if: vars.GLOBE_SHEET_ID != ''
         env:
           GLOBE_SHEET_ID: ${{ vars.GLOBE_SHEET_ID }}
-          GLOBE_SHEET_TAB: ${{ vars.GLOBE_SHEET_TAB || 'stations' }}
+          GLOBE_SHEET_TAB: ${{ vars.GLOBE_SHEET_TAB || 'Stations' }}
           GLOBE_SHEET_PUBLIC: ${{ vars.GLOBE_SHEET_PUBLIC || 'false' }}
           GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/globe-google.json
         run: Rscript R/update_partners.R
@@ -92,6 +92,15 @@ jobs:
       contents: read
       deployments: write
     needs: update
-    if: needs.update.outputs.changed == 'true'
+    if: needs.update.outputs.changed == 'true' && vars.CLOUDFLARE_DEPLOY_ENABLED == 'true'
     uses: ./.github/workflows/deploy-cloudflare.yml
     secrets: inherit
+
+  deploy-pages:
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    needs: update
+    if: needs.update.outputs.changed == 'true'
+    uses: ./.github/workflows/deploy-pages.yml

@@ -29,12 +29,12 @@ jobs:
           version: '1.8.27'
       - run: Rscript R/bootstrap.R
       - run: bash scripts/ci-check.sh
-      - run: python3 tests/shiny-startup.py
-      - run: pip install playwright && python3 -m playwright install --with-deps chromium
+      - run: python3 -m venv .venv && .venv/bin/pip install -r requirements-test.txt && .venv/bin/python -m playwright install --with-deps chromium
       - name: Browser checks
         run: |
           python3 -m http.server 8765 --directory _site > /tmp/globe-http.log 2>&1 &
-          python3 tests/browser.py
+          .venv/bin/python tests/browser.py
+          GLOBE_SHINY_BROWSER=true .venv/bin/python tests/shiny-startup.py
       - uses: actions/upload-artifact@v4
         with:
           name: globe-public-site

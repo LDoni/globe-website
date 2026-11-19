@@ -1,5 +1,15 @@
 withr::local_dir(normalizePath('../..'))
 fixture <- function() data.frame(station_id='TEST-1',station_name='Synthetic validation fixture',country='Test country',latitude=10,longitude=20,institution='Synthetic institution',category='unclassified',ocean_basin='Atlantic',sampling_status='planned',public_description='TEST ONLY',institution_url='https://example.org',coordinate_status='verified',publication_status='approved',principal_contact='PRIVATE PERSON',contact_email='private@example.invalid',internal_notes='CONFIDENTIAL')
+test_that('workbook-style Sheets rows never promote approximate coordinates or private notes',{
+  x<-data.frame(station_id='TEST-WORKBOOK',map_label='Synthetic partner',country='Test',latitude='',longitude='',map_latitude_approx=10,map_longitude_approx=20,institution='',station_category='Pacific',ocean_region='North Pacific',sampling_status='Not confirmed',coordinate_status='Schematic / unverified',publication_status='draft',notes='PRIVATE',contact_name='PRIVATE',contact_email='private@example.invalid')
+  expect_equal(nrow(validate_stations(x)),0)
+  x$publication_status<-'approved'
+  expect_error(validate_stations(x),'essential')
+  x$latitude<-10;x$longitude<-20;x$institution<-'Synthetic institution';x$station_category<-'unclassified';x$coordinate_status<-'verified'
+  out<-validate_stations(x)
+  expect_equal(nrow(out),1)
+  expect_false(any(c('notes','contact_name','contact_email','map_latitude_approx') %in% names(out)))
+})
 test_that('only approved records and whitelisted fields are exported',{
   x<-fixture();draft<-x;draft$station_id<-'TEST-DRAFT';draft$publication_status<-'draft';draft$latitude<-NA
   out<-validate_stations(rbind(x,draft));expect_equal(nrow(out),1);expect_identical(names(out),public_station_fields)

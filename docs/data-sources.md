@@ -20,7 +20,7 @@ Sources checked against official documentation on 19 November 2026. Product defi
 
 The current RONI documentation describes a three-month relative Niño 3.4 anomaly, accounting for mean tropical SST anomalies, using the 1991–2020 baseline and ERSSTv6. Retain the source and definition URL because operational versions change. RONI and ONI do not have identical definitions; older ONI climatologies also differ over time. This release does not merge them, plot one against the other's threshold as though equivalent, or translate a single seasonal value into a coupled ENSO event classification.
 
-The initial snapshot contains only 2024–2026, as retrieved from NOAA during development. The R updater downloads the complete available ASCII series. A retrieval timestamp is the last successful fetch, not the date that the underlying ocean was observed. A season is explicitly expanded into its first/last calendar dates, including cross-year periods.
+The refreshed cache contains 921 seasons from the complete available NOAA ASCII series. All cached values were independently compared with a second live NOAA response on 19 November 2026. A retrieval timestamp is the last successful fetch, not the date that the underlying ocean was observed. A season is explicitly expanded into its first/last calendar dates, including cross-year periods.
 
 Weekly Niño 1+2, Niño 3, Niño 3.4 and Niño 4 processing, numeric diagnostic-summary parsing and automated forecast-probability ingestion are future extensions. Current official links provide access without conflating those quantities with RONI.
 
@@ -30,7 +30,7 @@ The selected ERDDAP identifier retains `v1_0` in its name, while its metadata id
 
 Global maps are produced by selecting every 40th native pixel in each direction, yielding 2° spacing. No spatial mean is computed. Display rectangles are coarse sample-cell symbols and can overlap coastlines; they do not resolve coastlines or represent temperature measurements throughout their area. Missing/land pixels are not given a synthetic value. The map is for global context only. The station pipeline uses a different, native-resolution product.
 
-The anomaly legend saturates outside ±3°C; numeric tooltip values retain the actual values. The initial cache contains no spatial observations because direct downloading is blocked in the development environment. Test fixtures use explicitly synthetic values inside test code only.
+The anomaly legend saturates outside ±3°C; numeric tooltip values retain the actual values. The first live cache contains 8,467 ocean cells dated 18 November 2026. All coordinates and values were independently compared with the official download response. Test fixtures use explicitly synthetic values inside test code only.
 
 ## Coastal station SST
 

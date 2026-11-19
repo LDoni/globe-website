@@ -20,6 +20,7 @@ jobs:
       - run: python3 tests/shiny-startup.py
       - name: Deploy public cache-only application
         env:
+          SHINY_ACCOUNT_VERIFIED: ${{ vars.SHINY_ACCOUNT_VERIFIED }}
           SHINYAPPS_ACCOUNT: ${{ secrets.SHINYAPPS_ACCOUNT }}
           SHINYAPPS_TOKEN: ${{ secrets.SHINYAPPS_TOKEN }}
           SHINYAPPS_SECRET: ${{ secrets.SHINYAPPS_SECRET }}
