@@ -1,0 +1,59 @@
+name: Publish GitHub Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  workflow_call:
+permissions:
+  contents: read
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: '1.8.27'
+      - uses: actions/configure-pages@v5
+      - name: Validate static website
+        run: |
+          python3 scripts/check_security.py
+          python3 -m unittest discover -s tests -p test_python.py -v
+          node --test tests/contact.test.cjs
+          for script in assets/js/*.js; do node --check "$script"; done
+          quarto render
+          python3 scripts/check_site.py _site
+      - name: Browser tests
+        run: |
+          python3 -m venv .venv
+          .venv/bin/pip install -r requirements-test.txt
+          .venv/bin/python -m playwright install --with-deps chromium
+          python3 -m http.server 8765 --directory _site > /tmp/globe-http.log 2>&1 &
+          .venv/bin/python tests/browser.py
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment

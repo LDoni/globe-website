@@ -1,0 +1,8 @@
+Package: globewebsite
+Title: GLOBE Public Scientific Website and Ocean Monitoring
+Version: 0.1.0
+Description: Public website, station registry validation and cached ocean monitoring.
+License: MIT
+Encoding: UTF-8
+Imports: jsonlite, googlesheets4, shiny, leaflet, rsconnect
+Suggests: testthat, withr, renv

@@ -1,0 +1,24 @@
+{
+  "noaa": {
+    "erddap": "https://oceanwatch.pifsc.noaa.gov/erddap",
+    "dataset_id": "CRW_sst_anom_v1_0",
+    "variable": "sea_surface_temperature_anomaly",
+    "units": "degree_C",
+    "baseline": "1985–1990 plus 1993 (v3.1 adjusted climatology; derived from 1985–2012)",
+    "baseline_url": "https://coralreefwatch.noaa.gov/product/5km/description_climatology.php",
+    "native_resolution_deg": 0.05,
+    "stride": 40,
+    "retain_frames": 14
+  },
+  "copernicus": {
+    "product_id": "SST_GLO_SST_L4_NRT_OBSERVATIONS_010_001",
+    "dataset_id": "METOFFICE-GLO-SST-L4-NRT-OBS-SST-V2",
+    "variable": "analysed_sst",
+    "mask_variable": "mask",
+    "uncertainty_variable": "analysis_error",
+    "native_units": "kelvin",
+    "output_units": "degree_C",
+    "maximum_mapping_distance_km": 10,
+    "mapping_note": "10 km is a technical guardrail, not a scientific representativeness criterion. Each grid mapping needs manual coastal review."
+  }
+}

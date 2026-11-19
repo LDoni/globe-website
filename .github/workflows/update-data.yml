@@ -1,0 +1,97 @@
+name: Refresh approved partners and ocean cache
+on:
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: globe-data-refresh
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.4.3'
+          use-public-rspm: true
+      - run: Rscript R/bootstrap.R
+      - name: Prepare private Google credential
+        if: vars.GLOBE_SHEET_ID != '' && vars.GLOBE_SHEET_PUBLIC != 'true'
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        shell: python
+        run: |
+          import os, pathlib
+          value = os.environ['GOOGLE_SERVICE_ACCOUNT_JSON']
+          if not value: raise SystemExit('Private sheet credential missing')
+          path = pathlib.Path(os.environ['RUNNER_TEMP']) / 'globe-google.json'
+          path.write_text(value)
+          path.chmod(0o600)
+      - name: Synchronize approved station metadata
+        if: vars.GLOBE_SHEET_ID != ''
+        env:
+          GLOBE_SHEET_ID: ${{ vars.GLOBE_SHEET_ID }}
+          GLOBE_SHEET_TAB: ${{ vars.GLOBE_SHEET_TAB || 'stations' }}
+          GLOBE_SHEET_PUBLIC: ${{ vars.GLOBE_SHEET_PUBLIC || 'false' }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/globe-google.json
+        run: Rscript R/update_partners.R
+      - name: Refresh NOAA products
+        if: vars.MONITORING_REFRESH_ENABLED == 'true'
+        run: |
+          Rscript R/process_ocean_data.R
+          python3 scripts/fetch_sst.py
+      - name: Optional Copernicus station extraction
+        if: vars.COPERNICUS_ENABLED == 'true'
+        env:
+          COPERNICUSMARINE_SERVICE_USERNAME: ${{ secrets.COPERNICUSMARINE_SERVICE_USERNAME }}
+          COPERNICUSMARINE_SERVICE_PASSWORD: ${{ secrets.COPERNICUSMARINE_SERVICE_PASSWORD }}
+        run: |
+          pip install -r requirements-copernicus.txt
+          python3 - <<'PY'
+          import datetime,subprocess
+          end = datetime.datetime.now(datetime.timezone.utc).date() - datetime.timedelta(days=2)
+          start = end - datetime.timedelta(days=7)
+          subprocess.run(['python3','scripts/copernicus_stations.py','--start',str(start),'--end',str(end)],check=True)
+          PY
+      - run: Rscript R/validate_stations.R
+      - run: python3 -m unittest discover -s tests -p 'test_python.py'
+      - name: Commit public allowlist only
+        id: commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git add data/stations.csv data/stations.geojson data/monitoring
+          if git diff --cached --quiet; then
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+          else
+            git config user.name 'GLOBE data updater'
+            git config user.email 'globe-data@users.noreply.github.com'
+            git commit -m 'Refresh approved public station and ocean data'
+            git push origin HEAD:main
+            echo 'changed=true' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Remove Google credential
+        if: always()
+        run: rm -f "$RUNNER_TEMP/globe-google.json"
+      - name: Report failure
+        if: failure()
+        run: echo 'Data refresh failed. No data commit or deployment was made; last published data remain available. Inspect the failing step; do not paste private sheet rows into issues.' >> "$GITHUB_STEP_SUMMARY"
+  deploy:
+    permissions:
+      contents: read
+      deployments: write
+    needs: update
+    if: needs.update.outputs.changed == 'true'
+    uses: ./.github/workflows/deploy-cloudflare.yml
+    secrets: inherit

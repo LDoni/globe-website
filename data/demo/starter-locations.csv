@@ -1,0 +1,30 @@
+name,latitude,longitude,category,coordinate_status
+Canada (Pacific),49.28,-123.12,incursion,approximate
+USA (California),34.05,-118.24,incursion,approximate
+Ensenada (Mexico),31.87,-116.60,incursion,approximate
+Los Cabos (Mexico),22.89,-109.92,incursion,approximate
+Costa Rica (Pacific),9.93,-84.08,incursion,approximate
+Piura (Peru),-5.19,-80.63,incursion,approximate
+Lambayeque (Peru),-6.77,-79.84,incursion,approximate
+Lima (Peru),-12.05,-77.04,incursion,approximate
+Chile,-33.45,-70.67,incursion,approximate
+China,22.54,114.06,pacific,approximate
+Japan,35.44,139.64,pacific,approximate
+Vietnam,10.82,106.63,pacific,approximate
+Thailand,13.10,100.90,pacific,approximate
+Philippines,14.60,120.98,pacific,approximate
+Singapore,1.29,103.85,pacific,approximate
+Indonesia,-6.21,106.85,pacific,approximate
+Australia,-16.92,145.77,pacific,approximate
+Fiji,-18.14,178.44,pacific,approximate
+Hawaii,21.31,-157.86,pacific,approximate
+New Zealand,-36.85,174.76,pacific,approximate
+Abu Dhabi,24.45,54.37,reference,approximate
+India,15.49,73.83,reference,approximate
+USA (Florida),25.76,-80.19,reference,approximate
+Argentina,-34.60,-58.38,reference,approximate
+South Africa,-33.92,18.42,reference,approximate
+UK,50.91,-1.40,reference,approximate
+Vigo (Spain),42.24,-8.72,reference,approximate
+Cádiz (Spain),36.53,-6.29,reference,approximate
+Italy,44.40,8.93,reference,approximate

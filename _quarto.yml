@@ -1,0 +1,30 @@
+project:
+  type: website
+  output-dir: _site
+  render:
+    - '*.qmd'
+    - 'pages/*.qmd'
+    - 'news/**/*.qmd'
+    - 'publications/**/*.qmd'
+  resources:
+    - 'assets/**'
+    - 'data/stations.geojson'
+    - 'data/stations.csv'
+    - 'data/demo/stations.geojson'
+    - 'data/monitoring/**'
+    - '_headers'
+website:
+  title: GLOBE
+  description: A Global Initiative to Uncover Ocean Microbiome Responses to Super El Niño in a Warming World
+  favicon: assets/favicon.svg
+  search: false
+format:
+  html:
+    theme: none
+    css: assets/css/styles.css
+    toc: false
+    title-block-style: none
+    lang: en
+    page-layout: full
+execute:
+  enabled: false

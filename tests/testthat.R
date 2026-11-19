@@ -1,0 +1,5 @@
+library(testthat)
+source('R/validate_stations.R')
+source('R/process_ocean_data.R')
+source('R/prepare_shiny_cache.R')
+test_dir('tests/testthat',reporter='summary',stop_on_failure=TRUE)

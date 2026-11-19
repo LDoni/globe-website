@@ -1,0 +1,645 @@
+{
+  "type": "FeatureCollection",
+  "dataset_status": "demonstration",
+  "source": "Previously supplied GLOBE starter; approximate locations; original figure not independently verified",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12,
+          49.28
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-01",
+        "station_name": "Canada (Pacific)",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "incursion",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.24,
+          34.05
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-02",
+        "station_name": "USA (California)",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "incursion",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -116.6,
+          31.87
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-03",
+        "station_name": "Ensenada (Mexico)",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "incursion",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -109.92,
+          22.89
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-04",
+        "station_name": "Los Cabos (Mexico)",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "incursion",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.08,
+          9.93
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-05",
+        "station_name": "Costa Rica (Pacific)",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "incursion",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -80.63,
+          -5.19
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-06",
+        "station_name": "Piura (Peru)",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "incursion",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -79.84,
+          -6.77
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-07",
+        "station_name": "Lambayeque (Peru)",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "incursion",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.04,
+          -12.05
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-08",
+        "station_name": "Lima (Peru)",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "incursion",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -70.67,
+          -33.45
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-09",
+        "station_name": "Chile",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "incursion",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          114.06,
+          22.54
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-10",
+        "station_name": "China",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "pacific",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.64,
+          35.44
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-11",
+        "station_name": "Japan",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "pacific",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.63,
+          10.82
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-12",
+        "station_name": "Vietnam",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "pacific",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9,
+          13.1
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-13",
+        "station_name": "Thailand",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "pacific",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.98,
+          14.6
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-14",
+        "station_name": "Philippines",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "pacific",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.85,
+          1.29
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-15",
+        "station_name": "Singapore",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "pacific",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.85,
+          -6.21
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-16",
+        "station_name": "Indonesia",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "pacific",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          145.77,
+          -16.92
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-17",
+        "station_name": "Australia",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "pacific",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          178.44,
+          -18.14
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-18",
+        "station_name": "Fiji",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "pacific",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -157.86,
+          21.31
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-19",
+        "station_name": "Hawaii",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "pacific",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.76,
+          -36.85
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-20",
+        "station_name": "New Zealand",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "pacific",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          54.37,
+          24.45
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-21",
+        "station_name": "Abu Dhabi",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "reference",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          73.83,
+          15.49
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-22",
+        "station_name": "India",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "reference",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -80.19,
+          25.76
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-23",
+        "station_name": "USA (Florida)",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "reference",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -58.38,
+          -34.6
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-24",
+        "station_name": "Argentina",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "reference",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.42,
+          -33.92
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-25",
+        "station_name": "South Africa",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "reference",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.4,
+          50.91
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-26",
+        "station_name": "UK",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "reference",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.72,
+          42.24
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-27",
+        "station_name": "Vigo (Spain)",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "reference",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29,
+          36.53
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-28",
+        "station_name": "C\u00e1diz (Spain)",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "reference",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.93,
+          44.4
+        ]
+      },
+      "properties": {
+        "station_id": "DEMO-29",
+        "station_name": "Italy",
+        "country": "Unverified",
+        "institution": "Not verified",
+        "category": "reference",
+        "ocean_basin": "Unverified",
+        "sampling_status": "unconfirmed",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "coordinate_status": "approximate",
+        "publication_status": "demo"
+      }
+    }
+  ]
+}

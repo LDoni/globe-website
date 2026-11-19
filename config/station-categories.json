@@ -1,0 +1,22 @@
+{
+  "categories": {
+    "unclassified": {
+      "label": "Unclassified",
+      "color": "#98b5c6"
+    },
+    "incursion": {
+      "label": "Pacific incursion (provisional)",
+      "color": "#ed9465"
+    },
+    "pacific": {
+      "label": "Other Pacific (provisional)",
+      "color": "#52c8c4"
+    },
+    "reference": {
+      "label": "Non-Pacific reference (provisional)",
+      "color": "#bbc9f1"
+    }
+  },
+  "confirmed": false,
+  "note": "Confirm the original figure and category definitions before using categories other than unclassified in production."
+}

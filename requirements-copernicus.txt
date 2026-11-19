@@ -1,0 +1,5 @@
+# Optional only; inspect resolved versions before production.
+copernicusmarine>=2.0,<3
+xarray>=2024.1
+numpy>=1.26
+netCDF4>=1.7
