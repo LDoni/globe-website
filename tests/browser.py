@@ -46,7 +46,20 @@ async def main():
    assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth+1'),f'Overflow at {width}'
    if width<850:
     await page.click('.menu-toggle');assert await page.locator('.menu-toggle').get_attribute('aria-expanded')=='true'
+    await page.click('.menu-toggle')
    Path('test-results').mkdir(exist_ok=True);await page.screenshot(path=f'test-results/home-{width}.png',full_page=True)
+   for slug in ['pages/network.html','pages/monitoring.html','pages/join.html']:
+    await page.goto(BASE+'/'+slug)
+    await page.wait_for_load_state('networkidle')
+    assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth+1'),f'{slug}: overflow at {width}'
+    if slug=='pages/monitoring.html':
+     cache=await page.evaluate('fetch(new URL("../data/monitoring/enso.json",location.href)).then(r=>r.json())')
+     years=int(await page.locator('[data-years]').input_value())
+     expected=[r for r in cache['records'] if r['year']>=cache['records'][-1]['year']-years+1]
+     actual=await page.locator('[data-enso-table] tbody tr').all_text_contents()
+     assert len(actual)==len(expected)
+     for text,row in zip(actual,expected):assert f"{row['value']:.2f}" in text
+     await page.screenshot(path=f'test-results/monitoring-{width}.png',full_page=True)
   assert not errors,errors
   await browser.close();print('PASS: map filters, popups, mode switching, synthetic observed layer, navigation, cache chart and three viewport widths')
 asyncio.run(main())

@@ -1,6 +1,6 @@
 # Initial lock contains direct pins; the first R-enabled run resolves dependencies.
 # Commit the resolved-renv-lock artifact to make subsequent builds restore exactly.
-pins <- c('jsonlite@1.8.9','googlesheets4@1.1.1','shiny@1.9.1','leaflet@2.2.2','rsconnect@1.3.3','testthat@3.2.1','withr@3.0.2')
+pins <- c('jsonlite@1.8.9','googlesheets4@1.1.1','shiny@1.9.1','leaflet@2.2.2','rsconnect@1.3.3','testthat@3.2.1','withr@3.0.2','PKI')
 # Do not reuse a cached empty CRAN index after an offline attempt.
 Sys.setenv(R_AVAILABLE_PACKAGES_CACHE_CONTROL_MAX_AGE='0')
 options(repos=c(CRAN='https://cloud.r-project.org'),timeout=300)
