@@ -127,3 +127,10 @@ The initial scope is now 30 stations. The supplied XLSX is a local intake file, 
 GLOBE is a free and independent network of scientists, open to new partners and proposals for coordinated sampling during exceptional ocean events. Participation and campaign planning are agreed with the relevant teams.
 
 The monitoring page includes a year-comparison RONI chart, pointer readout and SVG export. It links to the official C3S/ECMWF Climate Pulse application for ERA5 analyses. Climate Pulse currently sends `frame-ancestors 'self'` and `X-Frame-Options: SAMEORIGIN`, so it is linked rather than embedded. NOAA RONI and ERA5 indicators retain separate definitions and attribution.
+
+
+## Add or update network stations on GitHub
+
+Edit [`data/network-stations.csv`](https://github.com/globe-ocean/globe-ocean.github.io/edit/main/data/network-stations.csv), preserving its header and stable IDs. Add one row per partner with map latitude/longitude, category and display metadata. Commit the edit to `main`: Pages validates the CSV, regenerates `data/network-stations.geojson`, runs browser checks and deploys. Invalid input stops the build, leaving the last valid website online. Set `map_visibility` to `hidden` to hide a point. This is a public map register: contacts and internal notes belong in the private intake, not this file. Coordinate verification details remain in each station record; this map register never modifies the separate approved scientific-coordinate registry.
+
+When Google Sheets is connected, configure it as the single authoritative source for this same map register; avoid simultaneous edits in two sources. Live Sheets authentication is still pending.

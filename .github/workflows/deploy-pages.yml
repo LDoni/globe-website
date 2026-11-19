@@ -29,6 +29,7 @@ jobs:
       - uses: actions/configure-pages@v5
       - name: Validate static website
         run: |
+          python3 scripts/build_network_registry.py
           python3 scripts/check_security.py
           python3 -m unittest discover -s tests -p test_python.py -v
           node --test tests/contact.test.cjs

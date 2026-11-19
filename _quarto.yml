@@ -10,7 +10,8 @@ project:
     - 'assets/**'
     - 'data/stations.geojson'
     - 'data/stations.csv'
-    - 'data/demo/stations.geojson'
+    - 'data/network-stations.geojson'
+    - 'data/network-stations.csv'
     - 'data/monitoring/**'
     - '_headers'
 website:

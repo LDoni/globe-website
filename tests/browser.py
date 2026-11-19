@@ -15,19 +15,21 @@ async def main():
   page.on('pageerror',lambda e:errors.append(str(e)))
   # Basemap is an external service; behavior tests deliberately run without tiles.
   await page.route('https://server.arcgisonline.com/**',lambda route:route.abort())
-  await page.goto(BASE+'/pages/network.html');await page.locator('[data-status]').filter(has_text='No approved').wait_for()
-  await page.select_option('[data-registry]','demo');await page.locator('.station-item').nth(28).wait_for();assert await page.locator('.station-item').count()==29
+  await page.goto(BASE+'/pages/network.html');await page.locator('[data-status]').filter(has_text='network stations').wait_for()
+  registry=await page.evaluate('fetch(new URL("../data/network-stations.geojson",location.href)).then(r=>r.json())');expected=len(registry['features']);incursion=sum(f['properties']['category']=='incursion' for f in registry['features'])
+  await page.select_option('[data-registry]','approved');await page.locator('[data-status]').filter(has_text='No approved').wait_for()
+  await page.select_option('[data-registry]','network');await page.locator('.station-item').nth(expected-1).wait_for();assert await page.locator('.station-item').count()==expected
   await page.fill('[data-search]','Fiji');assert await page.locator('.station-item').count()==1
   await page.locator('.station-item').click();await page.locator('.leaflet-popup-content').wait_for();assert 'approximate' in await page.locator('.leaflet-popup-content').inner_text()
-  await page.click('[data-reset]');await page.select_option('[data-category]','incursion');assert await page.locator('.station-item').count()==9
+  await page.click('[data-reset]');await page.select_option('[data-category]','incursion');assert await page.locator('.station-item').count()==incursion
   await page.click('[data-mode="observed"]');status=(await page.locator('[data-status]').inner_text()).lower();assert any(t in status for t in ['unavailable','observed-data analysis'])
-  assert await page.locator('.leaflet-stationMarkers-pane path').count()==9
+  assert await page.locator('.leaflet-stationMarkers-pane path').count()==incursion
   await page.uncheck('[data-show-stations]');assert await page.locator('.leaflet-stationMarkers-pane path').count()==0
-  await page.check('[data-show-stations]');assert await page.locator('.leaflet-stationMarkers-pane path').count()==9
+  await page.check('[data-show-stations]');assert await page.locator('.leaflet-stationMarkers-pane path').count()==incursion
   if await page.locator('[data-date] option').count()>1:
    second=await page.locator('[data-date] option').nth(1).inner_text()
    await page.select_option('[data-date]','1');assert second in await page.locator('[data-status]').inner_text()
-  await page.click('[data-mode="network"]');assert 'DEMONSTRATION' in await page.locator('[data-status]').inner_text()
+  await page.click('[data-mode="network"]');assert 'network stations' in await page.locator('[data-status]').inner_text()
   # Injected scientific cache tests the quantitative layer without pretending it is live data.
   fixture={'frames':[{'observation_date':'2024-01-01','source':'SYNTHETIC TEST FIXTURE','product_id':'TEST-ONLY','units':'degree_C','baseline':'test only','retrieved_at':'2024-01-02T00:00:00Z','grid_spacing_deg':2,'cells':[{'lat':0,'lon':-140,'value':1.25}]}]}
   await page.route('**/data/monitoring/sst.json',lambda route:route.fulfill(json=fixture))
@@ -54,7 +56,7 @@ async def main():
   await page.select_option('[data-enso-view]','timeline')
   for width in [375,768,1440]:
    await page.set_viewport_size({'width':width,'height':900});await page.goto(BASE+'/index.html')
-   await page.locator('[data-status]').filter(has_text='No approved').wait_for()
+   await page.locator('[data-status]').filter(has_text='network stations').wait_for()
    assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth+1'),f'Overflow at {width}'
    if width<850:
     await page.click('.menu-toggle');assert await page.locator('.menu-toggle').get_attribute('aria-expanded')=='true'
