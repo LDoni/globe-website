@@ -12,7 +12,7 @@ Updated 20 November 2026. Public URL: **https://globe-ocean.github.io/**. Primar
 | ERA5 | 17,488 dates per Niño region; all 69,952 cached rows matched original C3S/ECMWF CSV intakes |
 | Interactive statistics | Four regions, date changes, absolute/anomaly curves, same-calendar-date ranks and comparison years verified against cached numeric rows |
 | Browser | Chromium at 375, 768 and 1440 px: navigation, map controls, contact draft, charts, SVG export, sticky header and horizontal overflow checks passed |
-| Python | 11 unit tests passed: provider schema/units/baselines, missing values, publication separation, atomic-update failure and rollback gates |
+| Python | 12 unit tests passed: provider schema/units/baselines, missing values, publication separation, atomic-update failure and rollback gates |
 | Node | 4 contact tests and 6 partner-access security tests passed; all site scripts parse |
 | R/Shiny | R parsing and station/privacy/module tests passed; real Shiny HTTP/WebSocket session and all four modules passed across three viewport sizes |
 | renv | Complete 115-version lock; clean-library restore and exact version comparison passed. CRAN fallback handles a lagging CI binary mirror |
@@ -35,3 +35,5 @@ Shiny is locally executable; Data Explorer remains an explicit future-results pl
 The Cloudflare account file supplied by the owner contains only an account ID. Wrangler reports no authenticated session; its OAuth scopes cover Pages but not Access administration. Pages/Access configuration needs authorized credentials and the partner identities before live tests and confidential upload. No private document has been deployed, no paid service purchased and no subscription changed.
 
 Local commands/addresses are documented in README: static preview on 127.0.0.1:8765 and Shiny on 127.0.0.1:8766 when started. Local browser tests can start their own temporary server with `GLOBE_START_SITE=true`.
+
+Map-date update: large observation-date banner plus a separate UTC last-update label. Cached raster retrieval times now survive Git checkout/file timestamp changes; the regression test passed.

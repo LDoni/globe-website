@@ -14,6 +14,7 @@ def update():
   date=frame['observation_date'];image=path.parent/f'sst-anomaly-{date}.png';legend=path.parent/f'sst-legend-{date}.png'
   params=dict(service='WMS',version='1.3.0',request='GetMap',crs='CRS:84',bbox='0,-90,360,90',width=1800,height=900,layers=cfg['dataset_id']+':'+cfg['variable'],styles='',format='image/png',transparent='TRUE',bgcolor='0x808080',time=date+'T12:00:00Z')
   url=cfg['erddap']+'/wms/'+cfg['dataset_id']+'/request?'+urllib.parse.urlencode(params)
+  retrieved_at=frame.get('raster_retrieved_at')
   if not image.exists() or not legend.exists() or frame.get('raster_numeric_retrieved_at')!=frame.get('retrieved_at'):
    png=download(url);key=download(frame['source_url'].replace('.csv?','.png?')+'&.legend=Only')
    if struct.unpack('>II',png[16:24])!=(1800,900):raise ValueError('Unexpected NOAA raster dimensions')
@@ -25,7 +26,9 @@ def update():
      os.replace(name,target)
     finally:
      if os.path.exists(name):os.unlink(name)
-  frame.update(raster_url='data/monitoring/'+image.name+'?v='+hashlib.sha256(image.read_bytes()).hexdigest()[:12],legend_url='data/monitoring/'+legend.name+'?v='+hashlib.sha256(legend.read_bytes()).hexdigest()[:12],raster_numeric_retrieved_at=frame['retrieved_at'],raster_retrieved_at=dt.datetime.fromtimestamp(image.stat().st_mtime,dt.timezone.utc).isoformat(),raster_source_url=url,raster_bounds=[[-90,0],[90,360]],raster_display_resolution_deg=.2,raster_method='Official NOAA ERDDAP WMS rendering of the native analysis; 1800 × 900 display pixels, geographic projection')
+   retrieved_at=dt.datetime.now(dt.timezone.utc).isoformat()
+  # Git checkouts change file mtimes; only a real download advances this timestamp.
+  frame.update(raster_url='data/monitoring/'+image.name+'?v='+hashlib.sha256(image.read_bytes()).hexdigest()[:12],legend_url='data/monitoring/'+legend.name+'?v='+hashlib.sha256(legend.read_bytes()).hexdigest()[:12],raster_numeric_retrieved_at=frame['retrieved_at'],raster_retrieved_at=retrieved_at,raster_source_url=url,raster_bounds=[[-90,0],[90,360]],raster_display_resolution_deg=.2,raster_method='Official NOAA ERDDAP WMS rendering of the native analysis; 1800 × 900 display pixels, geographic projection')
  fd,name=tempfile.mkstemp(prefix='.cache-',dir=path.parent)
  try:
   with os.fdopen(fd,'w') as f:json.dump(cache,f,indent=2,allow_nan=False);f.write('\n')

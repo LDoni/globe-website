@@ -22,11 +22,14 @@ async def main():
   await page.locator('.station-item').first.click();await page.locator('.leaflet-popup-content').wait_for();assert 'Fiji' in await page.locator('.leaflet-popup-content').inner_text()
   await page.click('[data-reset]');await page.select_option('[data-category]','incursion');assert await page.locator('.station-item').count()==incursion
   await page.select_option('[data-map-view]','observed');status=(await page.locator('[data-status]').inner_text()).lower();assert any(t in status for t in ['unavailable','observed-data analysis','sst anomaly'])
+  assert await page.locator('[data-map-date-banner]').is_visible()
+  chosen=await page.locator('[data-date] option:checked').inner_text();assert await page.locator('[data-map-observation-date]').get_attribute('datetime')==chosen
+  assert 'UTC' in await page.locator('[data-map-update-time]').inner_text()
   assert await page.locator('.leaflet-stationMarkers-pane path').count()==incursion
   if await page.locator('[data-date] option').count()>1:
    second=await page.locator('[data-date] option').nth(1).inner_text()
-   await page.select_option('[data-date]','1');assert second in await page.locator('[data-status]').inner_text()
-  await page.select_option('[data-map-view]','network');assert 'network stations' in await page.locator('[data-status]').inner_text()
+   await page.select_option('[data-date]','1');assert second in await page.locator('[data-status]').inner_text();assert await page.locator('[data-map-observation-date]').get_attribute('datetime')==second
+  await page.select_option('[data-map-view]','network');assert 'network stations' in await page.locator('[data-status]').inner_text();assert await page.locator('[data-map-date-banner]').is_hidden()
   # Injected scientific cache tests the quantitative layer without pretending it is live data.
   fixture={'frames':[{'observation_date':'2024-01-01','source':'SYNTHETIC TEST FIXTURE','product_id':'TEST-ONLY','units':'degree_C','baseline':'test only','retrieved_at':'2024-01-02T00:00:00Z','grid_spacing_deg':2,'cells':[{'lat':0,'lon':-140,'value':1.25}]}]}
   await page.route('**/data/monitoring/sst.json',lambda route:route.fulfill(json=fixture))

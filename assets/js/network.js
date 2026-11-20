@@ -11,6 +11,10 @@
   const status=shell.querySelector('[data-status]');
   if(!window.L){status.textContent='Map library unavailable. Download the approved CSV from Resources.';return;}
   const container=shell.querySelector('[data-map]');
+  const dateBanner=document.createElement('div'),dateTitle=document.createElement('span'),dateValue=document.createElement('time'),dateUpdate=document.createElement('small');
+  dateBanner.className='map-date-banner';dateBanner.dataset.mapDateBanner='';dateBanner.hidden=true;
+  dateBanner.setAttribute('role','status');dateTitle.textContent='SST anomaly map · Data date';dateValue.dataset.mapObservationDate='';dateUpdate.dataset.mapUpdateTime='';
+  dateBanner.append(dateTitle,dateValue,dateUpdate);container.before(dateBanner);
   const map=L.map(container,{crs:L.CRS.EPSG4326,scrollWheelZoom:false,preferCanvas:true,minZoom:-1,maxZoom:6,worldCopyJump:false}).setView([10,180],0);
   const resetView=()=>map.fitBounds([[-65,0],[80,360]],{padding:[12,12]});resetView();
   map.createPane('land');map.getPane('land').style.zIndex='450';
@@ -45,6 +49,7 @@
    visible.forEach(f=>{const p=f.properties,[lng,lat]=f.geometry.coordinates;const marker=L.circleMarker([lat,displayLng(lng)],{pane:'stationMarkers',renderer:stationRenderer,radius:7,color:'#e7f5f4',weight:1.4,fillColor:colors[p.category]||colors.unclassified,fillOpacity:.95}).bindPopup(popup(f)).addTo(markers);const b=document.createElement('button');b.type='button';b.className='station-item';b.textContent=p.station_name;const small=document.createElement('small');small.textContent=`${p.station_id} · ${p.country}`;b.append(small);b.addEventListener('click',()=>{map.setView(marker.getLatLng(),5);marker.openPopup();container.scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});});list.append(b);});
    const demo=registry.value!=='approved';if(registry.value==='network')document.querySelectorAll('[data-network-count]').forEach(el=>el.textContent=collection.features.length);
    if(mode==='network')status.textContent=demo?`${visible.length} of ${collection.features.length} network stations shown.`:visible.length?`${visible.length} approved sampling coordinates.`:'No approved sampling coordinates published yet. Select Network stations to explore the partner register.';
+   dateBanner.hidden=true;
    if(mode==='observed')drawSST();
    const legend=shell.querySelector('[data-legend]');legend.replaceChildren();
    if(mode==='observed'&&sst.frames[Number(date.value)||0]?.legend_url&&!sst.frames[Number(date.value)||0]?.raster_failed){const f=sst.frames[Number(date.value)||0],img=document.createElement('img');img.src=new URL(f.legend_url,ROOT);img.alt='NOAA SST anomaly legend, −5 to +5 °C';img.className='sst-official-legend';legend.append(img);}else if(mode==='observed'){legend.textContent='SST anomaly (°C): −3 to +3; colors clipped at endpoints, tooltip values retained. Missing cells remain transparent.';['#365b9a','#5b9ac2','#a5d2dd','#f6dfb8','#e89c6b','#b84c43'].forEach(c=>{const dot=document.createElement('i');dot.className='dot';dot.style.background=c;legend.append(dot);});}
@@ -54,6 +59,14 @@
    if(frame.units!=='degree_C'||!frame.baseline||!frame.observation_date||!Array.isArray(frame.cells)){status.textContent='SST cache metadata incomplete; layer withheld.';return;}
    const step=frame.grid_spacing_deg;
    if(!Number.isFinite(step)||step<=0||step>10){status.textContent='SST grid spacing invalid; layer withheld.';return;}
+   const observation=new Date(frame.observation_date+'T12:00:00Z');
+   if(!/^\d{4}-\d{2}-\d{2}$/.test(frame.observation_date)||!Number.isFinite(observation.getTime())){status.textContent='SST observation date invalid; layer withheld.';return;}
+   dateValue.dateTime=frame.observation_date;
+   dateValue.textContent=observation.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'});
+   const updatedAt=frame.raster_url&&!frame.raster_failed?(frame.raster_retrieved_at||frame.retrieved_at):frame.retrieved_at;
+   const updated=updatedAt?new Date(updatedAt):new Date(NaN);
+   dateUpdate.textContent=Number.isFinite(updated.getTime())?'Last successful update: '+updated.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'})+' · '+updated.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',timeZone:'UTC'})+' UTC':'Update time unavailable';
+   dateBanner.hidden=false;
    if(frame.raster_url&&!frame.raster_failed){
     for(const shift of [-360,0,360])L.imageOverlay(new URL(frame.raster_url,ROOT).href,[[-90,shift],[90,360+shift]],{pane:'sstRaster',opacity:1,attribution:'SST: NOAA Coral Reef Watch'}).on('error',()=>{if(rasterRequest===rasterSerial){frame.raster_failed=true;render();}}).addTo(observed);
     status.textContent=`SST ANOMALY · ${frame.observation_date} · ${frame.source} · °C · reference ${frame.baseline} · retrieved ${frame.raster_retrieved_at||frame.retrieved_at}`;

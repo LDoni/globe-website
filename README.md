@@ -144,3 +144,5 @@ The daily Niño 3.4, Niño 3, Niño 4 and Niño 1+2 panels use the public CSVs d
 Rank is calculated from actual SST values on the same calendar date across available years; equal values share a rank. Missing values are not filled. Daily ERA5 SST/anomalies, seasonal NOAA RONI, NOAA CRW gridded anomalies, official forecasts and optional Copernicus Marine station extraction are distinct products.
 
 Refresh with `python3 scripts/fetch_pulse.py`; refresh raster derivatives after NOAA data with `python3 scripts/fetch_sst_raster.py`. The daily update workflow runs these when monitoring refresh is enabled.
+
+The SST map displays its observation date prominently above the map, with the last successful data/raster download time shown separately in UTC. Selecting another date updates both labels. Cached raster timestamps are preserved when files are checked out or reused.

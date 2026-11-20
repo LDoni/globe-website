@@ -3,8 +3,21 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 def load(name):
     spec=importlib.util.spec_from_file_location(name,ROOT/'scripts'/f'{name}.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);return module
-sst=load('fetch_sst');cop=load('copernicus_stations');pulse=load('fetch_pulse');network=load('build_network_registry')
+sst=load('fetch_sst');cop=load('copernicus_stations');pulse=load('fetch_pulse');network=load('build_network_registry');raster=load('fetch_sst_raster')
 class CacheTests(unittest.TestCase):
+ def test_cached_raster_preserves_actual_retrieval_time_after_checkout(self):
+    import os
+    from unittest.mock import patch
+    with tempfile.TemporaryDirectory() as directory:
+      root=Path(directory);(root/'config').mkdir();cache=root/'data/monitoring';cache.mkdir(parents=True)
+      (root/'config/ocean-products.json').write_text(json.dumps({'noaa':{'erddap':'https://example.invalid','dataset_id':'TEST','variable':'anomaly'}}))
+      timestamp='2024-01-02T12:05:00Z'
+      frame={'observation_date':'2024-01-01','retrieved_at':'2024-01-02T12:00:00Z','raster_numeric_retrieved_at':'2024-01-02T12:00:00Z','raster_retrieved_at':timestamp}
+      (cache/'sst.json').write_text(json.dumps({'frames':[frame]}))
+      for name in ['sst-anomaly-2024-01-01.png','sst-legend-2024-01-01.png']:
+        path=cache/name;path.write_bytes(b'SYNTHETIC CACHED IMAGE');os.utime(path,(2000000000,2000000000))
+      with patch.object(raster,'ROOT',root),patch.object(raster,'download',side_effect=AssertionError('No download expected')):raster.update()
+      self.assertEqual(json.loads((cache/'sst.json').read_text())['frames'][0]['raster_retrieved_at'],timestamp)
  def test_era5_columns_baseline_units_missing_and_consistency(self):
     raw='# Units: degC\n# Reference period: 1991-2020\ndate,sst,clim_1991_2020,anom_1991_2020,status\n2024-01-01,30,27,3,FINAL\n2024-01-02,NaN,27,NaN,PRELIMINARY\n'
     notes,rows=pulse.parse(raw);self.assertEqual(rows[0],['2024-01-01',30.,27.,3.,'FINAL']);self.assertIsNone(rows[1][1])
