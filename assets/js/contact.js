@@ -26,5 +26,7 @@
     else{mail.hidden=true;status.textContent='Your enquiry is ready to preview. Delivery is not enabled yet; no message has been sent.';}
    }catch(error){clearDraft();status.textContent=error.message;}
   });
+  // Native form submission must remain unavailable when JavaScript/settings fail.
+  form.querySelector('button[type="submit"]').disabled=false;
  });
 })();

@@ -87,6 +87,9 @@ async def main():
      assert len(actual)==len(expected)
      for text,row in zip(actual,expected):assert f"{row['value']:.2f}" in text
      await page.screenshot(path=f'test-results/monitoring-{width}.png',full_page=True)
+  nojs=await browser.new_context(java_script_enabled=False)
+  nojs_page=await nojs.new_page();await nojs_page.goto(BASE+'/pages/join.html');assert await nojs_page.locator('button[type=submit]').is_disabled()
+  await nojs.close()
   assert not errors,errors
   await browser.close();print('PASS: map filters, popups, mode switching, synthetic observed layer, navigation, cache chart and three viewport widths')
 server=None
