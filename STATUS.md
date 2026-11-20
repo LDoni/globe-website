@@ -37,3 +37,5 @@ The Cloudflare account file supplied by the owner contains only an account ID. W
 Local commands/addresses are documented in README: static preview on 127.0.0.1:8765 and Shiny on 127.0.0.1:8766 when started. Local browser tests can start their own temporary server with `GLOBE_START_SITE=true`.
 
 Map-date update: large observation-date banner plus a separate UTC last-update label. Cached raster retrieval times now survive Git checkout/file timestamp changes; the regression test passed.
+
+Visual update: a restrained ocean-grey page background with lighter reading surfaces replaces the plain white canvas.
