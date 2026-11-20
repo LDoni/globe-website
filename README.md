@@ -146,3 +146,9 @@ Rank is calculated from actual SST values on the same calendar date across avail
 Refresh with `python3 scripts/fetch_pulse.py`; refresh raster derivatives after NOAA data with `python3 scripts/fetch_sst_raster.py`. The daily update workflow runs these when monitoring refresh is enabled.
 
 The SST map displays its observation date prominently above the map, with the last successful data/raster download time shown separately in UTC. Selecting another date updates both labels. Cached raster timestamps are preserved when files are checked out or reused.
+
+## Coordinators, flags and homepage motion
+
+The sticky header includes the original UAB, DISTAV/University of Genoa and St. Jude institutional marks (sources in assets/images/partners/README.md). The homepage keeps the supplied transparent PNG and overlays gentle SVG currents within the O. Motion can be paused and respects reduced-motion preferences. There is no preview instruction paragraph.
+
+Network country flags are derived from public station rows, using country and lowercase country_iso2. Edit data/network-stations.csv on GitHub to add partners; the Pages build regenerates the map and flags. Flag SVGs are vendored locally, including additional countries for future growth. The current workbook contains 24 distinct country labels; the separately declared project scope remains 23 countries until reconciled by the coordinators. Hidden rows are excluded. No scientific extraction approval is inferred.

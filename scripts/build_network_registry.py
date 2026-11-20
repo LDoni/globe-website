@@ -5,7 +5,7 @@ The approved scientific-coordinate register is never changed by this script.
 import csv,json,math,os,re,tempfile
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
-FIELDS={'station_id','station_name','country','latitude','longitude','institution','category','ocean_basin','sampling_status','coordinate_status','public_description','institution_url','map_visibility'}
+FIELDS={'station_id','station_name','country','country_iso2','latitude','longitude','institution','category','ocean_basin','sampling_status','coordinate_status','public_description','institution_url','map_visibility'}
 def collection(rows):
  features=[];ids=set()
  for row in rows:
@@ -20,6 +20,7 @@ def collection(rows):
   lat,lon=float(row['latitude']),float(row['longitude'])
   if not math.isfinite(lat) or not math.isfinite(lon) or not -90<=lat<=90 or not -180<=lon<=180:raise ValueError('Invalid network coordinates')
   if row.get('category') not in ['unclassified','incursion','pacific','reference']:raise ValueError('Unknown network category')
+  if row.get('country_iso2') and not re.fullmatch(r'[a-z]{2}',row['country_iso2']):raise ValueError('country_iso2 must be a lowercase two-letter ISO code')
   props={k:v for k,v in row.items() if k not in ['latitude','longitude','map_visibility']}
   props['publication_status']='network_display_only'
   features.append({'type':'Feature','geometry':{'type':'Point','coordinates':[lon,lat]},'properties':props})

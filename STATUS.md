@@ -39,3 +39,19 @@ Local commands/addresses are documented in README: static preview on 127.0.0.1:8
 Map-date update: large observation-date banner plus a separate UTC last-update label. Cached raster retrieval times now survive Git checkout/file timestamp changes; the regression test passed.
 
 Visual update: a restrained ocean-grey page background with lighter reading surfaces replaces the plain white canvas.
+
+Branding update (20 November): homepage SVG currents within the supplied PNG's O,
+with pause and reduced-motion support and no preview instruction paragraph. Original
+UAB, DISTAV/UniGe and St. Jude marks appear alongside GLOBE in the sticky header;
+mobile uses a compact second row. Network flags derive from the public register's
+country/country_iso2 fields, including future countries via local flag assets.
+Institutional sources and flag licence are included with the assets. The supplied
+workbook currently has 24 distinct country labels, while the declared project
+scope remains 23; this discrepancy is retained here for coordinator reconciliation.
+The scientific coordinate register remains unchanged.
+
+This branding update passed a real 11-page Quarto render, 12 Python unit tests,
+4 contact and 6 partner-access Node tests, credential/public-output checks and
+Chromium tests at 375/768/1440 px. Browser checks include flag image loading,
+three institutional marks, motion pause/play, reduced motion, sticky navigation,
+map controls and climate statistics. Mobile screenshot was visually inspected.

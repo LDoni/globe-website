@@ -17,6 +17,9 @@ async def main():
   await page.route('https://server.arcgisonline.com/**',lambda route:route.abort())
   await page.goto(BASE+'/pages/network.html');await page.locator('[data-status]').filter(has_text='network stations').wait_for()
   registry=await page.evaluate('fetch(new URL("../data/network-stations.geojson",location.href)).then(r=>r.json())');expected=len(registry['features']);incursion=sum(f['properties']['category']=='incursion' for f in registry['features'])
+  countries={f['properties']['country'] for f in registry['features']}
+  assert await page.locator('[data-country-flags] li').count()==len(countries)
+  await page.wait_for_function("[...document.querySelectorAll('[data-country-flags] img')].every(i=>i.complete&&i.naturalWidth>0)")
   await page.locator('.station-item').nth(expected-1).wait_for();assert await page.locator('.station-item').count()==expected
   await page.fill('[data-search]','Fiji');assert await page.locator('.station-item').count()>=1
   await page.locator('.station-item').first.click();await page.locator('.leaflet-popup-content').wait_for();assert 'Fiji' in await page.locator('.leaflet-popup-content').inner_text()
@@ -72,6 +75,14 @@ async def main():
    await page.set_viewport_size({'width':width,'height':900});await page.goto(BASE+'/index.html')
    await page.locator('[data-status]').filter(has_text='network stations').wait_for()
    assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth+1'),f'Overflow at {width}'
+   assert await page.locator('.coordinator-logos img').count()==3
+   assert await page.locator('.coordinator-logos').is_visible()
+   assert await page.evaluate("[...document.querySelectorAll('.coordinator-logos img')].every(i=>i.complete&&i.naturalWidth>0)")
+   await page.locator('[data-logo-motion]').scroll_into_view_if_needed()
+   await page.wait_for_function("document.querySelector('[data-logo-motion]').dataset.motion==='running'")
+   await page.click('[data-logo-motion-toggle]');assert await page.locator('[data-logo-motion]').get_attribute('data-motion')=='paused'
+   await page.click('[data-logo-motion-toggle]');assert await page.locator('[data-logo-motion]').get_attribute('data-motion')=='running'
+   assert 'Use the pause/play button' not in await page.locator('body').inner_text()
    await page.evaluate('scrollTo(0,800)');await page.wait_for_timeout(100);assert abs((await page.locator('header.site-nav').bounding_box())['y'])<=1
    await page.evaluate('scrollTo(0,0)')
    if width<850:
@@ -90,6 +101,9 @@ async def main():
      assert len(actual)==len(expected)
      for text,row in zip(actual,expected):assert f"{row['value']:.2f}" in text
      await page.screenshot(path=f'test-results/monitoring-{width}.png',full_page=True)
+  await page.emulate_media(reduced_motion='reduce');await page.goto(BASE+'/index.html')
+  assert await page.locator('[data-logo-motion]').get_attribute('data-motion')=='off'
+  assert await page.locator('[data-logo-motion-toggle]').is_hidden()
   nojs=await browser.new_context(java_script_enabled=False)
   nojs_page=await nojs.new_page();await nojs_page.goto(BASE+'/pages/join.html');assert await nojs_page.locator('button[type=submit]').is_disabled()
   await nojs.close()

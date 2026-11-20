@@ -1,31 +1,31 @@
-station_id,station_name,country,latitude,longitude,institution,category,ocean_basin,sampling_status,coordinate_status,public_description,institution_url,map_visibility
-GLOBE-001,Canada,Canada,49.0,-123.3,,incursion,Pacific,unconfirmed,approximate; unverified,,,public
-GLOBE-002,USA (California),United States,36.8,-121.9,,incursion,Pacific,unconfirmed,approximate; unverified,,,public
-GLOBE-003,Ensenada,Mexico,31.9,-116.6,,incursion,Pacific,unconfirmed,approximate; unverified,,,public
-GLOBE-004,Los Cabos,Mexico,22.9,-109.9,,incursion,Pacific,unconfirmed,approximate; unverified,,,public
-GLOBE-005,Costa Rica,Costa Rica,9.2,-84.5,,incursion,Pacific,unconfirmed,approximate; unverified,,,public
-GLOBE-006,Piura,Peru,-5.2,-81.1,,incursion,Pacific,unconfirmed,approximate; unverified,,,public
-GLOBE-007,Lambayeque,Peru,-6.8,-79.9,,incursion,Pacific,unconfirmed,approximate; unverified,,,public
-GLOBE-008,Lima,Peru,-12.1,-77.2,,incursion,Pacific,unconfirmed,approximate; unverified,,,public
-GLOBE-009,Chile,Chile,-33.0,-71.6,,incursion,Pacific,unconfirmed,approximate; unverified,,,public
-GLOBE-010,Hawaii,United States,21.3,-157.9,,pacific,Pacific,unconfirmed,approximate; unverified,,,public
-GLOBE-011,China,China,24.5,118.1,,pacific,Pacific,unconfirmed,approximate; unverified,,,public
-GLOBE-012,Japan,Japan,34.6,135.3,,pacific,Pacific,unconfirmed,approximate; unverified,,,public
-GLOBE-013,Vietnam,Vietnam,12.2,109.2,,pacific,Pacific,unconfirmed,approximate; unverified,,,public
-GLOBE-014,Thailand,Thailand,12.6,100.9,,pacific,Pacific,unconfirmed,approximate; unverified,,,public
-GLOBE-015,Philippines,Philippines,14.6,121.0,,pacific,Pacific,unconfirmed,approximate; unverified,,,public
-GLOBE-016,Singapore,Singapore,1.3,103.8,,pacific,Pacific,unconfirmed,approximate; unverified,,,public
-GLOBE-017,Indonesia,Indonesia,-6.0,106.8,,pacific,Pacific,unconfirmed,approximate; unverified,,,public
-GLOBE-018,Fiji,Fiji,-17.8,178.4,,pacific,Pacific,unconfirmed,approximate; unverified,,,public
-GLOBE-019,Australia,Australia,-27.5,153.3,,pacific,Pacific,unconfirmed,approximate; unverified,,,public
-GLOBE-020,New Zealand,New Zealand,-41.3,174.8,,pacific,Pacific,unconfirmed,approximate; unverified,,,public
-GLOBE-021,Saudi Arabia,Saudi Arabia,21.5,39.2,,reference,Indian,unconfirmed,approximate; unverified,,,public
-GLOBE-022,Abu Dhabi,United Arab Emirates,24.5,54.4,,reference,Indian,unconfirmed,approximate; unverified,,,public
-GLOBE-023,India,India,13.1,80.3,,reference,Indian,unconfirmed,approximate; unverified,,,public
-GLOBE-024,UK,United Kingdom,50.8,-1.1,,reference,Atlantic,unconfirmed,approximate; unverified,,,public
-GLOBE-025,Italy,Italy,43.8,10.2,,reference,Mediterranean,unconfirmed,approximate; unverified,,,public
-GLOBE-026,Vigo (Spain),Spain,42.2,-8.7,,reference,Atlantic,unconfirmed,approximate; unverified,,,public
-GLOBE-027,Cádiz (Spain),Spain,36.5,-6.3,,reference,Atlantic,unconfirmed,approximate; unverified,,,public
-GLOBE-028,USA (Florida),United States,25.8,-80.2,,reference,Atlantic,unconfirmed,approximate; unverified,,,public
-GLOBE-029,South Africa,South Africa,-34.1,18.5,,reference,,unconfirmed,approximate; unverified,,,public
-GLOBE-030,Argentina,Argentina,-38.0,-57.5,,reference,Atlantic,unconfirmed,approximate; unverified,,,public
+station_id,station_name,country,country_iso2,latitude,longitude,institution,category,ocean_basin,sampling_status,coordinate_status,public_description,institution_url,map_visibility
+GLOBE-001,Canada,Canada,ca,49.0,-123.3,,incursion,Pacific,unconfirmed,approximate; unverified,,,public
+GLOBE-002,USA (California),United States,us,36.8,-121.9,,incursion,Pacific,unconfirmed,approximate; unverified,,,public
+GLOBE-003,Ensenada,Mexico,mx,31.9,-116.6,,incursion,Pacific,unconfirmed,approximate; unverified,,,public
+GLOBE-004,Los Cabos,Mexico,mx,22.9,-109.9,,incursion,Pacific,unconfirmed,approximate; unverified,,,public
+GLOBE-005,Costa Rica,Costa Rica,cr,9.2,-84.5,,incursion,Pacific,unconfirmed,approximate; unverified,,,public
+GLOBE-006,Piura,Peru,pe,-5.2,-81.1,,incursion,Pacific,unconfirmed,approximate; unverified,,,public
+GLOBE-007,Lambayeque,Peru,pe,-6.8,-79.9,,incursion,Pacific,unconfirmed,approximate; unverified,,,public
+GLOBE-008,Lima,Peru,pe,-12.1,-77.2,,incursion,Pacific,unconfirmed,approximate; unverified,,,public
+GLOBE-009,Chile,Chile,cl,-33.0,-71.6,,incursion,Pacific,unconfirmed,approximate; unverified,,,public
+GLOBE-010,Hawaii,United States,us,21.3,-157.9,,pacific,Pacific,unconfirmed,approximate; unverified,,,public
+GLOBE-011,China,China,cn,24.5,118.1,,pacific,Pacific,unconfirmed,approximate; unverified,,,public
+GLOBE-012,Japan,Japan,jp,34.6,135.3,,pacific,Pacific,unconfirmed,approximate; unverified,,,public
+GLOBE-013,Vietnam,Vietnam,vn,12.2,109.2,,pacific,Pacific,unconfirmed,approximate; unverified,,,public
+GLOBE-014,Thailand,Thailand,th,12.6,100.9,,pacific,Pacific,unconfirmed,approximate; unverified,,,public
+GLOBE-015,Philippines,Philippines,ph,14.6,121.0,,pacific,Pacific,unconfirmed,approximate; unverified,,,public
+GLOBE-016,Singapore,Singapore,sg,1.3,103.8,,pacific,Pacific,unconfirmed,approximate; unverified,,,public
+GLOBE-017,Indonesia,Indonesia,id,-6.0,106.8,,pacific,Pacific,unconfirmed,approximate; unverified,,,public
+GLOBE-018,Fiji,Fiji,fj,-17.8,178.4,,pacific,Pacific,unconfirmed,approximate; unverified,,,public
+GLOBE-019,Australia,Australia,au,-27.5,153.3,,pacific,Pacific,unconfirmed,approximate; unverified,,,public
+GLOBE-020,New Zealand,New Zealand,nz,-41.3,174.8,,pacific,Pacific,unconfirmed,approximate; unverified,,,public
+GLOBE-021,Saudi Arabia,Saudi Arabia,sa,21.5,39.2,,reference,Indian,unconfirmed,approximate; unverified,,,public
+GLOBE-022,Abu Dhabi,United Arab Emirates,ae,24.5,54.4,,reference,Indian,unconfirmed,approximate; unverified,,,public
+GLOBE-023,India,India,in,13.1,80.3,,reference,Indian,unconfirmed,approximate; unverified,,,public
+GLOBE-024,UK,United Kingdom,gb,50.8,-1.1,,reference,Atlantic,unconfirmed,approximate; unverified,,,public
+GLOBE-025,Italy,Italy,it,43.8,10.2,,reference,Mediterranean,unconfirmed,approximate; unverified,,,public
+GLOBE-026,Vigo (Spain),Spain,es,42.2,-8.7,,reference,Atlantic,unconfirmed,approximate; unverified,,,public
+GLOBE-027,Cádiz (Spain),Spain,es,36.5,-6.3,,reference,Atlantic,unconfirmed,approximate; unverified,,,public
+GLOBE-028,USA (Florida),United States,us,25.8,-80.2,,reference,Atlantic,unconfirmed,approximate; unverified,,,public
+GLOBE-029,South Africa,South Africa,za,-34.1,18.5,,reference,,unconfirmed,approximate; unverified,,,public
+GLOBE-030,Argentina,Argentina,ar,-38.0,-57.5,,reference,Atlantic,unconfirmed,approximate; unverified,,,public
