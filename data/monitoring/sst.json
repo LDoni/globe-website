@@ -11,7 +11,7 @@
       "units": "degree_C",
       "baseline": "1985\u20131990 plus 1993 (v3.1 adjusted climatology; derived from 1985\u20132012)",
       "baseline_url": "https://coralreefwatch.noaa.gov/product/5km/description_climatology.php",
-      "retrieved_at": "2026-11-19T21:42:48.201377+00:00",
+      "retrieved_at": "2026-11-20T15:37:35.802411+00:00",
       "native_resolution_deg": 0.05,
       "grid_spacing_deg": 2.0,
       "method": "Native grid subsampling; no spatial averaging. Broad ocean context only.",
@@ -42354,6 +42354,8 @@
       ],
       "raster_url": "data/monitoring/sst-anomaly-2026-11-18.png?v=e4d6b89811c6",
       "legend_url": "data/monitoring/sst-legend-2026-11-18.png?v=c86217bcec3f",
+      "raster_numeric_retrieved_at": "2026-11-20T15:37:35.802411+00:00",
+      "raster_retrieved_at": "2026-11-20T15:37:39.302051+00:00",
       "raster_source_url": "https://oceanwatch.pifsc.noaa.gov/erddap/wms/CRW_sst_anom_v1_0/request?service=WMS&version=1.3.0&request=GetMap&crs=CRS%3A84&bbox=0%2C-90%2C360%2C90&width=1800&height=900&layers=CRW_sst_anom_v1_0%3Asea_surface_temperature_anomaly&styles=&format=image%2Fpng&transparent=TRUE&bgcolor=0x808080&time=2026-11-18T12%3A00%3A00Z",
       "raster_bounds": [
         [
@@ -42366,9 +42368,7 @@
         ]
       ],
       "raster_display_resolution_deg": 0.2,
-      "raster_method": "Official NOAA ERDDAP WMS rendering of the native analysis; 1800 \u00d7 900 display pixels, geographic projection",
-      "raster_numeric_retrieved_at": "2026-11-19T21:42:48.201377+00:00",
-      "raster_retrieved_at": "2026-11-19T23:50:38.840200+00:00"
+      "raster_method": "Official NOAA ERDDAP WMS rendering of the native analysis; 1800 \u00d7 900 display pixels, geographic projection"
     },
     {
       "observation_date": "2026-11-17",
