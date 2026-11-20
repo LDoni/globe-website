@@ -7,3 +7,18 @@ document.querySelectorAll('.quarto-listing').forEach(listing=>{
  else if(listing.nextElementSibling?.classList.contains('empty')) listing.nextElementSibling.hidden=true;
 });
 document.querySelectorAll('.menu-toggle').forEach(button => button.addEventListener('click',()=>{const expanded=button.getAttribute('aria-expanded')==='true';button.setAttribute('aria-expanded',String(!expanded));document.getElementById('main-nav').classList.toggle('open',!expanded);}));
+
+// The supplied PNG stays intact; SVG currents decorate only the homepage logo.
+document.querySelectorAll('[data-logo-motion]').forEach(logo=>{
+ const button=logo.querySelector('[data-logo-motion-toggle]'),preference=matchMedia('(prefers-reduced-motion: reduce)');
+ let paused=false,inView=true;
+ function update(){
+  logo.dataset.motion=preference.matches?'off':(!paused&&inView&&!document.hidden?'running':'paused');
+  button.hidden=preference.matches;button.setAttribute('aria-pressed',String(paused));
+  const label=paused?'Play logo animation':'Pause logo animation';button.setAttribute('aria-label',label);button.title=label;button.querySelector('span').textContent=paused?'▶':'Ⅱ';
+ }
+ button.addEventListener('click',()=>{paused=!paused;update();});
+ preference.addEventListener('change',update);document.addEventListener('visibilitychange',update);
+ if('IntersectionObserver' in window)new IntersectionObserver(entries=>{inView=entries[0].isIntersecting;update();},{rootMargin:'80px'}).observe(logo);
+ update();
+});
