@@ -51,6 +51,8 @@ jobs:
         run: |
           Rscript R/process_ocean_data.R
           python3 scripts/fetch_sst.py
+          python3 scripts/fetch_sst_raster.py
+          python3 scripts/fetch_pulse.py
       - name: Optional Copernicus station extraction
         if: vars.COPERNICUS_ENABLED == 'true'
         env:

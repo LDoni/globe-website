@@ -3,8 +3,20 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 def load(name):
     spec=importlib.util.spec_from_file_location(name,ROOT/'scripts'/f'{name}.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);return module
-sst=load('fetch_sst');cop=load('copernicus_stations')
+sst=load('fetch_sst');cop=load('copernicus_stations');pulse=load('fetch_pulse');network=load('build_network_registry')
 class CacheTests(unittest.TestCase):
+ def test_era5_columns_baseline_units_missing_and_consistency(self):
+    raw='# Units: degC\n# Reference period: 1991-2020\ndate,sst,clim_1991_2020,anom_1991_2020,status\n2024-01-01,30,27,3,FINAL\n2024-01-02,NaN,27,NaN,PRELIMINARY\n'
+    notes,rows=pulse.parse(raw);self.assertEqual(rows[0],['2024-01-01',30.,27.,3.,'FINAL']);self.assertIsNone(rows[1][1])
+    for bad in [raw.replace('degC','K'),raw.replace('1991-2020','1981-2010'),raw.replace(',27,3,',',27,4,'),raw.replace('2024-01-02','2024-01-01')]:
+      with self.assertRaises(ValueError):pulse.parse(bad)
+ def test_public_network_display_does_not_approve_scientific_coordinates(self):
+    row={'station_id':'TEST','station_name':'Synthetic partner','country':'Test','latitude':'1','longitude':'179.5','category':'unclassified','coordinate_status':'approximate','map_visibility':'public'}
+    result=network.collection([row]);self.assertEqual(result['features'][0]['properties']['publication_status'],'network_display_only')
+    self.assertEqual(result['features'][0]['geometry']['coordinates'],[179.5,1.])
+    with self.assertRaises(ValueError):network.collection([row,row])
+    with self.assertRaises(ValueError):network.collection([{**row,'longitude':'NaN'}])
+    with self.assertRaises(ValueError):network.collection([{**row,'contact_email':'private@example.invalid'}])
  def test_noaa_units_missing_and_longitudes(self):
     raw='time,latitude,longitude,sea_surface_temperature_anomaly\nUTC,degrees_north,degrees_east,degree_C\n2024-01-01T12:00:00Z,10,350,1.5\n2024-01-01T12:00:00Z,11,2,NaN\n'
     date,cells=sst.parse_csv(raw);self.assertEqual(date,'2024-01-01');self.assertEqual(cells,[{'lat':10.,'lon':-10.,'value':1.5}])

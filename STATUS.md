@@ -1,40 +1,37 @@
 # GLOBE verification and launch status
 
-Updated 20 November 2026. The organization-domain deployment is being finalized; outcomes below distinguish executed tests from configuration still required.
+Updated 20 November 2026. Public URL: **https://globe-ocean.github.io/**. Primary source: **globe-ocean/globe-ocean.github.io**. Previous commits completed both Pages and the full R/Shiny CI; the latest design/data update is being deployed and is verified locally as below.
 
-| Component | Verified outcome |
+| Component | Executed verification |
 | --- | --- |
-| Quarto website | Real 11-page render, public-output and local-link checks passed; supplied GLOBE logo integrated |
-| Browser | Chromium: filters/search/popups, station overlay toggle and layer order, modes, RONI numerical table, year comparison and SVG export; responsive pages at 375/768/1440 px |
-| Content lists | Actual isolated Quarto build with synthetic news/publication entries: homepage, News and Resources listings passed; fixtures excluded from public build |
-| Python | 9 unit tests passed, including NOAA failure preservation, Copernicus credential/mapping gates, two-file rollback and antimeridian distance |
-| Node | 4 enquiry-draft tests passed; website scripts parse |
-| R | Station/schema/privacy tests, NOAA parsing and Shiny module tests passed; local testthat emits LC_ALL locale warnings without failures |
-| Dependencies | Complete renv lock: 115 recorded versions; restore into a clean library and exact version comparison passed, including R recommended packages |
-| NOAA | Official RONI: 921 seasons. SST: 18 Nov (8,467 cells) and 17 Nov (8,455 cells). First-frame cells and all RONI values independently matched a second live official response |
-| Shiny | Real process and HTTP/WebSocket browser session passed with the restored library; all four modules load at three viewport widths |
-| Workbook | 30 draft rows imported locally; no private fields exported, no approximate coordinates promoted. Separate local preview only |
-| Google Sheets | Synthetic canonical and workbook-schema pipeline tests passed; live read-only authentication and real sheet ID not configured |
-| GitHub | Previous LDoni Pages release and full CI passed. Organization root-domain repository created; final push/deployment verification pending |
-| Cloudflare | Separate Pages partner canary, signed-JWT middleware and local security tests prepared; account not authenticated, no cloud deployment or live access-policy verification claimed |
-| shinyapps.io | App bundle/deployment script prepared and gated; actual account, plan and usage not verified; no cloud Shiny URL |
-| Copernicus | Adapter gates, geometry and rollback tested; live extraction disabled pending credentials and reviewed station–cell mappings |
-| Join | Browser-verified local email draft; no server send or delivery confirmation. Approved recipient still needed |
+| Quarto | Real 11-page render; public-output and local-link checks passed |
+| Branding/navigation | Supplied transparent PNG, light background, five sticky navigation links; mobile/tablet/desktop checks passed |
+| Station map | 30 public network points from editable CSV; search, category filters, popup, date selection and marker layer order verified; one background selector; no Niño rectangle |
+| NOAA rasters | Official 1800×900 WMS PNGs for 17/18 Nov 2026 loaded in a real browser, with original legends; local Natural Earth coastlines and geographic EPSG:4326 projection |
+| NOAA numerical data | 921 RONI seasons and both SST numeric grids independently matched official responses; missing values preserved |
+| ERA5 | 17,488 dates per Niño region; all 69,952 cached rows matched original C3S/ECMWF CSV intakes |
+| Interactive statistics | Four regions, date changes, absolute/anomaly curves, same-calendar-date ranks and comparison years verified against cached numeric rows |
+| Browser | Chromium at 375, 768 and 1440 px: navigation, map controls, contact draft, charts, SVG export, sticky header and horizontal overflow checks passed |
+| Python | 11 unit tests passed: provider schema/units/baselines, missing values, publication separation, atomic-update failure and rollback gates |
+| Node | 4 contact tests and 6 partner-access security tests passed; all site scripts parse |
+| R/Shiny | R parsing and station/privacy/module tests passed; real Shiny HTTP/WebSocket session and all four modules passed across three viewport sizes |
+| renv | Complete 115-version lock; clean-library restore and exact version comparison passed. CRAN fallback handles a lagging CI binary mirror |
+| News/publications | Actual isolated Quarto build with synthetic entries verified homepage, News and Resources listings; fixtures excluded from public artifact |
+| GitHub | Pages and full R/Shiny CI passed on 9ed0d64 and a8606e8. Inspect Actions for the latest design/data commit |
+| Cloudflare private workspace | Separate canary Pages project files, origin JWT checks and local security tests prepared; account authentication and partner allowlist still required |
+| Sheets | Synthetic canonical/workbook-schema validation passed; real Sheet ID/read-only authentication not connected |
+| shinyapps.io | No cloud deployment; actual account plan/usage verification and deployment credentials still required |
+| Copernicus Marine | Live station extraction disabled; credentials and approved station–sea-cell mappings required |
+| Join | Local email draft only; no server send and no delivery confirmation. Destination address not selected yet |
 
-## Addresses
+## Data publication and remaining limits
 
-- Intended primary site: https://globe-ocean.github.io/ (confirm final deployment below).
-- Previous verified release: https://ldoni.github.io/globe-website/.
-- Local public-site preview: http://127.0.0.1:8765/.
-- Local Shiny dashboard: http://127.0.0.1:8766/.
-- Local-only workbook preview: http://127.0.0.1:8768/ (start with documented helper; do not deploy this folder).
+The public network is maintained through `data/network-stations.csv`; build-time validation generates the public GeoJSON. Display metadata remains distinct from `data/stations.csv`, the separate approved scientific-coordinate source used by extraction/Shiny station time series. The latter currently has no approved records. Workbook files, private contacts, notes and credentials are excluded from Git/deployment.
 
-## Scientific and operational limits
+ERA5 rank compares the same calendar date across available years, not different seasons. Source quality/status and retrieval time are retained. The official CSV sampling notes identify 12 UTC SST; no daily-mean or forecast interpretation is silently substituted. NOAA RONI, daily ERA5, NOAA CRW and official ENSO forecasts remain separate. No ENSO status is classified from a single value.
 
-The initial scope is 30 stations and the declared 23 countries. The workbook has 24 raw country labels requiring coordinator review; it does not redefine the approved country count. All its station rows are draft and its map coordinates are schematic. The approved public register remains empty; the separate 29-point legacy demo is explicitly approximate. An approval decision is required before publishing the workbook's preliminary coordinates.
+Shiny is locally executable; Data Explorer remains an explicit future-results placeholder and station environmental measurements are not configured. Its global map retains the numerical display cache. The static public dashboard has the higher-resolution cached NOAA rendering and ERA5 interactivity.
 
-The Shiny Data Explorer is a transparent future-results placeholder. Station Explorer correctly reports no approved stations or station measurements. No unpublished microbiological results, confidential documents, contacts, internal notes, XLSX intake files or credentials enter the public artifact. NOAA RONI, SST analyses and official forecasts remain distinct; no single-value ENSO classification is made.
+The Cloudflare account file supplied by the owner contains only an account ID. Wrangler reports no authenticated session; its OAuth scopes cover Pages but not Access administration. Pages/Access configuration needs authorized credentials and the partner identities before live tests and confidential upload. No private document has been deployed, no paid service purchased and no subscription changed.
 
-Climate Pulse is linked as the official C3S/ECMWF ERA5 application. Its current `frame-ancestors 'self'` / `SAMEORIGIN` headers prohibit an external iframe. GLOBE's own year-comparison chart uses explicitly attributed NOAA RONI, with pointer inspection and SVG export. The supplied logo is branding, not a quantitative SST map.
-
-For full operational launch, supply the Join recipient, connect the private Google Sheet, approve sampling coordinates/categories, authenticate Cloudflare if still wanted, and authenticate shinyapps.io with actual plan/usage verification. Copernicus additionally needs reviewed sea-cell mappings. No subscription changes, purchases, domain registrations or private-document publication occurred.
+Local commands/addresses are documented in README: static preview on 127.0.0.1:8765 and Shiny on 127.0.0.1:8766 when started. Local browser tests can start their own temporary server with `GLOBE_START_SITE=true`.

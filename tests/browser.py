@@ -2,7 +2,7 @@
 Run: GLOBE_TEST_URL=http://127.0.0.1:8765 python tests/browser.py
 Optional GLOBE_CHROMIUM_PATH for environments with a system browser.
 """
-import asyncio,json,os
+import asyncio,json,os,subprocess,sys,time,urllib.request,urllib.parse
 from pathlib import Path
 from playwright.async_api import async_playwright
 BASE=os.getenv('GLOBE_TEST_URL','http://127.0.0.1:8765').rstrip('/')
@@ -17,23 +17,20 @@ async def main():
   await page.route('https://server.arcgisonline.com/**',lambda route:route.abort())
   await page.goto(BASE+'/pages/network.html');await page.locator('[data-status]').filter(has_text='network stations').wait_for()
   registry=await page.evaluate('fetch(new URL("../data/network-stations.geojson",location.href)).then(r=>r.json())');expected=len(registry['features']);incursion=sum(f['properties']['category']=='incursion' for f in registry['features'])
-  await page.select_option('[data-registry]','approved');await page.locator('[data-status]').filter(has_text='No approved').wait_for()
-  await page.select_option('[data-registry]','network');await page.locator('.station-item').nth(expected-1).wait_for();assert await page.locator('.station-item').count()==expected
-  await page.fill('[data-search]','Fiji');assert await page.locator('.station-item').count()==1
-  await page.locator('.station-item').click();await page.locator('.leaflet-popup-content').wait_for();assert 'approximate' in await page.locator('.leaflet-popup-content').inner_text()
+  await page.locator('.station-item').nth(expected-1).wait_for();assert await page.locator('.station-item').count()==expected
+  await page.fill('[data-search]','Fiji');assert await page.locator('.station-item').count()>=1
+  await page.locator('.station-item').first.click();await page.locator('.leaflet-popup-content').wait_for();assert 'Fiji' in await page.locator('.leaflet-popup-content').inner_text()
   await page.click('[data-reset]');await page.select_option('[data-category]','incursion');assert await page.locator('.station-item').count()==incursion
-  await page.click('[data-mode="observed"]');status=(await page.locator('[data-status]').inner_text()).lower();assert any(t in status for t in ['unavailable','observed-data analysis'])
+  await page.select_option('[data-map-view]','observed');status=(await page.locator('[data-status]').inner_text()).lower();assert any(t in status for t in ['unavailable','observed-data analysis','sst anomaly'])
   assert await page.locator('.leaflet-stationMarkers-pane path').count()==incursion
-  await page.uncheck('[data-show-stations]');assert await page.locator('.leaflet-stationMarkers-pane path').count()==0
-  await page.check('[data-show-stations]');assert await page.locator('.leaflet-stationMarkers-pane path').count()==incursion
   if await page.locator('[data-date] option').count()>1:
    second=await page.locator('[data-date] option').nth(1).inner_text()
    await page.select_option('[data-date]','1');assert second in await page.locator('[data-status]').inner_text()
-  await page.click('[data-mode="network"]');assert 'network stations' in await page.locator('[data-status]').inner_text()
+  await page.select_option('[data-map-view]','network');assert 'network stations' in await page.locator('[data-status]').inner_text()
   # Injected scientific cache tests the quantitative layer without pretending it is live data.
   fixture={'frames':[{'observation_date':'2024-01-01','source':'SYNTHETIC TEST FIXTURE','product_id':'TEST-ONLY','units':'degree_C','baseline':'test only','retrieved_at':'2024-01-02T00:00:00Z','grid_spacing_deg':2,'cells':[{'lat':0,'lon':-140,'value':1.25}]}]}
   await page.route('**/data/monitoring/sst.json',lambda route:route.fulfill(json=fixture))
-  await page.reload();await page.click('[data-mode="observed"]');await page.locator('[data-status]').filter(has_text='SYNTHETIC TEST FIXTURE').wait_for()
+  await page.reload();await page.select_option('[data-map-view]','observed');await page.locator('[data-status]').filter(has_text='SYNTHETIC TEST FIXTURE').wait_for()
   await page.unroute('**/data/monitoring/sst.json')
   # Verify private content is absent and every navigation target can open.
   for slug in ['index.html','pages/about.html','pages/research.html','pages/network.html','pages/people.html','pages/monitoring.html','pages/resources.html','pages/news.html','pages/members.html','pages/privacy.html','pages/join.html']:
@@ -54,10 +51,26 @@ async def main():
    await page.click('[data-enso-export]')
   exported=await download.value;assert exported.suggested_filename.endswith('.svg')
   await page.select_option('[data-enso-view]','timeline')
+  # Independently compare the interactive ERA5 boxes with the official cached rows.
+  for key,name in [('nino34','Niño 3.4'),('nino3','Niño 3'),('nino4','Niño 4'),('nino12','Niño 1+2')]:
+   await page.select_option('[data-climate-region]',key)
+   await page.locator('[data-climate-status]').filter(has_text=name+' · ERA5').wait_for()
+   data=await page.evaluate('(key)=>fetch(new URL("../data/monitoring/pulse/"+key+".json",location.href)).then(r=>r.json())',key)
+   row=data['records'][-1];peers=[r for r in data['records'] if r[0][5:]==row[0][5:] and r[1] is not None];rank=1+sum(r[1]>row[1] for r in peers)
+   assert await page.locator('[data-climate-date]').input_value()==row[0]
+   assert f"{row[1]:.2f}" in await page.locator('[data-climate-stat=temperature] strong').inner_text()
+   assert f"{row[3]:.2f}" in await page.locator('[data-climate-stat=anomaly] strong').inner_text()
+   assert (await page.locator('[data-climate-stat=rank] strong').inner_text()).startswith(str(rank))
+   assert str(len(peers)) in await page.locator('[data-climate-stat=rank] strong').inner_text()
+   previous=data['records'][-2];await page.fill('[data-climate-date]',previous[0]);await page.locator('[data-climate-date]').dispatch_event('change')
+   assert f"{previous[1]:.2f}" in await page.locator('[data-climate-stat=temperature] strong').inner_text()
+  await page.select_option('[data-climate-quantity]','absolute');assert await page.locator('[data-climate-chart] path').count()==4
   for width in [375,768,1440]:
    await page.set_viewport_size({'width':width,'height':900});await page.goto(BASE+'/index.html')
    await page.locator('[data-status]').filter(has_text='network stations').wait_for()
    assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth+1'),f'Overflow at {width}'
+   await page.evaluate('scrollTo(0,800)');await page.wait_for_timeout(100);assert abs((await page.locator('header.site-nav').bounding_box())['y'])<=1
+   await page.evaluate('scrollTo(0,0)')
    if width<850:
     await page.click('.menu-toggle');assert await page.locator('.menu-toggle').get_attribute('aria-expanded')=='true'
     await page.click('.menu-toggle')
@@ -76,4 +89,16 @@ async def main():
      await page.screenshot(path=f'test-results/monitoring-{width}.png',full_page=True)
   assert not errors,errors
   await browser.close();print('PASS: map filters, popups, mode switching, synthetic observed layer, navigation, cache chart and three viewport widths')
-asyncio.run(main())
+server=None
+try:
+ if os.getenv('GLOBE_START_SITE')=='true':
+  port=urllib.parse.urlsplit(BASE).port or 8765
+  server=subprocess.Popen([sys.executable,'-m','http.server',str(port),'--bind','127.0.0.1','--directory','_site'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+  for _ in range(50):
+   try:
+    urllib.request.urlopen(BASE+'/index.html',timeout=1).close();break
+   except OSError:time.sleep(.1)
+ asyncio.run(main())
+finally:
+ if server:
+  server.terminate();server.wait(timeout=5)

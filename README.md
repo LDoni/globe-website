@@ -4,7 +4,7 @@ A Global Initiative to Uncover Ocean Microbiome Responses to Super El Niño in a
 
 This release extends the supplied GLOBE starter into a public Quarto website, Leaflet network explorer, validated Google Sheets publication pipeline, cached NOAA integration and modular Shiny application. GLOBE is represented as an independent international collaboration. The Italian Omics Observatory Network is one participant.
 
-**Release status (20 November 2026):** the site is moving to **https://globe-ocean.github.io/**, backed by the organization repository `globe-ocean/globe-ocean.github.io`. The preceding release at `https://ldoni.github.io/globe-website/` passed public browser tests; check [STATUS.md](STATUS.md) for final domain validation. Real Quarto builds, NOAA retrievals, Python/Node/R checks and a real Shiny browser session have passed. Shiny deployment requires shinyapps.io account/plan verification. See [STATUS.md](STATUS.md) for evidence and limitations.
+**Release status (20 November 2026):** the public site is published at **https://globe-ocean.github.io/** from `globe-ocean/globe-ocean.github.io`. Real Quarto, R/Shiny, Python/Node and browser checks have passed. The current local update adds official ERA5 interactive charts, historical-rank boxes and cached high-resolution NOAA maps; deployment outcomes are recorded in [STATUS.md](STATUS.md).
 
 ## Quick start
 
@@ -12,6 +12,7 @@ Locally verified: R 4.3.3, Quarto 1.11.9, Python 3.12.3, Node 24.14.0 and Chromi
 
 ```bash
 Rscript R/bootstrap.R
+python3 scripts/build_network_registry.py
 quarto preview --host 127.0.0.1 --port 8765
 ```
 
@@ -68,11 +69,11 @@ The Data Explorer is an explicit future-results placeholder. Station Explorer co
 
 ## Map and station publication
 
-The default map uses only the approved registry. Switch explicitly to the demo registry to inspect approximate starter points. Labels and category assignments are provisional transcriptions, not verified station metadata. Some starter coordinates are inland; they must never be used for extraction or sampling. The counts 30 stations and 23 countries are supplied project-scope figures, not inferred from the empty registry or validated from the demo.
+The default map reads the public `data/network-stations.csv`, currently containing 30 locations from the supplied workbook. GitHub Actions regenerates its GeoJSON on every build; adding public rows updates counts, filters and markers without editing JavaScript. Coordinate provenance is retained in the source register. The separate `data/stations.csv` scientific registry remains approval-only and is the only station source used for environmental extraction. Public map display never grants scientific-coordinate approval. The declared initial country scope remains 23; the intake has 24 raw country labels for coordinator review.
 
 `config/station-categories.json` preserves `incursion`, `pacific` and `reference` but marks the scientific categories unconfirmed. Until an approved original figure/definition is supplied, production accepts `unclassified` only. Once confirmed, set `confirmed: true` and review every station assignment.
 
-The map has text search, category and basin filters, safe DOM-created popups, a keyboard-accessible equivalent station list, a Pacific-centered view and two separate modes. Mode A shows the network and the Niño 3.4 geographic boundary. Mode B renders only actual cached NOAA cells; no synthetic anomaly field is shipped. No arrow implies observed anomaly propagation.
+The geographic Leaflet map uses local Natural Earth land polygons, a Pacific-centred view, station search/filters, safe popups and an equivalent station list. One selector switches between station-network and NOAA SST-anomaly backgrounds; stations remain visible. The official NOAA raster is displayed in EPSG:4326, matching its geographic bounds and avoiding a Mercator stretch. A cached numeric grid remains available as a fallback.
 
 See [Google Sheets schema and coordinator guide](docs/station-register.md).
 
@@ -80,7 +81,7 @@ See [Google Sheets schema and coordinator guide](docs/station-register.md).
 
 The RONI cache now contains 921 official NOAA seasons, refreshed on 19 November 2026. It is a timestamped cache, not a live feed. `R/process_ocean_data.R` refreshes the full official series after activation. An index value is never automatically labeled as the current ENSO advisory. Official forecast and diagnostic links are provided instead of unverified probabilities.
 
-`python3 scripts/fetch_sst.py` requests a global NOAA anomaly grid at 2° display spacing by subsampling native 0.05° data. Up to 14 successfully retrieved dates are kept. This is global context, not a coastal station analysis. The first verified download contains 8,467 ocean cells for 18 November 2026. Missing and land cells remain absent.
+`python3 scripts/fetch_sst.py` requests a global NOAA anomaly grid at 2° display spacing by subsampling native 0.05° data. Up to 14 successfully retrieved dates are kept. This is global context, not a coastal station analysis. The verified numeric caches cover 18 November (8,467 cells) and 17 November (8,455 cells) 2026. The main map uses cached official NOAA 1800×900 WMS rasters and their original legends; missing/land areas remain transparent.
 
 The optional Copernicus adapter uses the official Marine Toolbox and a reviewed grid mapping. Install `requirements-copernicus.txt`, set credentials outside the repository, confirm mappings, then run:
 
@@ -134,3 +135,12 @@ The monitoring page includes a year-comparison RONI chart, pointer readout and S
 Edit [`data/network-stations.csv`](https://github.com/globe-ocean/globe-ocean.github.io/edit/main/data/network-stations.csv), preserving its header and stable IDs. Add one row per partner with map latitude/longitude, category and display metadata. Commit the edit to `main`: Pages validates the CSV, regenerates `data/network-stations.geojson`, runs browser checks and deploys. Invalid input stops the build, leaving the last valid website online. Set `map_visibility` to `hidden` to hide a point. This is a public map register: contacts and internal notes belong in the private intake, not this file. Coordinate verification details remain in each station record; this map register never modifies the separate approved scientific-coordinate registry.
 
 When Google Sheets is connected, configure it as the single authoritative source for this same map register; avoid simultaneous edits in two sources. Live Sheets authentication is still pending.
+
+
+## Official ERA5 interactive monitoring
+
+The daily Niño 3.4, Niño 3, Niño 4 and Niño 1+2 panels use the public CSVs distributed by C3S/ECMWF for Climate Pulse. Each cached region has 17,488 dates from 1979 through 17 November 2026. GLOBE provides the interactive rendering, year comparisons, date selection and statistics; the original Climate Pulse app remains linked. All 69,952 rows were compared with independent original CSV intakes. The CSV notes identify 12 UTC SST values; their full sampling and quality notes are retained.
+
+Rank is calculated from actual SST values on the same calendar date across available years; equal values share a rank. Missing values are not filled. Daily ERA5 SST/anomalies, seasonal NOAA RONI, NOAA CRW gridded anomalies, official forecasts and optional Copernicus Marine station extraction are distinct products.
+
+Refresh with `python3 scripts/fetch_pulse.py`; refresh raster derivatives after NOAA data with `python3 scripts/fetch_sst_raster.py`. The daily update workflow runs these when monitoring refresh is enabled.

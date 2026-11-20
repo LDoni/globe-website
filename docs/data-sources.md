@@ -43,3 +43,10 @@ Test the current Toolbox response, variable names, subset bounds and metadata wi
 ## Attribution and basemap
 
 Credit NOAA CPC, NOAA Coral Reef Watch and Copernicus Marine/Met Office with the product identifiers and available DOI. OSTIA product DOI: [10.48670/moi-00165](https://doi.org/10.48670/moi-00165). Follow each product's current citation terms when releasing a figure or dataset. Esri Ocean basemap attribution remains visible on the Leaflet map. Basemap tiles contain geography, not GLOBE scientific observations.
+
+
+## Updated raster and ERA5 panels
+
+NOAA CRW WMS rasters are cached at 1800×900 pixels (0.2° display pixels) from the official native 0.05° analysis, retaining the original NOAA legend and observation time. The Leaflet map uses geographic EPSG:4326 to match the image bounds; full-world copies preserve geographic alignment across the antimeridian. The 2° numeric grid is retained for validation and fallback, with its separate display spacing. Raster source URL and retrieval time are recorded.
+
+Daily ERA5 Niño-region CSVs are publicly distributed by C3S/ECMWF at `https://sites.ecmwf.int/data/climatepulse/timeseries/csv/daily/`. Variables used are `sst`, `clim_1991_2020` and `anom_1991_2020`; units degC. The relative Niño column is not merged with NOAA RONI. Source notes identify 12 UTC SST values and mark FINAL/PRELIMINARY records; notes and flags are preserved. No missing value is imputed. The same-calendar-date rank uses actual SST over the available archive and competition ranking for ties. Coverage starts in 1979, so the SST rank does not claim the 1940-start coverage of the separate air-temperature product.

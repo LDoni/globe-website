@@ -7,6 +7,7 @@ node --check assets/js/network.js
 node --check assets/js/monitoring.js
 node --check assets/js/site.js
 node --check assets/js/contact.js
+node --check assets/js/climate.js
 node --test tests/contact.test.cjs
 node tests/partners-access.test.mjs
 Rscript -e 'for (f in c(list.files("R",pattern="\\.R$",full.names=TRUE),list.files("shiny",pattern="\\.R$",full.names=TRUE,recursive=TRUE))) parse(f)'
