@@ -25,3 +25,9 @@ __pycache__/
 **/*.quarto_ipynb
 
 /GLOBE Climate Earth Wordmark.png
+
+/partners-portal/.build/
+/partners-portal/.wrangler/
+/partners-portal/.dev.vars
+/logo_orizzontale_COLORE.png
+/WhatsApp*.jpeg

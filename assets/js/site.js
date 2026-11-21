@@ -14,6 +14,7 @@ document.querySelectorAll('[data-logo-motion]').forEach(logo=>{
  let paused=false,inView=true;
  function update(){
   logo.dataset.motion=preference.matches?'off':(!paused&&inView&&!document.hidden?'running':'paused');
+  const ocean=logo.querySelector('svg');if(ocean){if(logo.dataset.motion==='running')ocean.unpauseAnimations();else ocean.pauseAnimations();}
   button.hidden=preference.matches;button.setAttribute('aria-pressed',String(paused));
   const label=paused?'Play logo animation':'Pause logo animation';button.setAttribute('aria-label',label);button.title=label;button.querySelector('span').textContent=paused?'▶':'Ⅱ';
  }

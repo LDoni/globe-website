@@ -4,7 +4,7 @@ A Global Initiative to Uncover Ocean Microbiome Responses to Super El Niño in a
 
 This release extends the supplied GLOBE starter into a public Quarto website, Leaflet network explorer, validated Google Sheets publication pipeline, cached NOAA integration and modular Shiny application. GLOBE is represented as an independent international collaboration. The Italian Omics Observatory Network is one participant.
 
-**Release status (20 November 2026):** the public site is published at **https://globe-ocean.github.io/** from `globe-ocean/globe-ocean.github.io`. Real Quarto, R/Shiny, Python/Node and browser checks have passed. The current local update adds official ERA5 interactive charts, historical-rank boxes and cached high-resolution NOAA maps; deployment outcomes are recorded in [STATUS.md](STATUS.md).
+**Release status (21 November 2026):** the public site is published at **https://globe-ocean.github.io/** from `globe-ocean/globe-ocean.github.io`. Real Quarto, R/Shiny, Python/Node and browser checks have passed. The current local update adds official ERA5 interactive charts, historical-rank boxes and cached high-resolution NOAA maps; deployment outcomes are recorded in [STATUS.md](STATUS.md).
 
 ## Quick start
 
@@ -116,7 +116,7 @@ GitHub Pages publication was authorized and completed. No paid plan changes, dom
 
 ## Scientific framing and contact update
 
-The supplied project figure confirms a focus on resident and introduced Vibrio lineages, including pathogenic lineages, within a broader marine microbiome context. Homepage, About and Research now reflect that emphasis, while retaining the original official project title. Sampling frequency is described as planned in the supplied project text, without presenting expected responses as results.
+The current scientific framing focuses broadly on marine microbiome responses to Super El Niño in a warming world. Homepage, About, Research, Join and shared footers reflect this scope; Vibrio, including potentially pathogenic lineages, remains one targeted research component. The homepage uses only the original full project title. Sampling frequency is described as planned in the supplied project text, without presenting expected responses as results.
 
 The Join page is linked from the main navigation, homepage and partner page. It prepares an enquiry locally; an approved destination email is still required. See [contact form setup](docs/contact-form.md).
 
@@ -149,6 +149,10 @@ The SST map displays its observation date prominently above the map, with the la
 
 ## Coordinators, flags and homepage motion
 
-The sticky header includes the original UAB, DISTAV/University of Genoa and St. Jude institutional marks (sources in assets/images/partners/README.md). The homepage keeps the supplied transparent PNG and overlays gentle SVG currents within the O. Motion can be paused and respects reduced-motion preferences. There is no preview instruction paragraph.
+The sticky header includes the original UAB, DISTAV/University of Genoa and St. Jude institutional marks (sources in assets/images/partners/README.md). The homepage keeps the supplied transparent PNG and animates the existing ocean colours within a feathered SVG water mask in the O. Motion can be paused and respects reduced-motion preferences. There is no preview instruction paragraph.
 
 Network country flags are derived from public station rows, using country and lowercase country_iso2. Edit data/network-stations.csv on GitHub to add partners; the Pages build regenerates the map and flags. Flag SVGs are vendored locally, including additional countries for future growth. The current workbook contains 24 distinct country labels; the separately declared project scope remains 23 countries until reconciled by the coordinators. Hidden rows are excluded. No scientific extraction approval is inferred.
+
+## Private partner workspace
+
+The separate partners-portal application implements authenticated document discovery, campaign proposals, station-change requests and coordinator review. Build and local synthetic preview instructions are in [partners-portal/README.md](partners-portal/README.md). Live Access policies, partner/coordinator allowlists and a private request-storage binding still require Cloudflare authentication; no live private deployment or confidential upload is claimed.

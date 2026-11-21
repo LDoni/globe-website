@@ -12,3 +12,5 @@ Original institutional marks, displayed without recolouring or distortion.
 
 Retrieved 20 November 2026. Institutional marks remain the property of their owners.
 Their inclusion identifies the coordinating partners specified by the project owner.
+
+Update 21 November 2026: the header now uses unige.png, the horizontal colour University of Genoa mark supplied directly by the project owner, retaining the DISTAV institutional link. The previously sourced DISTAV mark is retained as an unused asset.

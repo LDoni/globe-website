@@ -32,3 +32,8 @@ test('anonymous direct documents and assets never reach static origin',async()=>
   assert.equal(result.status,403);assert.equal(result.headers.get('Cache-Control'),'no-store');
  }
 });
+
+test('authenticated middleware preserves response body, status and verified identity',async()=>{
+ const previous=globalThis.fetch;globalThis.fetch=keys;
+ try{const context={request:await request({exp:Math.floor(Date.now()/1000)+60,nbf:Math.floor(Date.now()/1000)-60}),env,data:{},next:async()=>Response.json({saved:true},{status:201})};const response=await onRequest(context);assert.equal(response.status,201);assert.deepEqual(await response.json(),{saved:true});assert.equal(context.data.partner.email,claims.email);assert.equal(response.headers.get('Cache-Control'),'private, no-store');}finally{globalThis.fetch=previous;}
+});

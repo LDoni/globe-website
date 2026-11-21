@@ -10,6 +10,8 @@ node --check assets/js/contact.js
 node --check assets/js/climate.js
 node --test tests/contact.test.cjs
 node tests/partners-access.test.mjs
+node tests/partners-workspace.test.mjs
+node tests/partners-build.test.mjs
 Rscript -e 'for (f in c(list.files("R",pattern="\\.R$",full.names=TRUE),list.files("shiny",pattern="\\.R$",full.names=TRUE,recursive=TRUE))) parse(f)'
 Rscript tests/testthat.R
 Rscript R/validate_stations.R

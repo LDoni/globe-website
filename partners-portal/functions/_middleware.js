@@ -5,7 +5,7 @@ function decode(value) {
   if (!/^[A-Za-z0-9_-]+$/.test(value)) throw new Error('Invalid encoding');
   return Uint8Array.from(atob(value.replace(/-/g,'+').replace(/_/g,'/')), c=>c.charCodeAt(0));
 }
-export async function authorized(request, env, fetchKeys=fetch, now=Math.floor(Date.now()/1000)) {
+export async function identity(request, env, fetchKeys=fetch, now=Math.floor(Date.now()/1000)) {
   const issuer=(env.CF_ACCESS_TEAM_DOMAIN||'').replace(/\/$/,'');
   const audience=env.CF_ACCESS_AUD;
   let emails;
@@ -27,12 +27,17 @@ export async function authorized(request, env, fetchKeys=fetch, now=Math.floor(D
     const jwk=jwks.keys?.find(k=>k.kid===header.kid&&k.kty==='RSA'&&(!k.alg||k.alg==='RS256')&&(!k.use||k.use==='sig'));
     if(!jwk)return false;
     const key=await crypto.subtle.importKey('jwk',jwk,{name:'RSASSA-PKCS1-v1_5',hash:'SHA-256'},false,['verify']);
-    return await crypto.subtle.verify('RSASSA-PKCS1-v1_5',key,decode(parts[2]),new TextEncoder().encode(parts[0]+'.'+parts[1]));
+    if(!await crypto.subtle.verify('RSASSA-PKCS1-v1_5',key,decode(parts[2]),new TextEncoder().encode(parts[0]+'.'+parts[1])))return false;
+    return {email:claims.email.trim().toLowerCase()};
   } catch { return false; }
 }
+export async function authorized(...args){return Boolean(await identity(...args));}
 export async function onRequest(context) {
-  if(!await authorized(context.request,context.env))return new Response('Access denied',{status:403,headers:{'Cache-Control':'no-store','Content-Type':'text/plain; charset=utf-8'}});
-  const response=new Response(await context.next());
+  const partner=await identity(context.request,context.env);
+  if(!partner)return new Response('Access denied',{status:403,headers:{'Cache-Control':'no-store','Content-Type':'text/plain; charset=utf-8'}});
+  context.data.partner=partner;
+  const upstream=await context.next();
+  const response=new Response(upstream.body,upstream);
   response.headers.set('Cache-Control','private, no-store');
   response.headers.set('Vary','Cookie, Cf-Access-Jwt-Assertion');
   return response;

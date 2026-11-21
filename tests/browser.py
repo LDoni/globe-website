@@ -80,7 +80,18 @@ async def main():
    assert await page.evaluate("[...document.querySelectorAll('.coordinator-logos img')].every(i=>i.complete&&i.naturalWidth>0)")
    await page.locator('[data-logo-motion]').scroll_into_view_if_needed()
    await page.wait_for_function("document.querySelector('[data-logo-motion]').dataset.motion==='running'")
+   assert (await page.locator('.hero h1').inner_text())=='A Global Initiative to Uncover Ocean Microbiome Responses to Super El Niño in a Warming World.'
+   assert await page.locator('.logo-current-overlay image.ocean-color-field').count()==1
    await page.click('[data-logo-motion-toggle]');assert await page.locator('[data-logo-motion]').get_attribute('data-motion')=='paused'
+   paused=await page.locator('.logo-current-overlay').evaluate('(e)=>e.getCurrentTime()')
+   await page.wait_for_timeout(150)
+   assert abs((await page.locator('.logo-current-overlay').evaluate('(e)=>e.getCurrentTime()'))-paused)<.02
+   if width==1440:
+    await page.locator('.logo-current-overlay').evaluate('(e)=>e.setCurrentTime(0)')
+    frame_a=await page.locator('[data-logo-motion]').screenshot()
+    await page.locator('.logo-current-overlay').evaluate('(e)=>e.setCurrentTime(7)')
+    frame_b=await page.locator('[data-logo-motion]').screenshot()
+    assert frame_a!=frame_b,'Ocean colours must visibly change between animation frames'
    await page.click('[data-logo-motion-toggle]');assert await page.locator('[data-logo-motion]').get_attribute('data-motion')=='running'
    assert 'Use the pause/play button' not in await page.locator('body').inner_text()
    await page.evaluate('scrollTo(0,800)');await page.wait_for_timeout(100);assert abs((await page.locator('header.site-nav').bounding_box())['y'])<=1
