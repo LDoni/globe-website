@@ -1,6 +1,6 @@
 # GLOBE verification and launch status
 
-Updated 21 November 2026. Public URL: **https://globe-ocean.github.io/**. Primary source: **globe-ocean/globe-ocean.github.io**. Previous commits completed both Pages and the full R/Shiny CI; the latest design/data update is being deployed and is verified locally as below.
+Updated 21 November 2026. Public URL: **https://globe-ocean.github.io/**. Primary source: **globe-ocean/globe-ocean.github.io**. The public microbiome/branding update was published successfully (implementation commit eb63c10, Pages run 44933679027), and its live homepage was checked. The separate partner workspace is locally verified and still awaits Cloudflare authentication/configuration.
 
 | Component | Executed verification |
 | --- | --- |
@@ -75,3 +75,5 @@ Live Access plan/seats, allowlists, storage binding and hostname tests remain
 necessary. Local tests use synthetic identities/documents and emulated storage.
 
 The 21 November changes passed a real 11-page Quarto render and public browser checks at 375/768/1440 px. The private workspace passed synthetic browser integration at the same sizes (document filters/download, campaign/station submission, reload persistence, author isolation, coordinator review and failed-write preservation), seven Access/middleware tests, six API tests and two private-document build tests. Twelve scientific-cache Python tests also passed. SVG colour-frame rendering is verified separately. No live Cloudflare authentication has been tested.
+
+Cloudflare-specific local verification: Wrangler 4.165.0 compiled the actual Pages Functions successfully. Its local runtime rejected anonymous requests to the homepage, API, document and image paths with HTTP 403. This confirms local route guards only; it does not establish live Access policies. A synthetic review preview is available with node tests/portal-preview.mjs on localhost:8790.
