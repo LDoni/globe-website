@@ -9,7 +9,7 @@
  }
  if(typeof module==='object'&&module.exports){module.exports={buildEnquiry};return;}
  const ROOT=new URL('../../',document.currentScript.src);
- async function config(){const r=await fetch(new URL('assets/site-config.json',ROOT));if(!r.ok)throw new Error('Contact settings unavailable');return r.json();}
+ async function config(){const r=await fetch(new URL('assets/site-config.json',ROOT),{cache:'no-cache'});if(!r.ok)throw new Error('Contact settings unavailable');return r.json();}
  document.querySelectorAll('[data-join-form]').forEach(async form=>{
   const status=form.querySelector('[data-join-status]'),draft=form.querySelector('[data-join-draft]'),text=form.querySelector('[data-join-text]'),mail=form.querySelector('[data-join-mail]');
   let recipient=null;

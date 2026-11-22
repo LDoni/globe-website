@@ -75,3 +75,5 @@ The builder refuses an output already containing documents to prevent stale priv
 Official references: [production/preview Access configuration](https://developers.cloudflare.com/pages/platform/known-issues/), [JWT validation](https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/validating-json/), [Functions routing](https://developers.cloudflare.com/pages/functions/routing/).
 
 Private-only changes run the dedicated partners-portal.yml validation workflow. Public GitHub Pages and optional public Cloudflare deployment ignore these changes. Live inspection scripts, minimum account token permissions and the harmless direct-document canary are documented in docs/partners-cloudflare.md.
+
+Updated Access diagnosis after token refresh: the account returns access.api.error.not_enabled (Access is not activated). Attempting to create its organization through the current token returned HTTP 403 Authentication error; initial activation requires the account owner in the dashboard, or appropriate organization-write authorization if the API can perform onboarding. No organization, Access policy or paid plan was created.

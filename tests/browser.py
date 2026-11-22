@@ -49,6 +49,7 @@ async def main():
   await page.check('[name=consent]');await page.click('[data-join-form] button[type=submit]')
   await page.locator('[data-join-draft]:not([hidden])').wait_for();assert 'TEST INSTITUTION' in await page.locator('[data-join-text]').inner_text()
   assert 'no message has been sent' in (await page.locator('[data-join-status]').inner_text()).lower()
+  assert (await page.locator('[data-join-mail]').get_attribute('href')).startswith('mailto:luigi.vezzulli@unige.it?')
   await page.fill('#join-message','Updated synthetic text');assert await page.locator('[data-join-draft]').is_hidden()
   await page.goto(BASE+'/pages/monitoring.html');await page.locator('[data-enso-summary] strong').wait_for();assert await page.locator('[data-enso-chart] svg').count()==1
   await page.select_option('[data-enso-view]','comparison');assert await page.locator('[data-enso-chart] path').count()==3
@@ -73,7 +74,8 @@ async def main():
   await page.select_option('[data-climate-quantity]','absolute');assert await page.locator('[data-climate-chart] path').count()==4
   for width in [375,768,1440]:
    await page.set_viewport_size({'width':width,'height':900});await page.goto(BASE+'/index.html')
-   await page.locator('[data-logo-motion-toggle]').wait_for()
+   await page.locator('[data-logo-motion]').wait_for()
+   assert await page.locator('[data-logo-motion-toggle]').count()==0
    assert await page.locator('[data-network]').count()==0
    assert await page.locator('.network-overview img').count()==1
    await page.locator('[data-network-count]').filter(has_text=str(len(registry['features']))).wait_for()
@@ -92,13 +94,6 @@ async def main():
     await page.wait_for_timeout(800)
    assert max(positions)-min(positions)>2,'Ocean colours must advance during normal playback'
    if width==1440:assert len(set(frames))>1,'Rendered colours must move in real elapsed time'
-   await page.click('[data-logo-motion-toggle]');assert await page.locator('[data-logo-motion]').get_attribute('data-motion')=='paused'
-   await page.wait_for_function("getComputedStyle(document.querySelector('.ocean-color-field')).animationPlayState==='paused'")
-   await page.wait_for_timeout(150)  # Allow the compositor to commit the pause frame.
-   paused=await page.locator('.ocean-color-field').evaluate('(e)=>getComputedStyle(e).transform')
-   await page.wait_for_timeout(200)
-   assert await page.locator('.ocean-color-field').evaluate('(e)=>getComputedStyle(e).transform')==paused
-   await page.click('[data-logo-motion-toggle]');assert await page.locator('[data-logo-motion]').get_attribute('data-motion')=='running'
    await page.locator('.network-overview img').scroll_into_view_if_needed()
    await page.wait_for_function("document.querySelector('.network-overview img').naturalWidth===1600")
    assert 'Use the pause/play button' not in await page.locator('body').inner_text()
@@ -112,6 +107,10 @@ async def main():
     await page.goto(BASE+'/'+slug)
     await page.wait_for_load_state('networkidle')
     assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth+1'),f'{slug}: overflow at {width}'
+    body=await page.locator('body').inner_text()
+    assert 'Reading the two map modes' not in body
+    assert 'Interactive Shiny application' not in body
+    assert 'Please do not include unpublished results' not in body
     if slug=='pages/monitoring.html':
      cache=await page.evaluate('fetch(new URL("../data/monitoring/enso.json",location.href)).then(r=>r.json())')
      years=int(await page.locator('[data-years]').input_value())
@@ -121,12 +120,16 @@ async def main():
      for text,row in zip(actual,expected):assert f"{row['value']:.2f}" in text
      await page.screenshot(path=f'test-results/monitoring-{width}.png',full_page=True)
   await page.emulate_media(reduced_motion='reduce');await page.goto(BASE+'/index.html')
-  assert await page.locator('[data-logo-motion]').get_attribute('data-motion')=='off'
-  assert await page.locator('[data-logo-motion-toggle]').is_visible()
-  await page.locator('[data-logo-motion]').scroll_into_view_if_needed();await page.click('[data-logo-motion-toggle]')
+  assert await page.locator('[data-logo-motion]').get_attribute('data-motion')=='running'
+  assert await page.locator('[data-logo-motion-toggle]').count()==0
+  await page.locator('[data-logo-motion]').scroll_into_view_if_needed()
   await page.wait_for_function("document.querySelector('[data-logo-motion]').dataset.motion==='running'")
   assert await page.locator('.ocean-color-field').evaluate('(e)=>getComputedStyle(e).animationPlayState')=='running'
-  await page.click('[data-logo-motion-toggle]');assert await page.locator('[data-logo-motion]').get_attribute('data-motion')=='off'
+  reduced_positions=[]
+  for _ in range(3):
+   reduced_positions.append(await page.locator('.ocean-color-field').evaluate('(e)=>new DOMMatrixReadOnly(getComputedStyle(e).transform).m41'))
+   await page.wait_for_timeout(800)
+  assert max(reduced_positions)-min(reduced_positions)>2,'Requested continuous motion must also run under reduced-motion media'
   nojs=await browser.new_context(java_script_enabled=False)
   nojs_page=await nojs.new_page();await nojs_page.goto(BASE+'/pages/join.html');assert await nojs_page.locator('button[type=submit]').is_disabled()
   await nojs.close()

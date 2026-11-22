@@ -8,22 +8,7 @@ document.querySelectorAll('.quarto-listing').forEach(listing=>{
 });
 document.querySelectorAll('.menu-toggle').forEach(button => button.addEventListener('click',()=>{const expanded=button.getAttribute('aria-expanded')==='true';button.setAttribute('aria-expanded',String(!expanded));document.getElementById('main-nav').classList.toggle('open',!expanded);}));
 
-// Animate the original ocean colours; the PNG, lettering and coastlines stay fixed.
-document.querySelectorAll('[data-logo-motion]').forEach(logo=>{
- const button=logo.querySelector('[data-logo-motion-toggle]'),preference=matchMedia('(prefers-reduced-motion: reduce)');
- let manual=null,inView=true;
- function update(){
-  const wantsMotion=manual??!preference.matches;
-  logo.dataset.motionAllowed=String(wantsMotion);
-  logo.dataset.motion=wantsMotion?(inView&&!document.hidden?'running':'paused'):(preference.matches?'off':'paused');
-  button.hidden=false;button.setAttribute('aria-pressed',String(!wantsMotion));
-  const label=wantsMotion?'Pause logo animation':'Play logo animation';button.setAttribute('aria-label',label);button.title=label;button.querySelector('span').textContent=wantsMotion?'Ⅱ':'▶';
- }
- button.addEventListener('click',()=>{manual=!(manual??!preference.matches);update();});
- preference.addEventListener('change',update);document.addEventListener('visibilitychange',update);
- if('IntersectionObserver' in window)new IntersectionObserver(entries=>{inView=entries[0].isIntersecting;update();},{rootMargin:'80px'}).observe(logo);
- update();
-});
+// The logo colour animation runs continuously in CSS, without playback controls.
 
 // Keep the homepage statistic tied to the public register without loading Leaflet.
 const networkCount=document.querySelector('[data-network-count]');

@@ -118,7 +118,7 @@ GitHub Pages publication was authorized and completed. No paid plan changes, dom
 
 The current scientific framing focuses broadly on marine microbiome responses to Super El Niño in a warming world. Homepage, About, Research, Join and shared footers reflect this scope; Vibrio, including potentially pathogenic lineages, remains one targeted research component. The homepage uses only the original full project title. Sampling frequency is described as planned in the supplied project text, without presenting expected responses as results.
 
-The Join page is linked from the main navigation, homepage and partner page. It prepares an enquiry locally; an approved destination email is still required. See [contact form setup](docs/contact-form.md).
+The Join page is linked from the main navigation, homepage and partner page. It prepares an enquiry locally; the current draft recipient is configured as requested. See [contact form setup](docs/contact-form.md).
 
 
 ## Current partner register and Climate Pulse
@@ -149,7 +149,7 @@ The SST map displays its observation date prominently above the map, with the la
 
 ## Coordinators, flags and homepage motion
 
-The sticky header includes the original UAB, DISTAV/University of Genoa and St. Jude institutional marks (sources in assets/images/partners/README.md). The homepage keeps the supplied transparent PNG and animates the existing ocean colours within a feathered SVG water mask in the O. The moving colour layer uses a native CSS animation inside the water mask. Motion can be paused; reduced-motion preference starts it static, with an explicit Play control available. There is no preview instruction paragraph.
+The sticky header includes the original UAB, DISTAV/University of Genoa and St. Jude institutional marks (sources in assets/images/partners/README.md). The homepage keeps the supplied transparent PNG and animates the existing ocean colours within a feathered SVG water mask in the O. The colour layer runs continuously through a native CSS animation inside the water mask. There are no play/pause controls; the requested always-on animation is also applied under reduced-motion media. There is no preview instruction paragraph.
 
 Network country flags are derived from public station rows, using country and lowercase country_iso2. Edit data/network-stations.csv on GitHub to add partners; the Pages build regenerates the map and flags. Flag SVGs are vendored locally, including additional countries for future growth. The current workbook contains 24 distinct country labels; the separately declared project scope remains 23 countries until reconciled by the coordinators. Hidden rows are excluded. No scientific extraction approval is inferred.
 
@@ -162,3 +162,7 @@ The separate partners-portal application implements authenticated document disco
 The globe-partners Git integration build is successful and its production endpoint is active with origin HTTP 403 denial. Real isolated KV stores and project bindings are configured; Access login/allowlists and authorized application requests are still pending. The private deployment remains separate from the public GitHub Pages site. Read [the executed audit, current configuration and required authorization](docs/partners-cloudflare.md). The dedicated private workflow builds/compiles and tests this application without publishing _site.
 
 Homepage overview (22 November): the owner-supplied network illustration replaces the interactive sampling-map section. All Leaflet controls, station filters and quantitative NOAA layers remain on the Network page. The homepage still retrieves the station count from the editable public registry, without loading Leaflet.
+
+The latest content cleanup removes the Network map-mode explanation, the undeployed Shiny application notice and the Join confidentiality note. Join still explicitly prepares an email draft until a real sending endpoint has been configured and verified. Cloudflare-only free sending to the requested verified recipient is feasible with an existing onboarded routing domain; see docs/contact-form.md for the remaining requirements.
+
+Updated Access diagnosis after token refresh: the account returns access.api.error.not_enabled (Access is not activated). Attempting to create its organization through the current token returned HTTP 403 Authentication error; initial activation requires the account owner in the dashboard, or appropriate organization-write authorization if the API can perform onboarding. No organization, Access policy or paid plan was created.

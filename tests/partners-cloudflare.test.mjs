@@ -20,3 +20,8 @@ test('every deployed route stays protected and Wrangler cannot override dashboar
  const routes=JSON.parse(await fs.readFile(new URL('../partners-portal/public/_routes.json',import.meta.url),'utf8'));assert.deepEqual(routes.include,['/*']);assert.deepEqual(routes.exclude,[]);
  const config=await fs.readFile(new URL('../partners-portal/wrangler.toml',import.meta.url),'utf8');assert.equal(/^\s*pages_build_output_dir\s*=/m.test(config),false);
 });
+
+test('disabled account Access is diagnosed separately from missing permissions',async()=>{
+ const fetcher=async url=>url.includes('/pages/projects/')?Response.json({success:true,result:{name:'globe-partners'}}):Response.json({success:false,errors:[{message:'access.api.error.not_enabled: Access is not enabled'}]},{status:403});
+ await assert.rejects(()=>inspect({CLOUDFLARE_ACCOUNT_ID:'0'.repeat(32),CLOUDFLARE_API_TOKEN:'A'.repeat(40)},fetcher),/Access is not enabled/);
+});
