@@ -9,7 +9,7 @@ Separate Cloudflare Pages application for authenticated participants, excluded f
 - A review is a coordination decision only. No request changes the public map, approves scientific coordinates or triggers environmental extraction.
 - Failed/missing storage returns an error and never confirms a successful save.
 
-**A Cloudflare Git integration deployment is active:** GitHub reports a successful build, and https://globe-partners.pages.dev responds with the origin access-denial guard. Live Access login, email policies and KV binding are not yet verified. No confidential documents or real partner identities are committed. See [the current deployment audit](../docs/partners-cloudflare.md).
+**A Cloudflare Git integration deployment is active:** GitHub reports a successful build, and https://globe-partners.pages.dev responds with the origin access-denial guard. Real, isolated KV namespaces and project bindings are now configured and synthetic write/read checks passed. Live Access login, named email policies and authorized application requests are not yet verified. No confidential documents or real partner identities are committed. See [the current deployment audit](../docs/partners-cloudflare.md).
 
 ## Local verification and synthetic preview
 
@@ -29,7 +29,7 @@ The preview harness lives under tests, binds only to localhost and creates in-me
 
 ## Production configuration
 
-Authenticate the intended Cloudflare account and inspect its existing Access plan/seat allowance and KV limits. Do not buy seats or change plans automatically. The supplied account file currently provides an account ID only, not authentication. Use the provider's authentication system or an appropriately scoped token outside the repository.
+Authenticate the intended Cloudflare account and inspect its existing Access plan/seat allowance and KV limits. Do not buy seats or change plans automatically. API authorization has now been supplied through an external private file. Pages/KV operations work; Access application and organization endpoints still return 403, requiring the additional Access permissions documented in the audit guide. Credentials remain outside the repository.
 
 Create a separate Pages project and Access application. Protect **production** (`globe-partners.pages.dev`) **and previews** (`*.globe-partners.pages.dev`, including branch/per-deployment aliases). Use the hostname actually returned by Cloudflare. Preview protection alone does not protect production. Protect custom hostnames too if added later.
 

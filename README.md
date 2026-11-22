@@ -155,10 +155,10 @@ Network country flags are derived from public station rows, using country and lo
 
 ## Private partner workspace
 
-The separate partners-portal application implements authenticated document discovery, campaign proposals, station-change requests and coordinator review. Build and local synthetic preview instructions are in [partners-portal/README.md](partners-portal/README.md). Live Access policies, partner/coordinator allowlists and a private request-storage binding still require Cloudflare authentication; no live private deployment or confidential upload is claimed.
+The separate partners-portal application implements authenticated document discovery, campaign proposals, station-change requests and coordinator review. Build and local synthetic preview instructions are in [partners-portal/README.md](partners-portal/README.md). A live Cloudflare origin is deployed and real isolated KV stores are bound. Access policy administration and named partner/coordinator identities are still needed before authorized live application sessions can be tested; no confidential material has been uploaded.
 
 ## Cloudflare partner deployment — 22 November
 
-The globe-partners Git integration build is successful and its production endpoint is active with origin HTTP 403 denial. Access login/allowlists and live KV are not yet verified. The private deployment remains separate from the public GitHub Pages site. Read [the executed audit, current configuration and required authorization](docs/partners-cloudflare.md). The dedicated private workflow builds/compiles and tests this application without publishing _site.
+The globe-partners Git integration build is successful and its production endpoint is active with origin HTTP 403 denial. Real isolated KV stores and project bindings are configured; Access login/allowlists and authorized application requests are still pending. The private deployment remains separate from the public GitHub Pages site. Read [the executed audit, current configuration and required authorization](docs/partners-cloudflare.md). The dedicated private workflow builds/compiles and tests this application without publishing _site.
 
 Homepage overview (22 November): the owner-supplied network illustration replaces the interactive sampling-map section. All Leaflet controls, station filters and quantitative NOAA layers remain on the Network page. The homepage still retrieves the station count from the editable public registry, without loading Leaflet.

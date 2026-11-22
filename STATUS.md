@@ -1,6 +1,6 @@
 # GLOBE verification and launch status
 
-Updated 21 November 2026. Public URL: **https://globe-ocean.github.io/**. Primary source: **globe-ocean/globe-ocean.github.io**. The public microbiome/branding update was published successfully (implementation commit eb63c10, Pages run 44933679027), and its live homepage was checked. The separate partner workspace is locally verified and still awaits Cloudflare authentication/configuration.
+Updated 22 November 2026. Public URL: **https://globe-ocean.github.io/**. Primary source: **globe-ocean/globe-ocean.github.io**. The public microbiome/branding update was published successfully (implementation commit eb63c10, Pages run 44933679027), and its live homepage was checked. The separate partner workspace is locally verified and still awaits Cloudflare authentication/configuration.
 
 | Component | Executed verification |
 | --- | --- |
@@ -87,3 +87,5 @@ Private changes remove the production-override key from local Wrangler configura
 Homepage update on 22 November: the supplied network illustration replaces the homepage Leaflet block; all interactive controls remain on Network. The ocean-colour animation now uses native CSS movement with real-time regression checks, pause/resume and explicit Play under reduced-motion preferences. The public GitHub Pages workflow validates/render-tests this release before publication.
 
 Cloudflare API verification after account authorization: the Pages and KV portions of the supplied token are functional; Access application/organization endpoints return 403. Both private environments now have Fail open disabled, distinct real GLOBE_WORKSPACE namespaces, and secret empty partner/coordinator lists (deny all until named identities are supplied). A harmless setup record was written/read successfully in each real Cloudflare KV namespace. Issuer/audience and actual Access/user sessions are still outstanding. Dedicated private GitHub validation passed: https://github.com/globe-ocean/globe-ocean.github.io/actions/runs/45045523261 .
+
+Public homepage release b3a4b9b was published successfully: [Pages run 45046739258](https://github.com/globe-ocean/globe-ocean.github.io/actions/runs/45046739258). [Full R/Shiny and site validation run 45046739188](https://github.com/globe-ocean/globe-ocean.github.io/actions/runs/45046739188) also passed. Browser checks cover real-time native logo colour movement, settled pause/resume, reduced-motion manual Play, supplied homepage illustration and Network controls at all three widths. Live HTTP checks confirmed the homepage update, byte-identical supplied illustration, animation stylesheet and interactive Network page. Private production/direct-document/API requests still deny anonymous access with no-store, noindex and CSP headers.

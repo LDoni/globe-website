@@ -8,7 +8,7 @@ Public hosting remains GitHub Pages at https://globe-ocean.github.io/. The partn
 - https://globe-partners.pages.dev/ responds with the origin middleware's plain `403 Access denied`, not a login redirect. The API, image and direct-document paths are also denied anonymously and with forged identity headers.
 - The checked deployment alias `d2058262.globe-partners.pages.dev` also denies those requests. `main.globe-partners.pages.dev` returned 404; it is not an authenticated-working alias.
 - This is evidence of an active deployment and deny-by-default origin, **not proof that Access email policies, real user login, KV or confidential download work**.
-- Wrangler is not authenticated. The supplied file contains an account ID only; GitHub repository secrets were empty at inspection. Real Access configuration and authorized production tests remain outstanding.
+- Initial inspection found no authorization. An API token was subsequently supplied through a private external file: Pages and KV reads/writes now work, while Access apps and organization endpoints still return 403. GitHub repository secrets were empty at inspection; Git integration itself handles deployment.
 
 ## Exact Git integration build
 
@@ -24,7 +24,7 @@ Public hosting remains GitHub Pages at https://globe-ocean.github.io/. The partn
 
 The builder resolves paths from its own file and is tested from this exact working directory. Only the partner artifact is built; `_site` is never deployed here. Git integration deploys the project; the independent `partners-portal.yml` workflow validates it. Its optional manual audit job reads configuration and endpoints, never mutates accounts or subscriptions.
 
-**Wrangler configuration is deliberately local-only.** It omits `pages_build_output_dir`, so it cannot replace production bindings with an empty local configuration. Configure runtime bindings/secrets in the Pages dashboard/API for **both** production and preview. This follows [Cloudflare's configuration rules](https://developers.cloudflare.com/pages/functions/wrangler-configuration/).
+**Wrangler configuration is deliberately local-only.** It omits `pages_build_output_dir`, so it cannot replace production bindings with an empty local configuration. Configure runtime bindings/secrets in the Pages dashboard/API for **both** production and preview. The two GLOBE_WORKSPACE namespaces, encrypted empty role lists and fail-closed settings have now been applied and read back successfully. This follows [Cloudflare's configuration rules](https://developers.cloudflare.com/pages/functions/wrangler-configuration/).
 
 ## Required account authorization
 
@@ -91,3 +91,7 @@ node tests/partners-kv-persistence.mjs
 The KV test explicitly uses `--local` and synthetic data in a temporary namespace, reading it from a separate Wrangler process. Browser tests use ephemeral localhost ports, signed synthetic identities and a synthetic document. No local test is labeled as a successful live Access login.
 
 The public deployment workflows ignore private-only changes and documentation-only changes. Their reusable/manual entry points remain available for authorized public releases and data refreshes. The optional public Cloudflare deployment remains separately gated; its target name is aligned to `globe-ocean`, not the private project.
+
+## Latest executed result
+
+The dedicated private workflow passed on implementation a26ae1e: [run 45045523261](https://github.com/globe-ocean/globe-ocean.github.io/actions/runs/45045523261). This includes browser role/document/campaign/station tests with synthetic identities, security/configuration tests, real worker compilation and local KV process persistence. Subsequent authorized Cloudflare API calls created/reused separate project-specific production/preview KV stores, bound them, disabled fail_open and stored encrypted empty allowlists. A harmless setup value was written/read in each **real** KV store. This does not substitute for an authorized request through the application. Issuer/audience, Access policies and real user-session tests remain pending Access permissions and named identities. No confidential document has been uploaded and no plan changed.
