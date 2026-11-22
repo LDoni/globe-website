@@ -9,7 +9,7 @@ Separate Cloudflare Pages application for authenticated participants, excluded f
 - A review is a coordination decision only. No request changes the public map, approves scientific coordinates or triggers environmental extraction.
 - Failed/missing storage returns an error and never confirms a successful save.
 
-**A Cloudflare Git integration deployment is active:** GitHub reports a successful build, and https://globe-partners.pages.dev responds with the origin access-denial guard. Real, isolated KV namespaces and project bindings are now configured and synthetic write/read checks passed. Live Access login, named email policies and authorized application requests are not yet verified. No confidential documents or real partner identities are committed. See [the current deployment audit](../docs/partners-cloudflare.md).
+**Deployment:** https://globe-partners.pages.dev is built successfully and protected by Cloudflare Access. Production and wildcard previews use exact-email allow policies, separate audiences, encrypted role lists, Fail closed and the existing isolated KV stores. One first coordinator is configured outside Git. Anonymous/forged requests are redirected to Access on all eight observed hostnames. The existing email OTP provider is now selected as the only login method for both applications; authenticated production operations remain unverified. No confidential documents are deployed. See [the current deployment audit](../docs/partners-cloudflare.md).
 
 ## Local verification and synthetic preview
 
@@ -29,15 +29,15 @@ The preview harness lives under tests, binds only to localhost and creates in-me
 
 ## Production configuration
 
-Authenticate the intended Cloudflare account and inspect its existing Access plan/seat allowance and KV limits. Do not buy seats or change plans automatically. API authorization has now been supplied through an external private file. Pages/KV operations work; Access application and organization endpoints still return 403, requiring the additional Access permissions documented in the audit guide. Credentials remain outside the repository.
+Authenticate the intended Cloudflare account and inspect its existing Access plan/seat allowance and KV limits. Do not buy seats or change plans automatically. API authorization has now been supplied through an external private file. Pages, KV and Access application/policy operations work. The owner added email OTP in the dashboard after its creation was denied by the token; the existing provider is now selected for both applications. No further API permissions are required for the completed configuration. Credentials remain outside the repository.
 
-Create a separate Pages project and Access application. Protect **production** (`globe-partners.pages.dev`) **and previews** (`*.globe-partners.pages.dev`, including branch/per-deployment aliases). Use the hostname actually returned by Cloudflare. Preview protection alone does not protect production. Protect custom hostnames too if added later.
+The separate Pages project and its production/preview Access applications are configured. Protect **production** (`globe-partners.pages.dev`) **and previews** (`*.globe-partners.pages.dev`, including branch/per-deployment aliases). Use the hostname actually returned by Cloudflare. Preview protection alone does not protect production. Protect custom hostnames too if added later.
 
 The committed Wrangler file is **local-only** (no pages_build_output_dir): production and preview bindings/secrets must stay in the Pages dashboard/API. Do not add that key without migrating every runtime binding. Configure these settings for both production and preview:
 
 - `CF_ACCESS_TEAM_DOMAIN`: actual `https://TEAM.cloudflareaccess.com` issuer.
 - `CF_ACCESS_AUD`: Access audience tag.
-- `GLOBE_PARTNER_EMAILS`: JSON array of named partner email addresses.
+- `GLOBE_PARTNER_EMAILS`: encrypted JSON array of named partner email addresses, maximum **50 distinct users**, including coordinators. The origin rejects invalid or oversized lists entirely; never truncate or auto-enroll users.
 - `GLOBE_COORDINATOR_EMAILS`: JSON array of authorized coordinator addresses (also present in the partner list).
 - `GLOBE_WORKSPACE`: separate production and preview KV namespace bindings for request persistence. Configure the binding in Cloudflare, keeping identifiers/identities outside Git. KV is eventually consistent: a fresh browser session may briefly show an older request/review state. The active UI updates from confirmed write responses.
 
@@ -76,4 +76,4 @@ Official references: [production/preview Access configuration](https://developer
 
 Private-only changes run the dedicated partners-portal.yml validation workflow. Public GitHub Pages and optional public Cloudflare deployment ignore these changes. Live inspection scripts, minimum account token permissions and the harmless direct-document canary are documented in docs/partners-cloudflare.md.
 
-Updated Access diagnosis after token refresh: the account returns access.api.error.not_enabled (Access is not activated). Attempting to create its organization through the current token returned HTTP 403 Authentication error; initial activation requires the account owner in the dashboard, or appropriate organization-write authorization if the API can perform onboarding. No organization, Access policy or paid plan was created.
+Current activation status: the Access organization is active. The owner-created email one-time PIN provider is present and is the only permitted login method on both applications. Live user-session verification is pending.

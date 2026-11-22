@@ -19,3 +19,5 @@ The recipient must complete Cloudflare destination verification, and the sender 
 Keep the existing draft-only behavior until a real endpoint can send successfully. Future delivery must target only the fixed verified destination, use a domain-owned From address and visitor Reply-To, validate input and abuse protection, and confirm server acceptance only after the email provider accepts the message. Do not claim inbox delivery merely from a successful API call.
 
 The existing draft recipient is now configured as the explicitly requested Luigi Vezzulli address. This still opens a local email draft and sends nothing automatically until an actual Cloudflare sending endpoint is enabled.
+
+The owner has also authorized their own institutional mailbox as a possible verified routing destination. This does not grant control of the university's domain. Current checks still return zero visible zones and HTTP 403 for the Email Routing destination API. An owned/authorized sender domain and Email Routing permissions are required before direct delivery can be activated. The existing public draft recipient has not been changed by this private-workspace work.

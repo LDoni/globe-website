@@ -11,6 +11,8 @@ export async function identity(request, env, fetchKeys=fetch, now=Math.floor(Dat
   let emails;
   try { emails=JSON.parse(env.GLOBE_PARTNER_EMAILS||'[]'); } catch { return false; }
   if (!/^https:\/\/[a-z0-9-]+\.cloudflareaccess\.com$/.test(issuer) || !audience || !Array.isArray(emails) || !emails.length || emails.some(e=>typeof e!=='string')) return false;
+  emails=[...new Set(emails.map(e=>e.trim().toLowerCase()))];
+  if(emails.length>50 || emails.some(e=>! /^[^\s@*]+@[^\s@*]+\.[^\s@*]+$/.test(e)))return false;
   const token=request.headers.get('Cf-Access-Jwt-Assertion');
   if (!token || token.length>20000) return false;
   try {

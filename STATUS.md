@@ -1,5 +1,13 @@
 # GLOBE verification and launch status
 
+## Current private workspace status — 22 November 2026
+
+This section supersedes earlier Access-not-enabled and empty-allowlist entries below. Zero Trust is active. Separate production and wildcard-preview Access applications now have exact-email Allow policies, matching issuer/audiences, encrypted partner/coordinator lists, Fail closed and the existing isolated GLOBE_WORKSPACE stores. One first coordinator is configured privately. No personal address or confidential document is committed.
+
+The private Cloudflare build succeeds. Across all eight actual hostnames in the deployment inventory, 48 anonymous/forged requests to the homepage, API, image and direct-document paths returned HTTP 302 to the real Access login. No valid production user session was available: outsider/removed-member sessions and authenticated submission/review/persistence remain unverified. The owner added email OTP in the dashboard after API creation returned HTTP 403. Its availability was verified and both applications now permit only that provider. No further API permissions are needed for the current configuration.
+
+Local tests: 26 security, configuration, role, API and build tests pass; actual Pages Functions compilation passes. The 50-user ceiling rejects a 51st unique identity both in configuration validation and at the origin. Live audit pagination was corrected to the Pages maximum of 25 deployments per page. The public website source is unchanged. No subscription or paid feature was enabled. Email Sending/Routing still needs an authorized domain and destination verification; Join remains draft-only.
+
 Updated 22 November 2026. Public URL: **https://globe-ocean.github.io/**. Primary source: **globe-ocean/globe-ocean.github.io**. The public microbiome/branding update was published successfully (implementation commit eb63c10, Pages run 44933679027), and its live homepage was checked. The separate partner workspace is locally verified and still awaits Cloudflare authentication/configuration.
 
 | Component | Executed verification |

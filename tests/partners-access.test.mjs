@@ -9,6 +9,14 @@ const encode=x=>Buffer.from(JSON.stringify(x)).toString('base64url');
 async function request(values={},header={alg:'RS256',kid:'TEST'}){const body=encode(header)+'.'+encode({...claims,...values});const sig=await crypto.subtle.sign('RSASSA-PKCS1-v1_5',pair.privateKey,new TextEncoder().encode(body));return new Request('https://synthetic.invalid/private/file.pdf',{headers:{'Cf-Access-Jwt-Assertion':body+'.'+Buffer.from(sig).toString('base64url')}});}
 const keys=async()=>Response.json({keys:[jwk]});
 test('verified partner with signed expected issuer and audience is admitted',async()=>assert.equal(await authorized(await request(),env,keys,1000),true));
+test('origin enforces the 50-user ceiling and rejects wildcard addresses',async()=>{
+ const emails=[claims.email,...Array.from({length:49},(_,i)=>`partner${i}@example.invalid`)];
+ const check=list=>authorized(requestToken,{...env,GLOBE_PARTNER_EMAILS:JSON.stringify(list)},keys,1000);
+ const requestToken=await request();
+ assert.equal(await check([...emails,claims.email.toUpperCase()]),true);
+ assert.equal(await check([...emails,'extra@example.invalid']),false);
+ assert.equal(await check([claims.email,'*@example.invalid']),false);
+});
 test('absent configuration and anonymous/spoofed email headers are denied',async()=>{
  assert.equal(await authorized(await request(),{},keys,1000),false);
  assert.equal(await authorized(new Request('https://synthetic.invalid',{headers:{'Cf-Access-Authenticated-User-Email':claims.email}}),env,keys,1000),false);

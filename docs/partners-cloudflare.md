@@ -1,99 +1,60 @@
-# Cloudflare partner deployment: verified state and completion
+# Cloudflare partner deployment: verified state
 
-Public hosting remains GitHub Pages at https://globe-ocean.github.io/. The partner application is a **separate** Pages project `globe-partners`; the optional public Cloudflare mirror is `globe-ocean`. No domain registration, subscription change or confidential upload is part of this setup.
+Public hosting remains GitHub Pages at https://globe-ocean.github.io/. The private application is a separate Cloudflare Pages project, `globe-partners`, at https://globe-partners.pages.dev/. No public-site source, subscription or domain registration was changed by this private configuration.
 
-## Observed on 22 November 2026
+## Verified on 22 November 2026
 
-- GitHub's Cloudflare integration reports a successful build/deployment for `globe-partners` on the current main commit at inspection.
-- https://globe-partners.pages.dev/ responds with the origin middleware's plain `403 Access denied`, not a login redirect. The API, image and direct-document paths are also denied anonymously and with forged identity headers.
-- The checked deployment alias `d2058262.globe-partners.pages.dev` also denies those requests. `main.globe-partners.pages.dev` returned 404; it is not an authenticated-working alias.
-- This is evidence of an active deployment and deny-by-default origin, **not proof that Access email policies, real user login, KV or confidential download work**.
-- Initial inspection found no authorization. An API token was subsequently supplied through a private external file: Pages and KV reads/writes now work, while Access apps and organization endpoints still return 403. GitHub repository secrets were empty at inspection; Git integration itself handles deployment.
+- Cloudflare reports a successful private build with root `partners-portal`, command `node ../scripts/build_partner_portal.mjs`, output `.build`, production branch `main`.
+- The Zero Trust organization is active. Two self-hosted Access applications cover `globe-partners.pages.dev` and `*.globe-partners.pages.dev`. The wildcard covers per-deployment and branch hostnames.
+- Both applications have only an exact-email Allow policy. One first coordinator is authorized; addresses are held outside Git and in encrypted Cloudflare environment secrets. No Everyone, email-domain-wide Allow or bypass rule was introduced.
+- Both runtime environments have the correct issuer and their respective application audience, encrypted partner/coordinator lists and `fail_open=false`.
+- Existing `GLOBE_WORKSPACE` KV namespaces are reused, with production and preview isolated. Previous harmless real-KV setup write/read checks passed. Real authenticated application persistence has not yet been tested.
+- Across all eight observed hostnames, 48 anonymous and forged-identity requests to root, API, direct document canary and image returned HTTP 302 to the account's real Access login. An undeployed alias returning 404 is not counted as a security test.
+- No valid production user session is available. Partner/coordinator login, authenticated outsider/removed-member denial, application submissions/reviews and persistence are **not yet production-verified**. No confidential documents may be uploaded yet.
 
-## Exact Git integration build
+## Login configuration and remaining authorization
 
-| Setting | Value |
-| --- | --- |
-| Project | `globe-partners` |
-| Production branch | `main` |
-| Framework | None |
-| Root | `partners-portal` |
-| Command | `node ../scripts/build_partner_portal.mjs` |
-| Output | `.build` |
-| Node | 22 (package allows 22–24) |
+The owner added the email One-time PIN provider manually. Its availability was verified through the API. Both GLOBE applications now allow **only that provider**, with exact-email membership still mandatory. A real user must still complete OTP login before authenticated application behavior can be verified. Do not use a bypass/service-token policy as a substitute for a participant login.
 
-The builder resolves paths from its own file and is tested from this exact working directory. Only the partner artifact is built; `_site` is never deployed here. Git integration deploys the project; the independent `partners-portal.yml` workflow validates it. Its optional manual audit job reads configuration and endpoints, never mutates accounts or subscriptions.
+Creating a provider initially returned `HTTP 403 auth.forbidden`; this is now resolved by the owner’s dashboard configuration. **No additional API permissions are required for the current setup.** Access organization/identity-provider Write would be needed only to create or modify providers through the API in future.
 
-**Wrangler configuration is deliberately local-only.** It omits `pages_build_output_dir`, so it cannot replace production bindings with an empty local configuration. Configure runtime bindings/secrets in the Pages dashboard/API for **both** production and preview. The two GLOBE_WORKSPACE namespaces, encrypted empty role lists and fail-closed settings have now been applied and read back successfully. This follows [Cloudflare's configuration rules](https://developers.cloudflare.com/pages/functions/wrangler-configuration/).
+Existing operational permissions: Cloudflare Pages Edit, Workers KV Storage Edit, Access Apps and Policies Edit, and Access organization/identity-provider Read. Credentials are read from external files or environment variables, never Git or chat. Billing subscription inspection was denied by the token; the account plan is owner-declared Zero Trust Free. No billing write was attempted.
 
-## Required account authorization
+Cloudflare's published [pricing table](https://www.cloudflare.com/plans/) specifies **50 users** on Free and up to 24 hours of standard log retention. GLOBE independently caps its normalized, deduplicated authorized-email register at 50, including coordinators. A 51st address is rejected without truncation or automatic enrollment; the origin fails closed for an oversized or invalid list. Coordinators must be a subset of partners. Any other Zero Trust applications in the same account may also consume account seats.
 
-Prefer a custom API token scoped to this Cloudflare account, not a Global API key. Minimum for the planned setup:
+## Configuration and private data
 
-- Account / Cloudflare Pages / Edit (API: Pages Write).
-- Account / Workers KV Storage / Edit.
-- Account / Access: Apps and Policies / Edit.
-- Account / Access: Organizations, Identity Providers, and Groups / Read to inspect an existing Zero Trust organization and login provider.
+The committed Wrangler file is local-only: no `pages_build_output_dir` override. Dashboard/API settings remain authoritative for production and preview bindings. Both environments use:
 
-If no Zero Trust organization/login provider exists, its creation needs the corresponding Edit permission or account-owner setup in the dashboard; do not enroll/upgrade a paid plan automatically. No DNS or billing-write permission is required. Check the actual account entitlement/seat limit before invitations; no default plan is assumed.
+- `CF_ACCESS_TEAM_DOMAIN`: actual HTTPS Access issuer.
+- `CF_ACCESS_AUD`: the respective Access application's audience tag.
+- `GLOBE_PARTNER_EMAILS`: encrypted JSON list, at most 50 distinct approved addresses.
+- `GLOBE_COORDINATOR_EMAILS`: encrypted JSON list, subset of the partner list.
+- `GLOBE_WORKSPACE`: existing environment-specific KV binding.
 
-Supply credentials through the provider's authentication system, environment or a private file **outside this repository**. Never paste credentials in chat, command arguments, issues or commits. `wrangler login` can cover Pages/KV but does not by itself grant the Access administration permissions above.
+The origin verifies RS256 signature, fixed issuer/audience, validity times and membership on every route, including direct assets/documents. API writes require same-origin JSON; reviews additionally require coordinator membership. Reviews do not change the public station register or approve scientific coordinates. KV is eventually consistent; production persistence tests must allow for that delay.
 
-Private identity input can be an external JSON file with `partners` and `coordinators` arrays. Coordinators must also be listed as partners. Do not infer authorization from the workbook, national domain, public affiliations or GitHub membership.
+Keep confidential documents outside this public repository. The deployed catalogue is empty. Only `/documents/access-canary.txt`, a harmless test fixture, is available for direct-download testing. Do not stage real documents until real authorized and unauthorized sessions have passed live verification. See the [workspace README](../partners-portal/README.md) for separate artifact intake.
 
-## Runtime configuration and isolation
-
-| Setting | Production and preview |
-| --- | --- |
-| `CF_ACCESS_TEAM_DOMAIN` | Actual HTTPS Zero Trust issuer |
-| `CF_ACCESS_AUD` | Audience of the Access application protecting that environment |
-| `GLOBE_PARTNER_EMAILS` | Secret containing JSON array of named permitted email addresses |
-| `GLOBE_COORDINATOR_EMAILS` | Secret containing coordinator subset |
-| `GLOBE_WORKSPACE` | Private KV binding; use different production and preview namespaces |
-| Fail open | **False** in both environments |
-
-Create/reuse only project-specific KV namespaces and bind them under the exact name `GLOBE_WORKSPACE`. Do not mix preview/test requests with production. KV is eventually consistent; the UI updates from confirmed save responses. The local synthetic browser store is an emulator, not evidence of live KV wiring.
-
-Protect the **whole** production hostname and wildcard preview hostname with Access applications/policies. A single application can cover both if configured appropriately; otherwise use separate application audiences per environment. Include branch/deployment aliases and any future custom hostname. Configure an Allow policy listing only the named email addresses, with no Everyone, email-domain or Bypass rule. An existing account login provider or email one-time PIN can be used. Do not change account-wide policies on unrelated projects. See [Pages production and preview protection](https://developers.cloudflare.com/pages/platform/known-issues/).
-
-The middleware separately validates RS256 signatures, issuer, audience, expiry and explicit membership. It protects every route, catches origin errors and applies cache/security headers to responses from Functions as well as assets. API writes require same-origin JSON and a verified identity. Coordinator review never changes scientific approvals or public station data.
-
-## Executable inspection and tests
+## Executable inspection and verification
 
 ```bash
-# Read-only API inspection; prints presence/booleans/counts, never addresses or tokens.
 CLOUDFLARE_ACCOUNT_ID_FILE=/path/outside/repo/account-id.txt \
-CLOUDFLARE_API_TOKEN_FILE=/path/outside/repo/cloudflare-token.txt \
+CLOUDFLARE_API_TOKEN_FILE=/path/outside/repo/token.txt \
 node scripts/inspect_partner_cloudflare.mjs
 
-# Live probes, using actual aliases returned by Cloudflare's deployment inventory.
 GLOBE_PARTNER_HOSTS='["globe-partners.pages.dev","ACTUAL_ALIAS.globe-partners.pages.dev"]' \
 node scripts/check_partner_access.mjs
-```
 
-The probe reports missing user sessions and missing login challenges explicitly; an origin 403 alone cannot make authorization testing pass. For authorized, outsider and removed-member tests, a **private external session file** can hold `CF_Authorization` JWTs keyed by exact hostname and role (`partner`, `coordinator`, `outsider`, `removed`). Set `GLOBE_PARTNER_SESSION_FILE` to that file. Sessions must be obtained through real login; the script never fabricates a production identity and never prints tokens, document bodies or partner data. It refuses to send sessions to unrelated hosts. User-session JWTs are distinct from the Cloudflare administrative API token.
-
-Only after successful live partner/coordinator, outsider, removed-member, wrong-token and direct-path tests may confidential documents be staged. The harmless `/documents/access-canary.txt` route is available for these tests. Keep source documents outside the public repository and build their separate artifact only after live protection is verified. No real document has been uploaded in this work.
-
-Local checks:
-
-```bash
-node tests/partners-access.test.mjs
-node tests/partners-workspace.test.mjs
-node tests/partners-build.test.mjs
-node tests/partners-cloudflare.test.mjs
+node --test tests/partners-access.test.mjs tests/partners-workspace.test.mjs \
+  tests/partners-build.test.mjs tests/partners-cloudflare.test.mjs
 (cd partners-portal && node ../scripts/build_partner_portal.mjs)
-npx --yes wrangler@4.165.0 pages functions build partners-portal/functions --outdir /tmp/globe-private-worker --project-directory partners-portal
-node tests/partners-kv-persistence.mjs
-.venv/bin/python tests/portal-browser.py
+npx --yes wrangler@4.165.0 pages functions build partners-portal/functions \
+  --outdir /tmp/globe-partner-worker --project-directory partners-portal
 ```
 
-The KV test explicitly uses `--local` and synthetic data in a temporary namespace, reading it from a separate Wrangler process. Browser tests use ephemeral localhost ports, signed synthetic identities and a synthetic document. No local test is labeled as a successful live Access login.
+The audit lists actual deployment aliases, uses the supported Pages pagination limit and reports missing OTP explicitly. It prints no personal addresses or credentials. The HTTP probe reports absent user sessions as incomplete, even when all anonymous requests are blocked. For real role tests, `GLOBE_PARTNER_SESSION_FILE` can point to an external private JSON file with genuine `CF_Authorization` sessions keyed by exact hostname and role (`partner`, `coordinator`, `outsider`, `removed`). Never paste session JWTs into chat. The administrative API token cannot substitute for a login session.
 
-The public deployment workflows ignore private-only changes and documentation-only changes. Their reusable/manual entry points remain available for authorized public releases and data refreshes. The optional public Cloudflare deployment remains separately gated; its target name is aligned to `globe-ocean`, not the private project.
+The 26 local tests pass, including 50/51-user boundary checks, signed JWT rejection, request privacy, coordinator authorization, storage failure behavior and document-build path controls. Actual Pages Functions compilation passes. Synthetic browser and separate-process local-KV checks run in the dedicated private GitHub workflow; their success does not establish a real production login. Public deployment workflows ignore private-only and documentation-only changes.
 
-## Latest executed result
-
-The dedicated private workflow passed on implementation a26ae1e: [run 45045523261](https://github.com/globe-ocean/globe-ocean.github.io/actions/runs/45045523261). This includes browser role/document/campaign/station tests with synthetic identities, security/configuration tests, real worker compilation and local KV process persistence. Subsequent authorized Cloudflare API calls created/reused separate project-specific production/preview KV stores, bound them, disabled fail_open and stored encrypted empty allowlists. A harmless setup value was written/read in each **real** KV store. This does not substitute for an authorized request through the application. Issuer/audience, Access policies and real user-session tests remain pending Access permissions and named identities. No confidential document has been uploaded and no plan changed.
-
-Updated Access diagnosis after token refresh: the account returns access.api.error.not_enabled (Access is not activated). Attempting to create its organization through the current token returned HTTP 403 Authentication error; initial activation requires the account owner in the dashboard, or appropriate organization-write authorization if the API can perform onboarding. No organization, Access policy or paid plan was created.
+Official references: [email OTP](https://developers.cloudflare.com/cloudflare-one/integrations/identity-providers/one-time-pin/), [Pages production/preview protection](https://developers.cloudflare.com/pages/platform/known-issues/), [assertion validation](https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/validating-json/).
