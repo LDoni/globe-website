@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {authorized,onRequest} from '../partners-portal/functions/_middleware.js';
+import {authorized,onRequest,identity} from '../partners-portal/functions/_middleware.js';
 const pair=await crypto.subtle.generateKey({name:'RSASSA-PKCS1-v1_5',modulusLength:2048,publicExponent:new Uint8Array([1,0,1]),hash:'SHA-256'},true,['sign','verify']);
 const jwk={...await crypto.subtle.exportKey('jwk',pair.publicKey),kid:'TEST',alg:'RS256',use:'sig'};
 const env={CF_ACCESS_TEAM_DOMAIN:'https://synthetic-test.cloudflareaccess.com',CF_ACCESS_AUD:'TEST-AUDIENCE',GLOBE_PARTNER_EMAILS:'["partner@example.invalid"]'};
@@ -20,6 +20,13 @@ test('origin enforces the 50-user ceiling and rejects wildcard addresses',async(
 test('absent configuration and anonymous/spoofed email headers are denied',async()=>{
  assert.equal(await authorized(await request(),{},keys,1000),false);
  assert.equal(await authorized(new Request('https://synthetic.invalid',{headers:{'Cf-Access-Authenticated-User-Email':claims.email}}),env,keys,1000),false);
+});
+test('denial references identify the failing check without exposing identity or credentials',async()=>{
+ for(const [settings,requestValue,reason]of [[{},await request(),'CONFIGURATION'],[env,new Request('https://synthetic.invalid'),'MISSING_ASSERTION'],[env,await request({aud:['WRONG']}),'ISSUER_OR_AUDIENCE']]){
+  const reasons=[];assert.equal(await identity(requestValue,settings,keys,1000,value=>reasons.push(value)),false);assert.deepEqual(reasons,[reason]);
+ }
+ const response=await onRequest({request:new Request('https://synthetic.invalid'),env,data:{},next:()=>{throw Error('Must not run');}});
+ assert.equal(response.status,403);assert.equal(response.headers.get('X-GLOBE-Access-Reason'),'MISSING_ASSERTION');assert.equal(await response.text(),'Access denied. Reference: GLOBE-AUTH-MISSING_ASSERTION');
 });
 test('wrong audience, issuer, expired/future token and outside partner are denied',async()=>{
  for(const values of [{aud:['WRONG']},{iss:'https://wrong.cloudflareaccess.com'},{exp:999},{nbf:1001},{email:'outsider@example.invalid'}])assert.equal(await authorized(await request(values),env,keys,1000),false);
