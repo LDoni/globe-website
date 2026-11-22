@@ -4,7 +4,7 @@ A Global Initiative to Uncover Ocean Microbiome Responses to Super El Niño in a
 
 This release extends the supplied GLOBE starter into a public Quarto website, Leaflet network explorer, validated Google Sheets publication pipeline, cached NOAA integration and modular Shiny application. GLOBE is represented as an independent international collaboration. The Italian Omics Observatory Network is one participant.
 
-**Release status (21 November 2026):** the public site is published at **https://globe-ocean.github.io/** from `globe-ocean/globe-ocean.github.io`. Real Quarto, R/Shiny, Python/Node and browser checks have passed. The public site includes official ERA5 interactive charts, historical-rank boxes and cached high-resolution NOAA maps. The 21 November update broadens the microbiome framing, restores the original project title, adds the supplied UniGe mark and animates the original ocean colours. The separate partner workspace has passed local synthetic tests; live Cloudflare access is still to be configured. Deployment outcomes are recorded in [STATUS.md](STATUS.md).
+**Release status (22 November 2026):** the public site is published at **https://globe-ocean.github.io/** from `globe-ocean/globe-ocean.github.io`. Real Quarto, R/Shiny, Python/Node and browser checks have passed. The public site includes official ERA5 interactive charts, historical-rank boxes and cached high-resolution NOAA maps. The 21 November update broadens the microbiome framing, restores the original project title, adds the supplied UniGe mark and animates the original ocean colours. The separate partner workspace has passed local synthetic tests; live Cloudflare access is still to be configured. Deployment outcomes are recorded in [STATUS.md](STATUS.md).
 
 ## Quick start
 
@@ -149,7 +149,7 @@ The SST map displays its observation date prominently above the map, with the la
 
 ## Coordinators, flags and homepage motion
 
-The sticky header includes the original UAB, DISTAV/University of Genoa and St. Jude institutional marks (sources in assets/images/partners/README.md). The homepage keeps the supplied transparent PNG and animates the existing ocean colours within a feathered SVG water mask in the O. Motion can be paused and respects reduced-motion preferences. There is no preview instruction paragraph.
+The sticky header includes the original UAB, DISTAV/University of Genoa and St. Jude institutional marks (sources in assets/images/partners/README.md). The homepage keeps the supplied transparent PNG and animates the existing ocean colours within a feathered SVG water mask in the O. The moving colour layer uses a native CSS animation inside the water mask. Motion can be paused; reduced-motion preference starts it static, with an explicit Play control available. There is no preview instruction paragraph.
 
 Network country flags are derived from public station rows, using country and lowercase country_iso2. Edit data/network-stations.csv on GitHub to add partners; the Pages build regenerates the map and flags. Flag SVGs are vendored locally, including additional countries for future growth. The current workbook contains 24 distinct country labels; the separately declared project scope remains 23 countries until reconciled by the coordinators. Hidden rows are excluded. No scientific extraction approval is inferred.
 
@@ -160,3 +160,5 @@ The separate partners-portal application implements authenticated document disco
 ## Cloudflare partner deployment — 22 November
 
 The globe-partners Git integration build is successful and its production endpoint is active with origin HTTP 403 denial. Access login/allowlists and live KV are not yet verified. The private deployment remains separate from the public GitHub Pages site. Read [the executed audit, current configuration and required authorization](docs/partners-cloudflare.md). The dedicated private workflow builds/compiles and tests this application without publishing _site.
+
+Homepage overview (22 November): the owner-supplied network illustration replaces the interactive sampling-map section. All Leaflet controls, station filters and quantitative NOAA layers remain on the Network page. The homepage still retrieves the station count from the editable public registry, without loading Leaflet.

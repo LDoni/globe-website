@@ -73,7 +73,10 @@ async def main():
   await page.select_option('[data-climate-quantity]','absolute');assert await page.locator('[data-climate-chart] path').count()==4
   for width in [375,768,1440]:
    await page.set_viewport_size({'width':width,'height':900});await page.goto(BASE+'/index.html')
-   await page.locator('[data-status]').filter(has_text='network stations').wait_for()
+   await page.locator('[data-logo-motion-toggle]').wait_for()
+   assert await page.locator('[data-network]').count()==0
+   assert await page.locator('.network-overview img').count()==1
+   await page.locator('[data-network-count]').filter(has_text=str(len(registry['features']))).wait_for()
    assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth+1'),f'Overflow at {width}'
    assert await page.locator('.coordinator-logos img').count()==3
    assert await page.locator('.coordinator-logos').is_visible()
@@ -82,17 +85,20 @@ async def main():
    await page.wait_for_function("document.querySelector('[data-logo-motion]').dataset.motion==='running'")
    assert (await page.locator('.hero h1').inner_text())=='A Global Initiative to Uncover Ocean Microbiome Responses to Super El Niño in a Warming World.'
    assert await page.locator('.logo-current-overlay image.ocean-color-field').count()==1
+   positions=[];frames=[]
+   for _ in range(3):
+    positions.append(await page.locator('.ocean-color-field').evaluate('(e)=>new DOMMatrixReadOnly(getComputedStyle(e).transform).m41'))
+    if width==1440:frames.append(await page.locator('[data-logo-motion]').screenshot())
+    await page.wait_for_timeout(800)
+   assert max(positions)-min(positions)>2,'Ocean colours must advance during normal playback'
+   if width==1440:assert len(set(frames))>1,'Rendered colours must move in real elapsed time'
    await page.click('[data-logo-motion-toggle]');assert await page.locator('[data-logo-motion]').get_attribute('data-motion')=='paused'
-   paused=await page.locator('.logo-current-overlay').evaluate('(e)=>e.getCurrentTime()')
-   await page.wait_for_timeout(150)
-   assert abs((await page.locator('.logo-current-overlay').evaluate('(e)=>e.getCurrentTime()'))-paused)<.02
-   if width==1440:
-    await page.locator('.logo-current-overlay').evaluate('(e)=>e.setCurrentTime(0)')
-    frame_a=await page.locator('[data-logo-motion]').screenshot()
-    await page.locator('.logo-current-overlay').evaluate('(e)=>e.setCurrentTime(7)')
-    frame_b=await page.locator('[data-logo-motion]').screenshot()
-    assert frame_a!=frame_b,'Ocean colours must visibly change between animation frames'
+   paused=await page.locator('.ocean-color-field').evaluate('(e)=>getComputedStyle(e).transform')
+   await page.wait_for_timeout(200)
+   assert await page.locator('.ocean-color-field').evaluate('(e)=>getComputedStyle(e).transform')==paused
    await page.click('[data-logo-motion-toggle]');assert await page.locator('[data-logo-motion]').get_attribute('data-motion')=='running'
+   await page.locator('.network-overview img').scroll_into_view_if_needed()
+   await page.wait_for_function("document.querySelector('.network-overview img').naturalWidth===1600")
    assert 'Use the pause/play button' not in await page.locator('body').inner_text()
    await page.evaluate('scrollTo(0,800)');await page.wait_for_timeout(100);assert abs((await page.locator('header.site-nav').bounding_box())['y'])<=1
    await page.evaluate('scrollTo(0,0)')
@@ -114,7 +120,11 @@ async def main():
      await page.screenshot(path=f'test-results/monitoring-{width}.png',full_page=True)
   await page.emulate_media(reduced_motion='reduce');await page.goto(BASE+'/index.html')
   assert await page.locator('[data-logo-motion]').get_attribute('data-motion')=='off'
-  assert await page.locator('[data-logo-motion-toggle]').is_hidden()
+  assert await page.locator('[data-logo-motion-toggle]').is_visible()
+  await page.locator('[data-logo-motion]').scroll_into_view_if_needed();await page.click('[data-logo-motion-toggle]')
+  await page.wait_for_function("document.querySelector('[data-logo-motion]').dataset.motion==='running'")
+  assert await page.locator('.ocean-color-field').evaluate('(e)=>getComputedStyle(e).animationPlayState')=='running'
+  await page.click('[data-logo-motion-toggle]');assert await page.locator('[data-logo-motion]').get_attribute('data-motion')=='off'
   nojs=await browser.new_context(java_script_enabled=False)
   nojs_page=await nojs.new_page();await nojs_page.goto(BASE+'/pages/join.html');assert await nojs_page.locator('button[type=submit]').is_disabled()
   await nojs.close()

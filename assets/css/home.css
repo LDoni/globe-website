@@ -1,0 +1,7 @@
+/* Visible colour advection, independent of SVG filter animation support. */
+.ocean-color-field{animation:globe-ocean-colours 5s linear infinite alternate;animation-play-state:paused;transform-origin:0 0}.logo-currents[data-motion=running] .ocean-color-field{animation-play-state:running}@keyframes globe-ocean-colours{from{transform:translate(0,-2px)}to{transform:translate(68px,4px)}}
+.network-overview{margin:0}.network-overview img{display:block;width:100%;height:auto;border-radius:6px}.network-overview-link{margin:20px 0 0}
+/* Reduced motion starts static; an explicit Play action can enable motion. */
+@media(prefers-reduced-motion:reduce){.logo-currents[data-motion-allowed=true] .ocean-color-field{animation:globe-ocean-colours 5s linear infinite alternate!important;animation-play-state:paused!important}.logo-currents[data-motion=running] .ocean-color-field{animation-play-state:running!important}}
+
+.logo-currents .logo-motion-toggle:not([hidden]){display:grid!important}.logo-currents[data-motion=running] .logo-current-overlay,.logo-currents[data-motion=paused] .logo-current-overlay{display:block!important}
