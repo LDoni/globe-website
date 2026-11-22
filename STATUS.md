@@ -8,6 +8,8 @@ The private Cloudflare build succeeds. Across all eight actual hostnames in the 
 
 Local tests: 26 security, configuration, role, API and build tests pass; actual Pages Functions compilation passes. The 50-user ceiling rejects a 51st unique identity both in configuration validation and at the origin. Live audit pagination was corrected to the Pages maximum of 25 deployments per page. The public website source is unchanged. No subscription or paid feature was enabled. Email Sending/Routing still needs an authorized domain and destination verification; Join remains draft-only.
 
+## Earlier verification history (superseded for private deployment by the current status above)
+
 Updated 22 November 2026. Public URL: **https://globe-ocean.github.io/**. Primary source: **globe-ocean/globe-ocean.github.io**. The public microbiome/branding update was published successfully (implementation commit eb63c10, Pages run 44933679027), and its live homepage was checked. The separate partner workspace is locally verified and still awaits Cloudflare authentication/configuration.
 
 | Component | Executed verification |
