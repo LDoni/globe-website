@@ -2,6 +2,18 @@ name: Publish GitHub Pages
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'partners-portal/**'
+      - 'scripts/*partner*'
+      - 'tests/partners-*'
+      - 'tests/portal-*'
+      - 'docs/**'
+      - '.github/workflows/deploy-pages.yml'
+      - '.github/workflows/deploy-cloudflare.yml'
+      - '.gitignore'
+      - 'README.md'
+      - 'STATUS.md'
+      - '.github/workflows/partners-portal.yml'
   workflow_dispatch:
   workflow_call:
 permissions:

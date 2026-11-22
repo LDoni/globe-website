@@ -1,0 +1,82 @@
+name: Validate private partner workspace
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'partners-portal/**'
+      - 'scripts/*partner*'
+      - 'tests/partners-*'
+      - 'tests/portal-*'
+      - '.github/workflows/partners-portal.yml'
+  pull_request:
+    paths:
+      - 'partners-portal/**'
+      - 'scripts/*partner*'
+      - 'tests/partners-*'
+      - 'tests/portal-*'
+      - '.github/workflows/partners-portal.yml'
+  workflow_dispatch:
+    inputs:
+      audit_live:
+        description: Read Cloudflare configuration and test live anonymous endpoints
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: globe-private-validation-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Access, role, build and configuration tests
+        run: |
+          node tests/partners-access.test.mjs
+          node tests/partners-workspace.test.mjs
+          node tests/partners-build.test.mjs
+          node tests/partners-cloudflare.test.mjs
+          node --check partners-portal/public/workspace.js
+      - name: Build using the exact Cloudflare dashboard command and root
+        working-directory: partners-portal
+        env:
+          GLOBE_PRIVATE_CONTENT_DIR: ''
+        run: node ../scripts/build_partner_portal.mjs
+      - name: Compile actual Pages Functions
+        env:
+          WRANGLER_SEND_METRICS: 'false'
+        run: npx --yes wrangler@4.165.0 pages functions build partners-portal/functions --outdir /tmp/globe-partner-worker --project-directory partners-portal
+      - name: Verify local KV persistence across processes
+        run: node tests/partners-kv-persistence.mjs
+      - name: Browser tests with synthetic users and documents
+        run: |
+          python3 -m venv .venv
+          .venv/bin/pip install -r requirements-test.txt
+          .venv/bin/python -m playwright install --with-deps chromium
+          .venv/bin/python tests/portal-browser.py
+      # Git integration deploys globe-partners from its configured root and .build.
+      # Never upload _site or a private artifact through the public Pages workflow.
+  audit-live:
+    if: github.event_name == 'workflow_dispatch' && inputs.audit_live
+    runs-on: ubuntu-latest
+    environment: partners
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Inspect only the private Cloudflare project
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_PARTNERS_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node scripts/inspect_partner_cloudflare.mjs
+      - name: Anonymous live endpoint checks
+        run: node scripts/check_partner_access.mjs

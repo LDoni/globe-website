@@ -156,3 +156,7 @@ Network country flags are derived from public station rows, using country and lo
 ## Private partner workspace
 
 The separate partners-portal application implements authenticated document discovery, campaign proposals, station-change requests and coordinator review. Build and local synthetic preview instructions are in [partners-portal/README.md](partners-portal/README.md). Live Access policies, partner/coordinator allowlists and a private request-storage binding still require Cloudflare authentication; no live private deployment or confidential upload is claimed.
+
+## Cloudflare partner deployment — 22 November
+
+The globe-partners Git integration build is successful and its production endpoint is active with origin HTTP 403 denial. Access login/allowlists and live KV are not yet verified. The private deployment remains separate from the public GitHub Pages site. Read [the executed audit, current configuration and required authorization](docs/partners-cloudflare.md). The dedicated private workflow builds/compiles and tests this application without publishing _site.

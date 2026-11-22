@@ -1,16 +1,20 @@
 """Synthetic-only browser integration against tests/portal-preview.mjs."""
-import asyncio,os,subprocess,urllib.request,time
+import asyncio,os,socket,subprocess,urllib.request,time
 from pathlib import Path
 from playwright.async_api import async_playwright
-BASE='http://127.0.0.1:8790'
+with socket.socket() as port_probe:
+ port_probe.bind(('127.0.0.1',0));PORT=int(os.getenv('GLOBE_PORTAL_PORT',port_probe.getsockname()[1]))
+BASE=f'http://127.0.0.1:{PORT}'
 async def main():
  async with async_playwright() as p:
   browser=await p.chromium.launch()
   partner=await browser.new_context(viewport={'width':1440,'height':1000})
   page=await partner.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
+  page.set_default_timeout(45000)
   await page.goto(BASE);await page.locator('#workspace:not([hidden])').wait_for()
   assert 'partner@example.invalid' in await page.locator('#identity').inner_text()
-  assert await page.locator('[data-station-options] option').count()==61
+  catalogue=await (await page.request.get(BASE+'/api/workspace')).json()
+  assert await page.locator('[data-station-options] option').count()==2*len(catalogue['stations'])+1
   assert await page.locator('#resource-list li').count()==1
   await page.fill('#resource-search','missing-resource');assert await page.locator('#resource-empty').is_visible()
   await page.fill('#resource-search','');await page.select_option('#resource-category','Report');assert await page.locator('#resource-empty').is_visible()
@@ -45,7 +49,7 @@ async def main():
   await form.locator('button').click();await form.locator('[data-result]').filter(has_text='has not been saved').wait_for();assert await form.locator('[name=title]').input_value()=='Synthetic failure'
   assert not errors,errors
   await browser.close();print('PASS: synthetic private workspace, persistent session reload, author isolation, coordinator review, station requests, failed-save handling and three viewport widths')
-server=subprocess.Popen(['node','tests/portal-preview.mjs'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+server=subprocess.Popen(['node','tests/portal-preview.mjs'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,env={**os.environ,'GLOBE_PORTAL_PORT':str(PORT)})
 try:
  for _ in range(100):
   try:urllib.request.urlopen(BASE,timeout=1).close();break

@@ -12,7 +12,7 @@ For a private Pages project, a policy on a custom domain alone is insufficient. 
 
 A preferable origin arrangement, where supported by existing institutional infrastructure, is an authenticated institutional document service with no public storage endpoint. If using a Worker/private bucket, verify Access JWT signatures and `iss`, `aud`, expiration and authorization at the origin as well; refuse requests when the token is missing or invalid. Disable `workers.dev` and preview endpoints or protect them equivalently. Do not rely on a supplied email header without cryptographic verification of the identity assertion. Keep the bucket private and never produce public document URLs.
 
-The separate `partners-portal/` Pages canary and origin middleware are now prepared. Synthetic local tests cover signed assertions, expected issuer/audience, expiration, partner allowlists and fail-closed behavior. No Cloudflare infrastructure or authenticated deployment has been completed. See [the concrete deployment guide](../partners-portal/README.md); live account and hostname tests remain mandatory before confidential upload.
+The separate `partners-portal/` Pages canary and origin middleware are now prepared. Synthetic local tests cover signed assertions, expected issuer/audience, expiration, partner allowlists and fail-closed behavior. An initial Cloudflare Git deployment is now observed, with anonymous requests denied by the origin. Live Access policies, user login and KV remain unverified. See [the concrete deployment guide](../partners-portal/README.md); live account and hostname tests remain mandatory before confidential upload.
 
 ## Alternative for a larger group
 
@@ -33,4 +33,4 @@ Do not use shinyapps.io public app URLs to protect documents. Built-in Shiny aut
 | Public Quarto artifact, repository history and preview artifact | No restricted documents, private contacts or secret values |
 | Old/private staging deployments | Disabled or equivalently protected |
 
-Test first with a harmless canary document and fresh anonymous browser sessions. Record hostname inventory, policy configuration, expected users/roles, test date, outcomes and reviewer. Only then authorize sensitive upload. These live authentication tests remain outstanding because no private service has been configured.
+Test first with a harmless canary document and fresh anonymous browser sessions. Record hostname inventory, policy configuration, expected users/roles, test date, outcomes and reviewer. Only then authorize sensitive upload. Live authenticated tests remain outstanding because account authorization and named identities have not been supplied. Anonymous production and deployment-alias requests have been tested; see [the current audit](partners-cloudflare.md).

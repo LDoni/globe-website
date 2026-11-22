@@ -1,6 +1,7 @@
+# LOCAL DEVELOPMENT ONLY. Omit pages_build_output_dir intentionally:
+# production and preview bindings/secrets remain managed in the Pages dashboard.
 name = "globe-partners"
-pages_build_output_dir = "./.build"
 compatibility_date = "2026-11-19"
-# Configure Access issuer/AUD, partner and coordinator email lists in Cloudflare.
-# Bind GLOBE_WORKSPACE to a private KV namespace for persisted requests.
-# No account ID, namespace ID, private addresses or credentials are committed.
+# Local: wrangler pages dev .build --kv GLOBE_WORKSPACE
+# Production: Pages root partners-portal, build node ../scripts/build_partner_portal.mjs,
+# output .build. Configure GLOBE_WORKSPACE separately in production and preview.

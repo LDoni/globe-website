@@ -21,7 +21,7 @@ export async function identity(request, env, fetchKeys=fetch, now=Math.floor(Dat
     if(claims.iss!==issuer || !Array.isArray(claims.aud) || !claims.aud.includes(audience))return false;
     if(!Number.isFinite(claims.exp)||claims.exp<=now || (claims.nbf!==undefined&&(!Number.isFinite(claims.nbf)||claims.nbf>now)))return false;
     if(typeof claims.email!=='string'||!emails.map(e=>e.trim().toLowerCase()).includes(claims.email.trim().toLowerCase()))return false;
-    const response=await fetchKeys(issuer+'/cdn-cgi/access/certs',{redirect:'error'});
+    const response=await fetchKeys(issuer+'/cdn-cgi/access/certs',{redirect:'error',signal:AbortSignal.timeout(5000)});
     if(!response.ok)return false;
     const jwks=await response.json();
     const jwk=jwks.keys?.find(k=>k.kid===header.kid&&k.kty==='RSA'&&(!k.alg||k.alg==='RS256')&&(!k.use||k.use==='sig'));
@@ -32,13 +32,21 @@ export async function identity(request, env, fetchKeys=fetch, now=Math.floor(Dat
   } catch { return false; }
 }
 export async function authorized(...args){return Boolean(await identity(...args));}
+function guarded(response,denied=false){
+ const result=new Response(response.body,response);
+ result.headers.set('Cache-Control',denied?'no-store':'private, no-store');
+ result.headers.set('Vary',[result.headers.get('Vary'),'Cookie','Cf-Access-Jwt-Assertion'].filter(Boolean).join(', '));
+ result.headers.set('X-Content-Type-Options','nosniff');
+ result.headers.set('X-Robots-Tag','noindex, nofollow, noarchive');
+ result.headers.set('Referrer-Policy','no-referrer');
+ result.headers.set('Content-Security-Policy',"default-src 'self'; style-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
+ return result;
+}
 export async function onRequest(context) {
+ try{
   const partner=await identity(context.request,context.env);
-  if(!partner)return new Response('Access denied',{status:403,headers:{'Cache-Control':'no-store','Content-Type':'text/plain; charset=utf-8'}});
+  if(!partner)return guarded(new Response('Access denied',{status:403,headers:{'Content-Type':'text/plain; charset=utf-8'}}),true);
   context.data.partner=partner;
-  const upstream=await context.next();
-  const response=new Response(upstream.body,upstream);
-  response.headers.set('Cache-Control','private, no-store');
-  response.headers.set('Vary','Cookie, Cf-Access-Jwt-Assertion');
-  return response;
+  return guarded(await context.next());
+ }catch{return guarded(new Response('Workspace unavailable',{status:503,headers:{'Content-Type':'text/plain; charset=utf-8'}}),true);}
 }

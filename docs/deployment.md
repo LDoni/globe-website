@@ -10,18 +10,13 @@ The independent R/Shiny validation workflow verifies the complete application. S
 
 ## Cloudflare Pages
 
-Use a Pages Direct Upload project, built in GitHub Actions. Official reference: [Direct Upload with CI](https://developers.cloudflare.com/pages/how-to/use-direct-upload-with-continuous-integration/).
+The primary public website remains GitHub Pages. Existing Cloudflare projects are globe-ocean (optional public mirror) and globe-partners (private workspace). Do not migrate or change the public hostname for this work.
 
-1. Authenticate Cloudflare on an authorized machine or use the dashboard. Create the Pages project `globe-website`, production branch `main`, initially using its assigned `pages.dev` hostname. No domain purchase is needed. No existing Cloudflare subscription must be changed.
-2. Create a token scoped to the intended account with **Account / Cloudflare Pages / Edit**. Add `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` to GitHub Actions secrets. Do not put them in `.env` committed to Git or in public documents.
-3. Configure GitHub environment `production` if desired, and repository variable `CLOUDFLARE_DEPLOY_ENABLED=true`. The deployment job stays off otherwise, while build validation can still run.
-4. Run `Validate and deploy public website`. It bootstraps R, validates public data, runs R/Python/JavaScript checks, starts Shiny for an HTTP smoke test, renders Quarto, checks rendered links, runs browser behavior tests, and uploads `_site` before Wrangler deployment.
-5. Record the actual returned production URL. Set `website.site-url` to it in `_quarto.yml`. Verify desktop/mobile rendering, external basemap tiles, links, security headers and data requests on that hostname.
-6. Use the committed complete `renv.lock`; confirm the restore-based CI checks before enabling this deployment.
+The private project uses Git integration: root partners-portal, framework None, command node ../scripts/build_partner_portal.mjs, output .build, production branch main. Its successful initial Cloudflare build and anonymous denial responses were verified on 22 November 2026. Access configuration and authorized requests still require account authorization. See [the executed partner audit and completion procedure](partners-cloudflare.md).
 
-Only `_site` is deployed. `docs`, `R`, `shiny`, tests, configuration source, private directories and credential files must not appear in that output. The output checker detects accidental source/private inclusion. Public caches and approved/demo location exports are deliberately included.
+The private Wrangler file is local-only so the Pages dashboard remains authoritative for runtime KV bindings and secrets. Production and preview must use separate request stores, explicit email allowlists, correct issuer/audience and Fail closed. Confidential files stay outside Git and are not uploaded until real host/user tests pass.
 
-A hostname reservation, external service availability or a future `.pages.dev` URL is not guaranteed until the real account provisions it. No temporary production URL has been fabricated.
+The optional public Cloudflare deployment workflow retains its existing enable flag and deploys only _site to globe-ocean; it never deploys the private artifact. Its enable flag, secrets and public hosting configuration are not changed. Private-only and documentation-only commits do not trigger public GitHub Actions deployment. Manual/reusable public entry points and public data refresh remain available.
 
 ## Google Sheets
 

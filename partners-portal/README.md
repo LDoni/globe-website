@@ -9,7 +9,7 @@ Separate Cloudflare Pages application for authenticated participants, excluded f
 - A review is a coordination decision only. No request changes the public map, approves scientific coordinates or triggers environmental extraction.
 - Failed/missing storage returns an error and never confirms a successful save.
 
-The code is developed locally. **Cloudflare deployment and real account authentication have not been performed. No confidential documents or real partner identities are committed.**
+**A Cloudflare Git integration deployment is active:** GitHub reports a successful build, and https://globe-partners.pages.dev responds with the origin access-denial guard. Live Access login, email policies and KV binding are not yet verified. No confidential documents or real partner identities are committed. See [the current deployment audit](../docs/partners-cloudflare.md).
 
 ## Local verification and synthetic preview
 
@@ -33,13 +33,13 @@ Authenticate the intended Cloudflare account and inspect its existing Access pla
 
 Create a separate Pages project and Access application. Protect **production** (`globe-partners.pages.dev`) **and previews** (`*.globe-partners.pages.dev`, including branch/per-deployment aliases). Use the hostname actually returned by Cloudflare. Preview protection alone does not protect production. Protect custom hostnames too if added later.
 
-Configure these settings for both production and preview:
+The committed Wrangler file is **local-only** (no pages_build_output_dir): production and preview bindings/secrets must stay in the Pages dashboard/API. Do not add that key without migrating every runtime binding. Configure these settings for both production and preview:
 
 - `CF_ACCESS_TEAM_DOMAIN`: actual `https://TEAM.cloudflareaccess.com` issuer.
 - `CF_ACCESS_AUD`: Access audience tag.
 - `GLOBE_PARTNER_EMAILS`: JSON array of named partner email addresses.
 - `GLOBE_COORDINATOR_EMAILS`: JSON array of authorized coordinator addresses (also present in the partner list).
-- `GLOBE_WORKSPACE`: KV namespace binding for request persistence. Configure the binding in Cloudflare, keeping identifiers/identities outside Git. KV is eventually consistent: a fresh browser session may briefly show an older request/review state. The active UI updates from confirmed write responses.
+- `GLOBE_WORKSPACE`: separate production and preview KV namespace bindings for request persistence. Configure the binding in Cloudflare, keeping identifiers/identities outside Git. KV is eventually consistent: a fresh browser session may briefly show an older request/review state. The active UI updates from confirmed write responses.
 
 No public-domain-wide allow rules are assumed. Use an existing login provider or email one-time PIN and the named allowlist. Set Pages Functions to **Fail closed** in Settings > Runtime. The origin middleware verifies signed RS256 assertions, fixed issuer/audience, validity times and partner membership for **every route**, including document/static asset paths. API writes require same-origin JSON requests; coordinator review additionally checks the server-side coordinator list.
 
@@ -50,7 +50,7 @@ Build a canary with **no real private documents first**:
 ```bash
 node scripts/build_partner_portal.mjs
 cd partners-portal
-npx wrangler pages deploy .build --project-name globe-partners
+npx wrangler pages deploy .build --project-name globe-partners --branch main
 ```
 
 The provider's deployment response supplies real URLs. Test each hostname anonymously, as an authenticated outsider, as a member/coordinator and after removing membership. Check direct document paths as well as the homepage. Record real outcomes before adding confidential content. The local synthetic tests do not establish that live Access policies protect these hostnames.
@@ -73,3 +73,5 @@ node scripts/build_partner_portal.mjs
 The builder refuses an output already containing documents to prevent stale private files surviving a rebuild. It does not delete source/output documents. Requests with partner identity are stored only in the private KV binding. There are no document uploads, automated emails or scientific-data ingestion jobs in this interface.
 
 Official references: [production/preview Access configuration](https://developers.cloudflare.com/pages/platform/known-issues/), [JWT validation](https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/validating-json/), [Functions routing](https://developers.cloudflare.com/pages/functions/routing/).
+
+Private-only changes run the dedicated partners-portal.yml validation workflow. Public GitHub Pages and optional public Cloudflare deployment ignore these changes. Live inspection scripts, minimum account token permissions and the harmless direct-document canary are documented in docs/partners-cloudflare.md.

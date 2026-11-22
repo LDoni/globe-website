@@ -28,6 +28,6 @@ __pycache__/
 
 /partners-portal/.build/
 /partners-portal/.wrangler/
-/partners-portal/.dev.vars
+/partners-portal/.dev.vars*
 /logo_orizzontale_COLORE.png
 /WhatsApp*.jpeg

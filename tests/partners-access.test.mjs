@@ -37,3 +37,13 @@ test('authenticated middleware preserves response body, status and verified iden
  const previous=globalThis.fetch;globalThis.fetch=keys;
  try{const context={request:await request({exp:Math.floor(Date.now()/1000)+60,nbf:Math.floor(Date.now()/1000)-60}),env,data:{},next:async()=>Response.json({saved:true},{status:201})};const response=await onRequest(context);assert.equal(response.status,201);assert.deepEqual(await response.json(),{saved:true});assert.equal(context.data.partner.email,claims.email);assert.equal(response.headers.get('Cache-Control'),'private, no-store');}finally{globalThis.fetch=previous;}
 });
+
+test('authenticated direct document access keeps security headers; origin failures remain closed',async()=>{
+ const previous=globalThis.fetch;globalThis.fetch=keys;
+ try{
+  const {onRequest:canary}=await import('../partners-portal/functions/documents/access-canary.txt.js');
+  const context={request:await request({exp:Math.floor(Date.now()/1000)+60,nbf:Math.floor(Date.now()/1000)-60}),env,data:{},next:canary};
+  const document=await onRequest(context);assert.equal(document.status,200);assert.match(await document.text(),/access test only/);assert.equal(document.headers.get('X-Robots-Tag'),'noindex, nofollow, noarchive');assert.match(document.headers.get('Content-Security-Policy'),/frame-ancestors 'none'/);
+  context.next=()=>{throw Error('Synthetic origin failure');};const denied=await onRequest(context);assert.equal(denied.status,503);assert.equal(await denied.text(),'Workspace unavailable');
+ }finally{globalThis.fetch=previous;}
+});
