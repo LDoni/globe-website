@@ -93,6 +93,8 @@ async def main():
    assert max(positions)-min(positions)>2,'Ocean colours must advance during normal playback'
    if width==1440:assert len(set(frames))>1,'Rendered colours must move in real elapsed time'
    await page.click('[data-logo-motion-toggle]');assert await page.locator('[data-logo-motion]').get_attribute('data-motion')=='paused'
+   await page.wait_for_function("getComputedStyle(document.querySelector('.ocean-color-field')).animationPlayState==='paused'")
+   await page.wait_for_timeout(150)  # Allow the compositor to commit the pause frame.
    paused=await page.locator('.ocean-color-field').evaluate('(e)=>getComputedStyle(e).transform')
    await page.wait_for_timeout(200)
    assert await page.locator('.ocean-color-field').evaluate('(e)=>getComputedStyle(e).transform')==paused
