@@ -41,6 +41,17 @@ test('key service failure and removed partner fail closed',async()=>{
  assert.equal(await authorized(await request(),env,async()=>{throw new Error('Synthetic failure')},1000),false);
  assert.equal(await authorized(await request(),{...env,GLOBE_PARTNER_EMAILS:'[]'},keys,1000),false);
 });
+test('JWKS retrieval uses Workers-compatible manual redirects and rejects every redirect',async()=>{
+ const signed=await request();
+ assert.equal(await authorized(signed,env,async(url,options)=>{
+  assert.equal(url,env.CF_ACCESS_TEAM_DOMAIN+'/cdn-cgi/access/certs');
+  assert.equal(options.redirect,'manual');
+  return keys();
+ },1000),true);
+ for(const status of [301,302,303,307,308]){
+  assert.equal(await authorized(signed,env,async()=>new Response(null,{status,headers:{Location:'https://outside.example.invalid/keys'}}),1000),false);
+ }
+});
 test('anonymous direct documents and assets never reach static origin',async()=>{
  for(const path of ['/','/private/file.pdf','/assets/document.pdf']){
   const result=await onRequest({request:new Request('https://synthetic.invalid'+path),env,next:()=>{throw new Error('Origin must not run')}});

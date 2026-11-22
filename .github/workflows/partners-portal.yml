@@ -56,6 +56,8 @@ jobs:
         run: npx --yes wrangler@4.165.0 pages functions build partners-portal/functions --outdir /tmp/globe-partner-worker --project-directory partners-portal
       - name: Verify local KV persistence across processes
         run: node tests/partners-kv-persistence.mjs
+      - name: Verify signed authentication in the actual Workers runtime
+        run: node tests/partners-runtime.mjs
       - name: Browser tests with synthetic users and documents
         run: |
           python3 -m venv .venv

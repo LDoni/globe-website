@@ -24,8 +24,10 @@ export async function identity(request, env, fetchKeys=fetch, now=Math.floor(Dat
     if(claims.iss!==issuer || !Array.isArray(claims.aud) || !claims.aud.includes(audience))return deny('ISSUER_OR_AUDIENCE');
     if(!Number.isFinite(claims.exp)||claims.exp<=now || (claims.nbf!==undefined&&(!Number.isFinite(claims.nbf)||claims.nbf>now)))return deny('ASSERTION_TIME');
     if(typeof claims.email!=='string'||!emails.map(e=>e.trim().toLowerCase()).includes(claims.email.trim().toLowerCase()))return deny('MEMBERSHIP');
-    const response=await fetchKeys(issuer+'/cdn-cgi/access/certs',{redirect:'error',signal:AbortSignal.timeout(5000)});
-    if(!response.ok)return deny('KEY_SERVICE');
+    // Workers does not implement redirect:"error". Manual returns redirects
+    // unchanged, so only a successful response from this fixed issuer is trusted.
+    const response=await fetchKeys(issuer+'/cdn-cgi/access/certs',{redirect:'manual',signal:AbortSignal.timeout(5000)});
+    if(!response.ok||response.redirected)return deny('KEY_SERVICE');
     const jwks=await response.json();
     const jwk=jwks.keys?.find(k=>k.kid===header.kid&&k.kty==='RSA'&&(!k.alg||k.alg==='RS256')&&(!k.use||k.use==='sig'));
     if(!jwk)return deny('SIGNING_KEY');
