@@ -87,6 +87,12 @@ async def main():
    boxes=await page.locator('.coordinator-logos a').evaluate_all('(links)=>links.map(e=>({width:e.getBoundingClientRect().width,height:e.getBoundingClientRect().height}))')
    assert max(b['width'] for b in boxes)-min(b['width'] for b in boxes)<2
    assert max(b['height'] for b in boxes)-min(b['height'] for b in boxes)<2
+   middle=await page.locator('.coordinator-logos a').nth(1).bounding_box()
+   assert abs(middle['x']+middle['width']/2-width/2)<2,f'Institutional logos not centered at {width}'
+   assert await page.locator('.nav-links a').first.evaluate('(e)=>parseFloat(getComputedStyle(e).fontSize)')>=16
+   if width>=851:
+    brand=await page.locator('.brand').bounding_box();first_logo=await page.locator('.coordinator-logos a').first.bounding_box()
+    assert brand['x']+brand['width']<=first_logo['x'],f'Brand and institutions overlap at {width}'
    assert await page.locator('.coordinator-logos').is_visible()
    assert await page.evaluate("[...document.querySelectorAll('.coordinator-logos img')].every(i=>i.complete&&i.naturalWidth>0)")
    await page.locator('[data-logo-motion]').scroll_into_view_if_needed()

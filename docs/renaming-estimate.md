@@ -2,7 +2,7 @@
 
 Estimate: **4–8 working hours** for the public website, private workspace and hosted URLs, assuming one final replacement name, available free hosting names, owner access and supplied/reusable brand assets. Text-only replacement in the website is approximately 30–60 minutes including checks. This is an engineering estimate, not a quote for domains or paid services.
 
-The requested replacement is unresolved: the message supplied “globe” for both the old and new names. No rename, organization migration, project deletion, domain registration or subscription change has been performed.
+The replacement name is confirmed: **GLOBE → GLOBO**. This remains a migration estimate; the public branding, organization/repository and hosting identifiers have not been renamed. No rename, organization migration, project deletion, domain registration or subscription change has been performed.
 
 | Work | Estimated effort |
 | --- | --- |
