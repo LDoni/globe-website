@@ -31,7 +31,7 @@ The browser parses XLSX locally using vendored SheetJS CE 0.20.3; no workbook is
 node scripts/build_partner_portal.mjs
 node --test tests/partners-access.test.mjs tests/partners-workspace.test.mjs \
   tests/partners-cloudflare.test.mjs tests/partners-build.test.mjs \
-  tests/partners-collaboration.test.mjs
+  tests/partners-collaboration.test.mjs tests/partners-shared-sheet.test.mjs
 node tests/partners-runtime.mjs
 node tests/partners-kv-persistence.mjs
 .venv/bin/python tests/portal-browser.py
@@ -48,3 +48,11 @@ Pages root `partners-portal`; build `node ../scripts/build_partner_portal.mjs`; 
 KV Free has account-wide limits, including 1 GB storage, 100,000 daily reads and 1,000 daily writes. Same-key writes are limited to one per second. It is eventually consistent: another session/region can briefly show an earlier state; use Refresh after propagation. Quota/storage errors return errors and never claim successful persistence. See [official limits](https://developers.cloudflare.com/kv/platform/limits/) and [the deployment audit](../docs/partners-cloudflare.md).
 
 Externally staged document manifests remain supported by the separate builder, with path/type validation. Keep their sources outside the public repo, use a fresh external artifact directory, and verify real authorized/unauthorized direct-download behavior before confidential intake. No confidential document was uploaded by the agent. The owner manages any subsequent real document uploads through the authenticated interface.
+
+## Shared Google workbook
+
+The owner-supplied Google workbook is linked and embedded through the authenticated workspace. Its clean URL is configured outside Git as the encrypted Pages secret GLOBE_PARTNER_SHEET_URL in both environments. The API exposes it only after JWT/membership verification. The iframe uses the private Google edit URL, never Publish to web/pubhtml, and the parent CSP permits frames only from docs.google.com. An Open in Google Sheets button supports top-level Google sign-in when browser cookie/frame restrictions prevent embedded editing.
+
+Google Drive permissions are a separate boundary: Cloudflare does not restrict the direct Google URL. The initial anonymous XLSX export succeeded (HTTP 200), so the owner must set General access to Restricted and add the three named participants as Editors before claiming partner-only Google access. The Google Drive connector is admin-disabled and no connected document session exists; the agent could not inspect or change Google ACLs. No Google credentials or document content are committed. Google sign-in/editor permission remains necessary even after Cloudflare login.
+
+Uploaded files and sampling previews remain independent of the live shared Google workbook. Automatic private Google-to-plot synchronization requires authorized Google read access and an agreed sample/extraction schema; it is not silently enabled by embedding the editor. The existing XLSX import/template workflow remains available.

@@ -10,8 +10,13 @@ async def main():
   browser=await p.chromium.launch()
   partner=await browser.new_context(viewport={'width':1440,'height':1000})
   page=await partner.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)));page.set_default_timeout(45000)
+  await page.route('https://docs.google.com/**',lambda route:route.fulfill(status=200,content_type='text/html',body='<p>Synthetic shared workbook</p>'))
   await page.goto(BASE);await page.locator('#workspace:not([hidden])').wait_for()
   assert 'partner@example.invalid' in await page.locator('#identity').inner_text()
+  assert await page.locator('#shared-workbook').is_visible()
+  assert await page.locator('#shared-sheet-open').get_attribute('href')=='https://docs.google.com/spreadsheets/d/SYNTHETIC_TEST_ONLY/edit'
+  assert await page.locator('#shared-sheet-frame').get_attribute('src')=='https://docs.google.com/spreadsheets/d/SYNTHETIC_TEST_ONLY/edit?rm=minimal'
+  assert await page.locator('#shared-sheet-frame').get_attribute('referrerpolicy')=='no-referrer'
   assert await page.locator('#campaign-form,#station-form,#request-list').count()==0
   assert not await page.locator('#upload-panel').is_visible()
   assert await page.locator('#resource-list li').count()==1
@@ -23,11 +28,11 @@ async def main():
   await page.reload();await page.locator('#ticket-list article').wait_for();await page.locator('#ticket-list button').click();await page.locator('#comment-form').wait_for()
   comment=page.locator('#comment-form');await comment.locator('textarea').fill('First synthetic comment.');await comment.locator('button').click();await page.get_by_text('First synthetic comment.',exact=True).wait_for()
   other=await browser.new_context(extra_http_headers={'X-Synthetic-User':'other@example.invalid'})
-  op=await other.new_page();await op.goto(BASE);await op.locator('#ticket-list button').click();await op.locator('#comment-form').wait_for()
+  op=await other.new_page();await op.route('https://docs.google.com/**',lambda route:route.fulfill(status=200,content_type='text/html',body='<p>Synthetic shared workbook</p>'));await op.goto(BASE);await op.locator('#ticket-list button').click();await op.locator('#comment-form').wait_for()
   assert not await op.locator('#resolve-ticket').is_visible()
   await op.locator('#comment-form textarea').fill('Reply from another authorized partner.');await op.locator('#comment-form button').click();await op.get_by_text('Reply from another authorized partner.',exact=True).wait_for()
   coord=await browser.new_context(extra_http_headers={'X-Synthetic-User':'coordinator@example.invalid'})
-  cp=await coord.new_page();cp.on('pageerror',lambda e:errors.append(str(e)));await cp.goto(BASE);await cp.locator('#ticket-list button').click();await cp.locator('#resolve-ticket').click();await cp.locator('#detail-status').filter(has_text='Resolved').wait_for()
+  cp=await coord.new_page();await cp.route('https://docs.google.com/**',lambda route:route.fulfill(status=200,content_type='text/html',body='<p>Synthetic shared workbook</p>'));cp.on('pageerror',lambda e:errors.append(str(e)));await cp.goto(BASE);await cp.locator('#ticket-list button').click();await cp.locator('#resolve-ticket').click();await cp.locator('#detail-status').filter(has_text='Resolved').wait_for()
   await page.reload();await page.locator('#workspace:not([hidden])').wait_for();await page.locator('#detail-status').filter(has_text='Resolved').wait_for()
   assert await page.locator('#comment-list li').count()==2
   await page.select_option('#ticket-filter','resolved');assert await page.locator('#ticket-list article').count()==1

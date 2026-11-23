@@ -44,7 +44,7 @@ function guarded(response,denied=false){
  result.headers.set('X-Content-Type-Options','nosniff');
  result.headers.set('X-Robots-Tag','noindex, nofollow, noarchive');
  result.headers.set('Referrer-Policy','no-referrer');
- result.headers.set('Content-Security-Policy',"default-src 'self'; style-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
+ result.headers.set('Content-Security-Policy',"default-src 'self'; frame-src https://docs.google.com; style-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
  return result;
 }
 export async function onRequest(context) {

@@ -43,6 +43,7 @@ async def main():
    response=await page.goto(BASE+'/'+slug);assert response.status==200
    assert await page.locator('h1:visible').count()==1
   await page.goto(BASE+'/pages/join.html')
+  assert 'Your enquiry will be prepared' not in await page.locator('[data-join-status]').inner_text()
   await page.fill('#join-name','Synthetic test researcher');await page.fill('#join-email','test@example.invalid')
   await page.fill('#join-institution','TEST INSTITUTION');await page.fill('#join-country','Test country')
   await page.select_option('#join-interest',label='Scientific collaboration');await page.fill('#join-message','Synthetic browser validation only.')
@@ -82,6 +83,10 @@ async def main():
    assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth+1'),f'Overflow at {width}'
    assert await page.locator('.nav-links a[href="https://globe-partners.pages.dev/"]').count()==1
    assert await page.locator('.coordinator-logos img').count()==3
+   assert [s.rsplit('/',1)[-1] for s in await page.locator('.coordinator-logos img').evaluate_all('(imgs)=>imgs.map(i=>i.src)')]==['unige.png','uab.png','st-jude.svg']
+   boxes=await page.locator('.coordinator-logos a').evaluate_all('(links)=>links.map(e=>({width:e.getBoundingClientRect().width,height:e.getBoundingClientRect().height}))')
+   assert max(b['width'] for b in boxes)-min(b['width'] for b in boxes)<2
+   assert max(b['height'] for b in boxes)-min(b['height'] for b in boxes)<2
    assert await page.locator('.coordinator-logos').is_visible()
    assert await page.evaluate("[...document.querySelectorAll('.coordinator-logos img')].every(i=>i.complete&&i.naturalWidth>0)")
    await page.locator('[data-logo-motion]').scroll_into_view_if_needed()

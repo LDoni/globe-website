@@ -14,7 +14,7 @@
   const status=form.querySelector('[data-join-status]'),draft=form.querySelector('[data-join-draft]'),text=form.querySelector('[data-join-text]'),mail=form.querySelector('[data-join-mail]');
   let recipient=null;
   try{const settings=await config();if(typeof settings.contact_email==='string'&&/^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(settings.contact_email))recipient=settings.contact_email;}catch(e){/* Keep the no-delivery state visible. */}
-  if(recipient)status.textContent='Your enquiry will be prepared for '+recipient+'. You send it from your own email application.';
+  if(recipient)status.textContent='';
   function clearDraft(){draft.hidden=true;mail.hidden=true;mail.removeAttribute('href');text.textContent='';}
   form.addEventListener('input',clearDraft);
   form.addEventListener('submit',event=>{
