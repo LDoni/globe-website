@@ -172,3 +172,5 @@ Partner workspace is now linked directly in the navigation of all public pages. 
 23 November update: larger institutional marks now appear Genoa / UAB / St. Jude in equal responsive boxes, the homepage network illustration is wider, and “The initial initiative” is corrected to “The initiative”. The private workspace embeds the owner-supplied Google workbook with an editor link; Google Restricted sharing and named Editor permissions are required separately from Cloudflare. The replacement name is confirmed as GLOBO. A full GLOBE → GLOBO branding/URL migration is estimated at 4–8 working hours; current branding and hosted URLs are retained pending that migration.
 
 Header refinement: institutional marks are centered on the full viewport, independently of the left-hand GLOBE brand. Menu links use 16 px on desktop and 18 px on mobile, with four-width centering/overlap checks.
+
+Desktop navigation is aligned to the right of the sticky header; the institutional logos remain independently centered.
