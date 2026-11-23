@@ -102,15 +102,15 @@ python3 scripts/new_content.py publication paper-slug --title 'Approved paper ti
 
 Edit the file and remove `draft: true` only after authorization. Standard Quarto metadata support dates, authors, categories, descriptions, image paths, external links and DOI links in the body. New entries use the existing page layout. The homepage lists the three latest public news entries; the news and resource pages list all matching public entries. No invented announcement or publication is shipped. RSS can be enabled with `feed: true` in the news listing after the actual `website.site-url` is configured; it is not enabled against a fabricated domain.
 
-For a publication add a link such as `https://doi.org/ACTUAL-DOI`. Store only approved imagery with appropriate rights. The site's provisional GLOBE wordmark and schematic ENSO globe are original local SVGs, not official branding or observed data. The schematic globe is not used as a quantitative map.
+For a publication add a link such as `https://doi.org/ACTUAL-DOI`. Store only approved imagery with appropriate rights. The current site uses the owner-supplied transparent GLOBE wordmark and scientific network illustration; the GLOBO rebrand is prepared separately. The schematic globe is not used as a quantitative map.
 
 ## Deployment and account connections
 
-[Deployment guide](docs/deployment.md) covers GitHub, Cloudflare Pages, Google and shinyapps.io. Build with GitHub Actions, upload only `_site` to Cloudflare Pages using Wrangler. This keeps hosting portable and avoids dependence on Quarto availability in Cloudflare's build image. Cloudflare deployment remains disabled until its account secrets are supplied. GitHub Pages is active through a separate workflow, as subsequently requested by the owner.
+[Deployment guide](docs/deployment.md) covers GitHub, Cloudflare Pages, Google and shinyapps.io. Build with GitHub Actions, upload only `_site` to Cloudflare Pages using Wrangler. This keeps hosting portable and avoids dependence on Quarto availability in Cloudflare's build image. The optional public Cloudflare deployment workflow remains gated. GitHub Pages is the active public host; the separate Cloudflare partner project is deployed through its Git integration.
 
 Google Sheets and NOAA updates run daily at 06:17 UTC when configured, plus manually. A bot push using `GITHUB_TOKEN` does not start another push workflow, so the refresh workflow explicitly calls the reusable deployment workflow. Shiny is deployed separately and does not self-update its local filesystem. After a cache update, manually run the Shiny deployment workflow; an authenticated scheduled redeployment can be enabled after checking account usage.
 
-The restricted area is a public access-information page only. Private documents must go in a separate authenticated service, not this repository or build. See [Members Area security architecture](docs/members-security.md).
+The public Members page links to the separate Cloudflare Access-protected workspace. Private documents belong in that authenticated service, not this public repository or Quarto build. See [Members Area security architecture](docs/members-security.md).
 
 GitHub Pages publication was authorized and completed. No paid plan changes, domain registration or account invitations have been performed.
 
