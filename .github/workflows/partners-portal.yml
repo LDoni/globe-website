@@ -44,6 +44,7 @@ jobs:
           node tests/partners-workspace.test.mjs
           node tests/partners-build.test.mjs
           node tests/partners-cloudflare.test.mjs
+          node tests/partners-collaboration.test.mjs
           node --check partners-portal/public/workspace.js
       - name: Build using the exact Cloudflare dashboard command and root
         working-directory: partners-portal

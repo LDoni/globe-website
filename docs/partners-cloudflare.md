@@ -2,15 +2,15 @@
 
 Public hosting remains GitHub Pages at https://globe-ocean.github.io/. The private application is a separate Cloudflare Pages project, `globe-partners`, at https://globe-partners.pages.dev/. No public-site source, subscription or domain registration was changed by this private configuration.
 
-## Verified on 22 November 2026
+## Access configuration (22–23 November 2026)
 
 - Cloudflare reports a successful private build with root `partners-portal`, command `node ../scripts/build_partner_portal.mjs`, output `.build`, production branch `main`.
 - The Zero Trust organization is active. Two self-hosted Access applications cover `globe-partners.pages.dev` and `*.globe-partners.pages.dev`. The wildcard covers per-deployment and branch hostnames.
-- Both applications have only an exact-email Allow policy. One first coordinator is authorized; addresses are held outside Git and in encrypted Cloudflare environment secrets. No Everyone, email-domain-wide Allow or bypass rule was introduced.
+- Both applications have only an exact-email Allow policy. Three participants, including one coordinator, are authorized; addresses are held outside Git and in encrypted Cloudflare environment secrets. No Everyone, email-domain-wide Allow or bypass rule was introduced.
 - Both runtime environments have the correct issuer and their respective application audience, encrypted partner/coordinator lists and `fail_open=false`.
 - Existing `GLOBE_WORKSPACE` KV namespaces are reused, with production and preview isolated. Previous harmless real-KV setup write/read checks passed. Real authenticated application persistence has not yet been tested.
 - Across all eight observed hostnames, 48 anonymous and forged-identity requests to root, API, direct document canary and image returned HTTP 302 to the account's real Access login. An undeployed alias returning 404 is not counted as a security test.
-- No valid production user session is available. Partner/coordinator login, authenticated outsider/removed-member denial, application submissions/reviews and persistence are **not yet production-verified**. No confidential documents may be uploaded yet.
+- The owner confirmed successful coordinator login after the Workers fetch fix. Authenticated outsider/removed-member sessions and the new file/ticket/sampling operations remain **not agent-verified in production**. No confidential documents were uploaded by the agent.
 
 ## Login configuration and remaining authorization
 
@@ -66,3 +66,9 @@ Private release `07e19bf` was deployed successfully at https://f6d5bbc1.globe-pa
 The first real OTP attempt reached the origin and returned GLOBE-AUTH-ASSERTION_VERIFICATION. The JWKS fetch used redirect:error; [Workers does not implement this redirect mode](https://developers.cloudflare.com/workers/runtime-apis/request/), so it throws before the request is sent. The fetch now uses redirect:manual. Redirects and unsuccessful responses are denied; the fixed HTTPS issuer, signature, audience, expiry and named-email checks remain mandatory.
 
 `node tests/partners-runtime.mjs` uses the already pinned Wrangler/Miniflare workerd runtime with synthetic signed identities. It reproduces the unsupported native mode, verifies successful signed-member authentication using the actual middleware and Workers Request/WebCrypto implementations, and verifies rejection of redirected JWKS and expired tokens. It uses no real session, email address, account secret or remote store. The dedicated private workflow runs it after the pinned Wrangler compile step. This confirms the runtime fix; a fresh real owner login and live submission/review tests remain necessary before confidential intake.
+
+## Shared workspace release — 23 November
+
+Documents & files now supports coordinator uploads to the existing isolated KV stores, protected attachment downloads for all named participants, and a 10-MiB per-file limit. Shared tickets support member comments, author/coordinator resolution and reopening, search, filters and retained resolved conversations. Campaign/station request forms are removed from the interface without deleting old records. Sampling overview uses a vendored XLSX parser in the authenticated browser, two-sheet template, server revalidation and explicit coordinator preview/publication. Workbooks remain separate to avoid counting revisions twice. No private rows or uploaded files enter the public Quarto build. See [the user and deployment guide](../partners-portal/README.md).
+
+The 36 Node tests passed. Local browser tests used a real synthetic XLSX and verified exact binary download, roles, shared comments, resolution/history, sampling values and missing-data handling at mobile/tablet/desktop widths. Public browser tests passed at four widths, including the new Partner workspace header link. Real Quarto render and public output/security checks passed. Production build/security results are recorded in STATUS.md after deployment.

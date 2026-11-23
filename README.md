@@ -155,7 +155,7 @@ Network country flags are derived from public station rows, using country and lo
 
 ## Private partner workspace
 
-The separate partners-portal application implements authenticated document discovery, campaign proposals, station-change requests and coordinator review. Build and local synthetic preview instructions are in [partners-portal/README.md](partners-portal/README.md). A live Cloudflare origin is deployed and real isolated KV stores are bound. Exact-email Access policies and one first coordinator are configured; only email OTP is enabled on the private applications. Real authenticated application operations still require a completed user login; no confidential material has been uploaded.
+The separate partners-portal application provides coordinator file uploads, shared tickets with member comments and retained resolved conversations, and validated Excel-based sampling/DNA plots by station. The former campaign and station-update forms are removed from its interface. Build and local synthetic preview instructions are in [partners-portal/README.md](partners-portal/README.md). A live Cloudflare origin is deployed and real isolated KV stores are bound. Exact-email Access policies cover three privately configured participants, including one coordinator; only email OTP is enabled on the private applications. The owner has confirmed real production login. New file/ticket/import operations are tested with synthetic data and await authenticated production verification; no confidential material has been uploaded.
 
 ## Cloudflare partner deployment — 22 November
 
@@ -166,3 +166,5 @@ Homepage overview (22 November): the owner-supplied network illustration replace
 The latest content cleanup removes the Network map-mode explanation, the undeployed Shiny application notice and the Join confidentiality note. Join still explicitly prepares an email draft until a real sending endpoint has been configured and verified. Cloudflare-only free sending to the requested verified recipient is feasible with an existing onboarded routing domain; see docs/contact-form.md for the remaining requirements.
 
 Current Access status: the organization is active and the owner-created One-time PIN provider is selected exclusively for both GLOBE applications. No additional API permission is needed for this configuration. The 50-user ceiling is enforced locally and at the origin; live login/submission/review tests remain pending.
+
+Partner workspace is now linked directly in the navigation of all public pages. For Excel: Upload file accepts .xlsx; the Sampling overview template supplies Samples/Extractions sheets, preview and private publication. See [the partner guide](partners-portal/README.md).

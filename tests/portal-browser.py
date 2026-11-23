@@ -1,5 +1,5 @@
-"""Synthetic-only browser integration against tests/portal-preview.mjs."""
-import asyncio,os,socket,subprocess,urllib.request,time
+"""Synthetic-only integration: shared tickets, protected files and Excel counts."""
+import asyncio,os,socket,subprocess,urllib.request,time,base64
 from pathlib import Path
 from playwright.async_api import async_playwright
 with socket.socket() as port_probe:
@@ -9,46 +9,53 @@ async def main():
  async with async_playwright() as p:
   browser=await p.chromium.launch()
   partner=await browser.new_context(viewport={'width':1440,'height':1000})
-  page=await partner.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
-  page.set_default_timeout(45000)
+  page=await partner.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)));page.set_default_timeout(45000)
   await page.goto(BASE);await page.locator('#workspace:not([hidden])').wait_for()
   assert 'partner@example.invalid' in await page.locator('#identity').inner_text()
-  catalogue=await (await page.request.get(BASE+'/api/workspace')).json()
-  assert await page.locator('[data-station-options] option').count()==2*len(catalogue['stations'])+1
+  assert await page.locator('#campaign-form,#station-form,#request-list').count()==0
+  assert not await page.locator('#upload-panel').is_visible()
   assert await page.locator('#resource-list li').count()==1
-  await page.fill('#resource-search','missing-resource');assert await page.locator('#resource-empty').is_visible()
-  await page.fill('#resource-search','');await page.select_option('#resource-category','Report');assert await page.locator('#resource-empty').is_visible()
-  await page.select_option('#resource-category','Protocol');assert await page.locator('#resource-list li').count()==1
-  document=await page.request.get(BASE+'/documents/synthetic-protocol.txt');assert document.status==200 and 'Synthetic protocol' in await document.text()
-  assert document.headers.get('cache-control')=='private, no-store'
-  form=page.locator('#campaign-form');await form.locator('[name=title]').fill('Synthetic microbiome campaign')
-  await form.locator('[name=start_date]').fill('2027-01-01');await form.locator('[name=end_date]').fill('2027-02-01')
-  await form.locator('[name=station_ids]').select_option('GLOBE-001');await form.locator('[name=description]').fill('Synthetic integrated browser test only.')
-  await form.locator('button').click();await form.locator('[data-result]').filter(has_text='Request saved').wait_for()
-  assert await page.locator('#request-list article').count()==1
-  await page.reload();await page.locator('#request-list article').wait_for();assert 'Synthetic microbiome campaign' in await page.locator('#request-list').inner_text()
-  station=page.locator('#station-form');await station.locator('[name=station_ids]').select_option('GLOBE-001')
-  await station.locator('[name=title]').fill('Synthetic station correction');await station.locator('[name=description]').fill('Please review the synthetic metadata.')
-  await station.locator('[name=latitude]').fill('1.5');await station.locator('[name=longitude]').fill('179.5')
-  await station.locator('button').click();await station.locator('[data-result]').filter(has_text='Request saved').wait_for()
-  assert await page.locator('#request-list article').count()==2
+  await page.fill('#resource-search','missing-resource');assert await page.locator('#resource-empty').is_visible();await page.fill('#resource-search','')
+  form=page.locator('#ticket-form');await page.locator('#tickets details summary').click()
+  await form.locator('[name=title]').fill('Synthetic shared ticket');await form.locator('[name=description]').fill('Discussion visible to all test partners.')
+  await form.locator('button').click();await form.locator('[data-result]').filter(has_text='Ticket saved').wait_for()
+  assert await page.locator('#ticket-list article').count()==1
+  await page.reload();await page.locator('#ticket-list article').wait_for();await page.locator('#ticket-list button').click();await page.locator('#comment-form').wait_for()
+  comment=page.locator('#comment-form');await comment.locator('textarea').fill('First synthetic comment.');await comment.locator('button').click();await page.get_by_text('First synthetic comment.',exact=True).wait_for()
   other=await browser.new_context(extra_http_headers={'X-Synthetic-User':'other@example.invalid'})
-  otherpage=await other.new_page();await otherpage.goto(BASE);await otherpage.locator('#workspace:not([hidden])').wait_for();assert await otherpage.locator('#request-list article').count()==0
+  op=await other.new_page();await op.goto(BASE);await op.locator('#ticket-list button').click();await op.locator('#comment-form').wait_for()
+  assert not await op.locator('#resolve-ticket').is_visible()
+  await op.locator('#comment-form textarea').fill('Reply from another authorized partner.');await op.locator('#comment-form button').click();await op.get_by_text('Reply from another authorized partner.',exact=True).wait_for()
   coord=await browser.new_context(extra_http_headers={'X-Synthetic-User':'coordinator@example.invalid'})
-  cp=await coord.new_page();await cp.goto(BASE);await cp.locator('#request-list article').nth(1).wait_for()
-  card=cp.locator('#request-list article').filter(has_text='Synthetic microbiome campaign');await card.locator('textarea').fill('Coordination reviewed in synthetic test.')
-  await card.get_by_role('button',name='Mark reviewed').click();await card.locator('.badge').filter(has_text='Coordination review complete').wait_for()
-  await page.reload();await page.locator('#request-list').get_by_text('Coordination reviewed in synthetic test.').wait_for()
+  cp=await coord.new_page();cp.on('pageerror',lambda e:errors.append(str(e)));await cp.goto(BASE);await cp.locator('#ticket-list button').click();await cp.locator('#resolve-ticket').click();await cp.locator('#detail-status').filter(has_text='Resolved').wait_for()
+  await page.reload();await page.locator('#workspace:not([hidden])').wait_for();await page.locator('#detail-status').filter(has_text='Resolved').wait_for()
+  assert await page.locator('#comment-list li').count()==2
+  await page.select_option('#ticket-filter','resolved');assert await page.locator('#ticket-list article').count()==1
+  await page.fill('#ticket-search','missing-ticket');assert await page.locator('#ticket-empty').is_visible();await page.fill('#ticket-search','')
+  # Generate a genuine XLSX entirely in the browser; no real scientific records.
+  workbook=await cp.evaluate('''()=>{const X=window.XLSX,b=X.utils.book_new();X.utils.book_append_sheet(b,X.utils.aoa_to_sheet([['sample_id','station_id','collection_date','latitude','longitude'],['TEST-S1','GLOBE-001','2026-11-01',0,179.9],['TEST-S2','GLOBE-001'],['TEST-S3','GLOBE-002','2026-11-01',-1,-179.9]]),'Samples');X.utils.book_append_sheet(b,X.utils.aoa_to_sheet([['extraction_id','sample_id','dna_yield_ng'],['TEST-E1','TEST-S1',10],['TEST-E2','TEST-S1',0],['TEST-E3','TEST-S3']]),'Extractions');return X.write(b,{bookType:'xlsx',type:'base64'});}''')
+  await cp.locator('#upload-panel summary').click()
+  await cp.locator('#upload-form input[type=file]').set_input_files({'name':'synthetic-sampling.xlsx','mimeType':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','buffer':base64.b64decode(workbook)})
+  await cp.locator('#upload-form [name=title]').fill('Synthetic sampling records');await cp.locator('#upload-form button').click();await cp.locator('#upload-form [data-result]').filter(has_text='File uploaded').wait_for()
+  entry=cp.locator('#resource-list li').filter(has_text='Synthetic sampling records');link=entry.locator('a');r=await cp.request.get(BASE+await link.get_attribute('href'));assert r.status==200 and await r.body()==base64.b64decode(workbook)
+  assert r.headers.get('content-disposition','').startswith('attachment;') and r.headers.get('cache-control')=='private, no-store'
+  await cp.locator('#sampling-import summary').click();await cp.select_option('#sampling-file',index=1);await cp.locator('#sampling-form button').click();await cp.locator('#sampling-preview:not([hidden])').wait_for()
+  assert '3 collected samples' in await cp.locator('#sampling-preview-summary').inner_text();assert '3 DNA extractions' in await cp.locator('#sampling-preview-summary').inner_text()
+  await cp.locator('#publish-sampling').click();await cp.locator('#sampling-publish-result').filter(has_text='Sampling overview saved').wait_for()
+  assert await cp.locator('.sampling-metrics strong').all_inner_texts()==['3','3','2']
+  await page.reload();await page.locator('#workspace:not([hidden])').wait_for();await page.select_option('#sampling-workbook',index=1);await page.locator('.sampling-metrics').wait_for();assert await page.locator('.sampling-metrics strong').all_inner_texts()==['3','3','2']
+  assert await page.locator('.sampling-table tbody tr').count()==2
+  assert not await page.locator('#sampling-import').is_visible()
   for width in [375,768,1440]:
    await page.set_viewport_size({'width':width,'height':900})
    assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth+1'),f'Workspace overflow at {width}'
+   await page.evaluate('scrollTo(0,0)')
    await page.screenshot(path=f'test-results/partners-{width}.png',full_page=True)
-  # Storage failure must retain entered data and must not report a successful save.
-  await page.route('**/api/requests',lambda route:route.fulfill(status=503,json={'error':'Submissions are unavailable. Your request has not been saved.'}))
-  await form.locator('[name=title]').fill('Synthetic failure');await form.locator('[name=start_date]').fill('2027-01-01');await form.locator('[name=end_date]').fill('2027-02-01');await form.locator('[name=description]').fill('Failure preservation test.')
-  await form.locator('button').click();await form.locator('[data-result]').filter(has_text='has not been saved').wait_for();assert await form.locator('[name=title]').input_value()=='Synthetic failure'
+  # A rejected write preserves the draft and never claims success.
+  await page.route('**/api/tickets',lambda route:route.fulfill(status=503,json={'error':'The ticket could not be saved.'}))
+  await page.locator('#tickets details summary').click();await form.locator('[name=title]').fill('Synthetic failure');await form.locator('[name=description]').fill('Keep this draft on failure.');await form.locator('button').click();await form.locator('[data-result]').filter(has_text='could not be saved').wait_for();assert await form.locator('[name=title]').input_value()=='Synthetic failure'
   assert not errors,errors
-  await browser.close();print('PASS: synthetic private workspace, persistent session reload, author isolation, coordinator review, station requests, failed-save handling and three viewport widths')
+  await browser.close();print('PASS: shared tickets, cross-member comments, resolution/history, private Excel upload/download, validated sampling counts, failed-save draft and three widths')
 server=subprocess.Popen(['node','tests/portal-preview.mjs'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,env={**os.environ,'GLOBE_PORTAL_PORT':str(PORT)})
 try:
  for _ in range(100):

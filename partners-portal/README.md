@@ -1,79 +1,50 @@
 # GLOBE partner workspace
 
-Separate Cloudflare Pages application for authenticated participants, excluded from the public Quarto artifact. Implemented features:
+The private Cloudflare Pages application at https://globe-partners.pages.dev/ is separate from public GitHub Pages. Production and wildcard previews require email one-time PIN, an exact-email Access policy and a verified origin JWT. Three participants are configured privately, including one coordinator; the owner confirmed that real production login opens after the Workers redirect-mode fix. The configuration rejects more than 50 distinct participants. No confidential content or partner-address list is committed.
 
-- Search/filter documents and protocols, with authenticated direct downloads.
-- Submit coordinated campaign proposals with dates and participating stations.
-- Request station metadata/coordinate changes.
-- Partners see their own submissions; coordinators see and review all submissions.
-- A review is a coordination decision only. No request changes the public map, approves scientific coordinates or triggers environmental extraction.
-- Failed/missing storage returns an error and never confirms a successful save.
+## Documents and Excel files
 
-**Deployment:** https://globe-partners.pages.dev is built successfully and protected by Cloudflare Access. Production and wildcard previews use exact-email allow policies, separate audiences, encrypted role lists, Fail closed and the existing isolated KV stores. One first coordinator is configured outside Git. Anonymous/forged requests are redirected to Access on all eight observed hostnames. The existing email OTP provider is now selected as the only login method for both applications; authenticated production operations remain unverified. No confidential documents are deployed. See [the current deployment audit](../docs/partners-cloudflare.md).
+Coordinators can open **Documents & files → Upload file**, choose a file, enter its title/category/description and upload. All authorized members can search and download it. Supported formats: XLSX, DOCX, PDF, CSV, TXT, PNG and JPEG; maximum 10 MiB each. Files use the existing private GLOBE_WORKSPACE KV binding, not the public repository or Quarto output. Downloads require the same authenticated membership as the workspace and are sent as attachments with no-store/nosniff headers. Executable/HTML/SVG uploads, invalid filenames, mislabeled signatures, empty files and oversized bodies are rejected.
 
-## Local verification and synthetic preview
+The library checks a 200-file/250-MiB application budget per environment; concurrent uploads and KV eventual consistency mean this is a capacity check, not an atomic global quota. Provider Free account limits remain authoritative. No R2, subscription upgrade or paid seat was enabled. Failed multi-key uploads may leave inaccessible binary objects without a catalogue entry; no automatic deletion job is used.
 
-From the repository root:
+## Tickets
+
+Every authorized member can create, read and comment on all tickets. Authors and coordinators can mark them Resolved or reopen them. Resolved conversations remain available through the status filter, search and pagination. Each comment has a unique immutable key to avoid overwriting concurrent replies. Ticket status uses a separate current-state key; it never deletes the ticket or its comments. Drafts are retained on failed writes and are kept separately when switching conversations during a session. Sign-in identifies comment authors server-side; client-supplied authors/roles are rejected.
+
+The former campaign and station-update forms/review cards are removed from the interface. Their existing stored records and legacy API are retained; nothing was deleted or republished to the scientific station register.
+
+## Sampling overview
+
+1. Download **Sampling overview → Import a sampling workbook → Download Excel template**.
+2. Fill `Samples` (one collected sample per row) and `Extractions` (one completed DNA extraction per row). `Stations` supplies the current station IDs.
+3. Upload the XLSX through Documents & files.
+4. Select it under Import a sampling workbook, preview the validated counts, then publish to the private overview.
+
+`Samples`: sample_id and station_id are required; collection_date, latitude, longitude and material are optional. `Extractions`: extraction_id and matching sample_id are required; extraction_date, dna_concentration_ng_ul, dna_yield_ng and method are optional. Multiple extractions may refer to one sample. Dates use YYYY-MM-DD or genuine Excel serial dates. Numeric cells preserve raw precision; blanks stay null. Coordinates must be a valid pair of recorded decimal degrees. Formulas, duplicate IDs, unknown stations, orphan extractions and impossible dates are rejected. A workbook supports at most 5,000 combined rows and a 2-MiB normalized payload.
+
+The browser parses XLSX locally using vendored SheetJS CE 0.20.3; no workbook is sent to an external parser. The server revalidates the normalized records and binds them to an existing uploaded XLSX. This is a coordinator-published interpretation of that workbook, not an independently server-reparsed or scientifically approved dataset. The original file remains available. Individual workbooks are selected separately to avoid double-counting revisions. The overview shows samples, DNA extractions and distinct samples with extractions, with station bars and a table. Missing coordinates/dates are counted, never inferred. Publishing here does not change public stations or authorize environmental extraction.
+
+## Build and tests
 
 ```bash
 node scripts/build_partner_portal.mjs
-node tests/partners-access.test.mjs
-node tests/partners-workspace.test.mjs
+node --test tests/partners-access.test.mjs tests/partners-workspace.test.mjs \
+  tests/partners-cloudflare.test.mjs tests/partners-build.test.mjs \
+  tests/partners-collaboration.test.mjs
+node tests/partners-runtime.mjs
+node tests/partners-kv-persistence.mjs
 .venv/bin/python tests/portal-browser.py
-# Optional local preview; SYNTHETIC identities/data, no real confidential material:
 node tests/portal-preview.mjs
-# http://127.0.0.1:8790
+# http://127.0.0.1:8790 — synthetic identities and documents only, never deploy.
 ```
 
-The preview harness lives under tests, binds only to localhost and creates in-memory RSA keys, synthetic signed identities, a synthetic document and an emulated request store. It is **not** a production authentication method and is never included in deployment. Requests persist across browser reloads during that process; the synthetic store is cleared on restart. Production uses the Cloudflare KV binding below.
+The browser test uses a real synthetic XLSX and exercises shared comments, resolved history, permissions, binary download, preview/publish/counts, failed-save drafts and 375/768/1440 px. The runtime regression uses actual workerd; no fake login code is deployed. Local tests do not establish successful authenticated production submissions or downloads.
 
-## Production configuration
+## Cloudflare configuration
 
-Authenticate the intended Cloudflare account and inspect its existing Access plan/seat allowance and KV limits. Do not buy seats or change plans automatically. API authorization has now been supplied through an external private file. Pages, KV and Access application/policy operations work. The owner added email OTP in the dashboard after its creation was denied by the token; the existing provider is now selected for both applications. No further API permissions are required for the completed configuration. Credentials remain outside the repository.
+Pages root `partners-portal`; build `node ../scripts/build_partner_portal.mjs`; output `.build`; production branch `main`. Wrangler is local-only: do not add pages_build_output_dir without migrating every dashboard binding. Both environments retain Fail closed, issuer CF_ACCESS_TEAM_DOMAIN, respective audience CF_ACCESS_AUD, encrypted GLOBE_PARTNER_EMAILS/GLOBE_COORDINATOR_EMAILS, and separate existing GLOBE_WORKSPACE namespaces. Coordinators must be in the partner list. The token and real role register stay outside Git. Email OTP is the only selected provider; no broad email-domain or Everyone rules are allowed.
 
-The separate Pages project and its production/preview Access applications are configured. Protect **production** (`globe-partners.pages.dev`) **and previews** (`*.globe-partners.pages.dev`, including branch/per-deployment aliases). Use the hostname actually returned by Cloudflare. Preview protection alone does not protect production. Protect custom hostnames too if added later.
+KV Free has account-wide limits, including 1 GB storage, 100,000 daily reads and 1,000 daily writes. Same-key writes are limited to one per second. It is eventually consistent: another session/region can briefly show an earlier state; use Refresh after propagation. Quota/storage errors return errors and never claim successful persistence. See [official limits](https://developers.cloudflare.com/kv/platform/limits/) and [the deployment audit](../docs/partners-cloudflare.md).
 
-The committed Wrangler file is **local-only** (no pages_build_output_dir): production and preview bindings/secrets must stay in the Pages dashboard/API. Do not add that key without migrating every runtime binding. Configure these settings for both production and preview:
-
-- `CF_ACCESS_TEAM_DOMAIN`: actual `https://TEAM.cloudflareaccess.com` issuer.
-- `CF_ACCESS_AUD`: Access audience tag.
-- `GLOBE_PARTNER_EMAILS`: encrypted JSON array of named partner email addresses, maximum **50 distinct users**, including coordinators. The origin rejects invalid or oversized lists entirely; never truncate or auto-enroll users.
-- `GLOBE_COORDINATOR_EMAILS`: JSON array of authorized coordinator addresses (also present in the partner list).
-- `GLOBE_WORKSPACE`: separate production and preview KV namespace bindings for request persistence. Configure the binding in Cloudflare, keeping identifiers/identities outside Git. KV is eventually consistent: a fresh browser session may briefly show an older request/review state. The active UI updates from confirmed write responses.
-
-No public-domain-wide allow rules are assumed. Use an existing login provider or email one-time PIN and the named allowlist. Set Pages Functions to **Fail closed** in Settings > Runtime. The origin middleware verifies signed RS256 assertions, fixed issuer/audience, validity times and partner membership for **every route**, including document/static asset paths. API writes require same-origin JSON requests; coordinator review additionally checks the server-side coordinator list.
-
-## Separate build and confidential document intake
-
-Build a canary with **no real private documents first**:
-
-```bash
-node scripts/build_partner_portal.mjs
-cd partners-portal
-npx wrangler pages deploy .build --project-name globe-partners --branch main
-```
-
-The provider's deployment response supplies real URLs. Test each hostname anonymously, as an authenticated outsider, as a member/coordinator and after removing membership. Check direct document paths as well as the homepage. Record real outcomes before adding confidential content. The local synthetic tests do not establish that live Access policies protect these hostnames.
-
-Keep document sources outside this public repository. A private source directory can contain `resources.json`:
-
-```json
-[{"title":"Sampling protocol","description":"Approved team procedure","category":"Protocol","updated":"2026-11-21","file":"sampling-protocol.pdf"}]
-```
-
-Supported categories: Protocol, Campaign, Report, Coordination. Files are explicitly allowlisted by manifest, with safe names/extensions and no escaping/symlink paths outside the source directory. Nothing is recursively uploaded. Build into a **fresh directory outside the public repository**:
-
-```bash
-GLOBE_PRIVATE_CONTENT_DIR=/path/to/private-content \
-GLOBE_PARTNER_BUILD_DIR=/path/to/fresh-private-artifact \
-node scripts/build_partner_portal.mjs
-# From partners-portal, deploy that separate artifact only after live access verification.
-```
-
-The builder refuses an output already containing documents to prevent stale private files surviving a rebuild. It does not delete source/output documents. Requests with partner identity are stored only in the private KV binding. There are no document uploads, automated emails or scientific-data ingestion jobs in this interface.
-
-Official references: [production/preview Access configuration](https://developers.cloudflare.com/pages/platform/known-issues/), [JWT validation](https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/validating-json/), [Functions routing](https://developers.cloudflare.com/pages/functions/routing/).
-
-Private-only changes run the dedicated partners-portal.yml validation workflow. Public GitHub Pages and optional public Cloudflare deployment ignore these changes. Live inspection scripts, minimum account token permissions and the harmless direct-document canary are documented in docs/partners-cloudflare.md.
-
-Current activation status: the Access organization is active. The owner-created email one-time PIN provider is present and is the only permitted login method on both applications. Live user-session verification is pending.
+Externally staged document manifests remain supported by the separate builder, with path/type validation. Keep their sources outside the public repo, use a fresh external artifact directory, and verify real authorized/unauthorized direct-download behavior before confidential intake. No confidential document was uploaded by the agent. The owner manages any subsequent real document uploads through the authenticated interface.

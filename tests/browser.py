@@ -72,7 +72,7 @@ async def main():
    previous=data['records'][-2];await page.fill('[data-climate-date]',previous[0]);await page.locator('[data-climate-date]').dispatch_event('change')
    assert f"{previous[1]:.2f}" in await page.locator('[data-climate-stat=temperature] strong').inner_text()
   await page.select_option('[data-climate-quantity]','absolute');assert await page.locator('[data-climate-chart] path').count()==4
-  for width in [375,768,1440]:
+  for width in [375,768,1024,1440]:
    await page.set_viewport_size({'width':width,'height':900});await page.goto(BASE+'/index.html')
    await page.locator('[data-logo-motion]').wait_for()
    assert await page.locator('[data-logo-motion-toggle]').count()==0
@@ -80,6 +80,7 @@ async def main():
    assert await page.locator('.network-overview img').count()==1
    await page.locator('[data-network-count]').filter(has_text=str(len(registry['features']))).wait_for()
    assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth+1'),f'Overflow at {width}'
+   assert await page.locator('.nav-links a[href="https://globe-partners.pages.dev/"]').count()==1
    assert await page.locator('.coordinator-logos img').count()==3
    assert await page.locator('.coordinator-logos').is_visible()
    assert await page.evaluate("[...document.querySelectorAll('.coordinator-logos img')].every(i=>i.complete&&i.naturalWidth>0)")
@@ -134,7 +135,7 @@ async def main():
   nojs_page=await nojs.new_page();await nojs_page.goto(BASE+'/pages/join.html');assert await nojs_page.locator('button[type=submit]').is_disabled()
   await nojs.close()
   assert not errors,errors
-  await browser.close();print('PASS: map filters, popups, mode switching, synthetic observed layer, navigation, cache chart and three viewport widths')
+  await browser.close();print('PASS: map filters, popups, mode switching, synthetic observed layer, navigation, cache chart and four viewport widths')
 server=None
 try:
  if os.getenv('GLOBE_START_SITE')=='true':
