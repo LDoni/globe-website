@@ -1,5 +1,19 @@
 # GLOBE verification and launch status
 
+## Current work — 23 November 2026
+
+Local implementation is complete for the higher GLOBO homepage illustration, public Sampling protocol page/PDF, consolidated scientific content, one interactive map on Network and sampling-status filtering. Existing stations retain their recorded status; none was automatically classified active or confirmed. The public PDF's tracker action points to the authenticated portal; rendered graphics match the supplied original.
+
+Executed locally: real Quarto render and link/output validation for 12 pages; 13 Python tests; R testthat suite and registry validation; 48 private/contact/email Node tests plus 4 contact-client tests; actual workerd signed-authentication regression and cross-process local KV persistence; private browser tests at 375/768/1440 px; public browser tests at 375/768/1024/1440 px; real Shiny browser/WebSocket startup with all four modules and three widths; actual Pages Functions compilation and contact Worker dry-run compilation. Tests use synthetic identities and submissions and do not establish real production email delivery or authenticated new-feature writes.
+
+Cloudflare readback today confirms the existing private build configuration, successful deployment, exact-email production/preview policies, OTP-only providers, matching audiences, isolated KV bindings and Fail closed. Anonymous and forged production requests are challenged. The authorized register contains three participants, including the two additional participants requested by the owner; coordinator permissions remain separate and the limit is 50. Real login was previously confirmed by the owner. No confidential files were uploaded by the agent.
+
+The direct Join client, Worker, spam-validation logic, two mail transports and role-restricted coordination inbox are implemented. Sending is **not active**: Worker deployment/Turnstile permissions are missing and a real sender is not configured. The owner postponed the token update until tomorrow. The page shows the manual coordination contact while unavailable; it does not claim that an email was sent. See docs/contact-form.md.
+
+The Sheets pipeline now stages approved scientific and public map outputs together and preserves prior outputs on failure. Live station synchronization is **not configured**: source/authentication are absent, and the supplied shared workbook lacks the required Stations tab. Google sharing and actual Editor rights remain unverified and must be restricted by the owner. Embedded editing does not grant Google permissions or connect sampling plots automatically.
+
+GLOBO migration preparation is authorized and implemented as an isolated candidate generator, manifest and activation checklist. Current URLs remain https://globe-ocean.github.io/ and https://globe-partners.pages.dev/. The proposed replacement hosts are not reserved or deployed. Target GitHub organization authorization, target Cloudflare protections and a standalone replacement wordmark remain migration prerequisites. No domain, service or subscription was purchased.
+
 ## Current private workspace status — 23 November 2026
 
 The owner confirmed real production login after the Workers JWKS redirect correction. Production and wildcard previews retain OTP-only Access, exact-email policies, origin signature/issuer/audience/membership checks, Fail closed, encrypted roles and isolated existing KV. Three named participants and one coordinator are configured outside Git; the maximum remains 50. No partner email list or confidential file is committed.

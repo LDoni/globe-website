@@ -24,6 +24,8 @@ async def main():
   await page.fill('[data-search]','Fiji');assert await page.locator('.station-item').count()>=1
   await page.locator('.station-item').first.click();await page.locator('.leaflet-popup-content').wait_for();assert 'Fiji' in await page.locator('.leaflet-popup-content').inner_text()
   await page.click('[data-reset]');await page.select_option('[data-category]','incursion');assert await page.locator('.station-item').count()==incursion
+  await page.select_option('[data-sampling-status]','active');expected_active=sum(f['properties'].get('sampling_status')=='active' for f in registry['features'] if f['properties']['category']=='incursion');assert await page.locator('.station-item').count()==expected_active
+  await page.select_option('[data-sampling-status]','');assert await page.locator('.station-item').count()==incursion
   await page.select_option('[data-map-view]','observed');status=(await page.locator('[data-status]').inner_text()).lower();assert any(t in status for t in ['unavailable','observed-data analysis','sst anomaly'])
   assert await page.locator('[data-map-date-banner]').is_visible()
   chosen=await page.locator('[data-date] option:checked').inner_text();assert await page.locator('[data-map-observation-date]').get_attribute('datetime')==chosen
@@ -42,17 +44,35 @@ async def main():
   for slug in ['index.html','pages/about.html','pages/research.html','pages/network.html','pages/people.html','pages/monitoring.html','pages/resources.html','pages/news.html','pages/members.html','pages/privacy.html','pages/join.html']:
    response=await page.goto(BASE+'/'+slug);assert response.status==200
    assert await page.locator('h1:visible').count()==1
-  await page.goto(BASE+'/pages/join.html')
-  assert 'Your enquiry will be prepared' not in await page.locator('[data-join-status]').inner_text()
-  await page.fill('#join-name','Synthetic test researcher');await page.fill('#join-email','test@example.invalid')
-  await page.fill('#join-institution','TEST INSTITUTION');await page.fill('#join-country','Test country')
-  await page.select_option('#join-interest',label='Scientific collaboration');await page.fill('#join-message','Synthetic browser validation only.')
-  await page.check('[name=consent]');await page.click('[data-join-form] button[type=submit]')
-  await page.locator('[data-join-draft]:not([hidden])').wait_for();assert 'TEST INSTITUTION' in await page.locator('[data-join-text]').inner_text()
-  assert 'no message has been sent' in (await page.locator('[data-join-status]').inner_text()).lower()
-  assert (await page.locator('[data-join-mail]').get_attribute('href')).startswith('mailto:luigi.vezzulli@unige.it?')
-  await page.fill('#join-message','Updated synthetic text');assert await page.locator('[data-join-draft]').is_hidden()
-  await page.goto(BASE+'/pages/monitoring.html');await page.locator('[data-enso-summary] strong').wait_for();assert await page.locator('[data-enso-chart] svg').count()==1
+  # Join is unavailable until the real service is configured; synthetic routes
+  # exercise the direct transport without sending any real enquiry.
+  join_mode={'enabled':False,'fail':False};submitted=[]
+  async def contact_config(route):
+   await route.fulfill(json={'shiny_url':None,'contact_email':'luigi.vezzulli@unige.it','contact_endpoint':'https://join.synthetic.workers.dev/api/join' if join_mode['enabled'] else None,'turnstile_site_key':'synthetic-site-key' if join_mode['enabled'] else None})
+  async def contact_worker(route):
+   headers={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'Content-Type','Access-Control-Allow-Methods':'GET, POST, OPTIONS'}
+   if route.request.method=='OPTIONS':await route.fulfill(status=200,headers=headers);return
+   if route.request.url.endswith('/health'):await route.fulfill(status=200,headers=headers,json={'configured':True});return
+   submitted.append(route.request.post_data_json)
+   if join_mode['fail']:await route.fulfill(status=503,headers=headers,json={'error':'Could not confirm receipt.'})
+   else:await route.fulfill(status=201,headers=headers,json={'ok':True,'receipt':'synthetic-receipt'})
+  await page.route('**/assets/site-config.json',contact_config)
+  await page.route('https://join.synthetic.workers.dev/**',contact_worker)
+  await page.route('https://challenges.cloudflare.com/turnstile/**',lambda route:route.fulfill(content_type='text/javascript',body="window.turnstile={render:function(e,o){window.syntheticChallenge=o;o.callback('synthetic-token');return 'widget';},reset:function(){window.syntheticChallenge.callback('synthetic-token-next');}};"))
+  await page.goto(BASE+'/pages/join.html');await page.locator('[data-join-availability]').filter(has_text='not available').wait_for();assert await page.locator('[data-join-form]').is_hidden()
+  join_mode['enabled']=True
+  await page.reload();await page.locator('[data-join-form]:not([hidden])').wait_for()
+  for selector,value in [('#join-name','Synthetic test researcher'),('#join-email','test@example.invalid'),('#join-institution','TEST INSTITUTION'),('#join-country','Test country'),('#join-message','Synthetic browser validation only.')]:await page.fill(selector,value)
+  await page.select_option('#join-interest',label='Scientific collaboration');await page.check('[name=consent]');await page.click('[data-join-form] button[type=submit]')
+  await page.locator('[data-join-status]').filter(has_text='synthetic-receipt').wait_for()
+  assert submitted[0]['email']=='test@example.invalid' and submitted[0]['consent'] is True
+  assert await page.locator('[data-join-draft]').count()==0
+  assert 'email sent' not in (await page.locator('[data-join-status]').inner_text()).lower()
+  join_mode['fail']=True
+  for selector,value in [('#join-name','Synthetic retry'),('#join-email','retry@example.invalid'),('#join-institution','TEST INSTITUTION'),('#join-country','Test country'),('#join-message','Keep this unsent form.')]:await page.fill(selector,value)
+  await page.select_option('#join-interest',label='Scientific collaboration');await page.check('[name=consent]');await page.click('[data-join-form] button[type=submit]')
+  await page.locator('[data-join-status]').filter(has_text='Could not confirm receipt').wait_for();assert await page.locator('#join-message').input_value()=='Keep this unsent form.'
+  await page.goto(BASE+'/pages/monitoring.html');assert await page.locator('[data-network]').count()==0;await page.locator('[data-enso-summary] strong').wait_for();assert await page.locator('[data-enso-chart] svg').count()==1
   await page.select_option('[data-enso-view]','comparison');assert await page.locator('[data-enso-chart] path').count()==3
   assert await page.locator('[data-enso-years]').is_visible()
   async with page.expect_download() as download:
@@ -79,6 +99,8 @@ async def main():
    assert await page.locator('[data-logo-motion-toggle]').count()==0
    assert await page.locator('[data-network]').count()==0
    assert await page.locator('.network-overview img').count()==1
+   assert 'globo-sampling-network.png' in await page.locator('.network-overview img').get_attribute('src')
+   assert await page.locator('.network-overview').evaluate('(e)=>e.getBoundingClientRect().top') < await page.locator('.stats').evaluate('(e)=>e.getBoundingClientRect().top')
    await page.locator('[data-network-count]').filter(has_text=str(len(registry['features']))).wait_for()
    assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth+1'),f'Overflow at {width}'
    assert await page.locator('.nav-links a[href="https://globe-partners.pages.dev/"]').count()==1
@@ -107,7 +129,7 @@ async def main():
    assert max(positions)-min(positions)>2,'Ocean colours must advance during normal playback'
    if width==1440:assert len(set(frames))>1,'Rendered colours must move in real elapsed time'
    await page.locator('.network-overview img').scroll_into_view_if_needed()
-   await page.wait_for_function("document.querySelector('.network-overview img').naturalWidth===1600")
+   await page.wait_for_function("document.querySelector('.network-overview img').naturalWidth===1743")
    assert 'Use the pause/play button' not in await page.locator('body').inner_text()
    await page.evaluate('scrollTo(0,800)');await page.wait_for_timeout(100);assert abs((await page.locator('header.site-nav').bounding_box())['y'])<=1
    await page.evaluate('scrollTo(0,0)')
@@ -115,7 +137,7 @@ async def main():
     await page.click('.menu-toggle');assert await page.locator('.menu-toggle').get_attribute('aria-expanded')=='true'
     await page.click('.menu-toggle')
    Path('test-results').mkdir(exist_ok=True);await page.screenshot(path=f'test-results/home-{width}.png',full_page=True)
-   for slug in ['pages/network.html','pages/monitoring.html','pages/join.html']:
+   for slug in ['pages/network.html','pages/monitoring.html','pages/join.html','pages/protocol.html']:
     await page.goto(BASE+'/'+slug)
     await page.wait_for_load_state('networkidle')
     assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth+1'),f'{slug}: overflow at {width}'

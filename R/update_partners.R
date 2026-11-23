@@ -10,7 +10,7 @@ update_partners <- function() {
     googlesheets4::gs4_auth(path=credentials,scopes='https://www.googleapis.com/auth/spreadsheets.readonly')
   }
   x <- as.data.frame(googlesheets4::read_sheet(sheet,sheet=Sys.getenv('GLOBE_SHEET_TAB','Stations'),col_types='c'),stringsAsFactors=FALSE)
-  count <- publish_registry(x)
+  count <- publish_registry(x,publish_network=TRUE)
   message('Published ',count,' approved stations. Private columns excluded.')
 }
 if(sys.nframe()==0L) update_partners()

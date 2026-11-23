@@ -51,7 +51,7 @@ validate_stations <- function(x, categories_file = 'config/station-categories.js
     stop('Project categories await confirmation', call. = FALSE)
   if (any(!x$ocean_basin[ok] %in% c('Pacific','Atlantic','Indian','Mediterranean')))
     stop('Invalid ocean basin for approved station', call. = FALSE)
-  if (any(!x$sampling_status[ok] %in% c('planned','active','completed','paused','unconfirmed')))
+  if (any(!x$sampling_status[ok] %in% c('planned','confirmed','active','completed','paused','unconfirmed')))
     stop('Invalid sampling status', call. = FALSE)
   for (k in setdiff(public_station_fields,names(x))) x[[k]] <- ''
   urls <- x$institution_url[ok]
@@ -72,7 +72,7 @@ station_geojson <- function(x) {
   list(type='FeatureCollection',dataset_status='approved_registry',features=features)
 }
 
-publish_registry <- function(x, output_dir = 'data') {
+publish_registry <- function(x, output_dir = 'data', publish_network = FALSE) {
   public <- validate_stations(x)
   dir.create(output_dir, recursive=TRUE, showWarnings=FALSE)
   staging <- tempfile('.registry-',tmpdir=output_dir)
@@ -82,6 +82,25 @@ publish_registry <- function(x, output_dir = 'data') {
   jsonlite::write_json(station_geojson(public),file.path(staging,'stations.geojson'),auto_unbox=TRUE,pretty=TRUE,na='null')
   # Both outputs are fully generated before touching the published pair.
   files <- c('stations.csv','stations.geojson')
+  if(isTRUE(publish_network)) {
+    fields <- c('station_id','station_name','country','country_iso2','latitude','longitude','institution','category','ocean_basin','sampling_status','coordinate_status','public_description','institution_url','map_visibility')
+    network <- public
+    # Optional public ISO codes support country flags; never use private columns.
+    network$country_iso2 <- ''
+    if('country_iso2' %in% names(x)) {
+      codes <- trimws(as.character(x$country_iso2[match(network$station_id,x$station_id)]))
+      codes[is.na(codes)] <- ''
+      if(any(nzchar(codes)&!grepl('^[a-z]{2}$',codes))) stop('Invalid public country ISO code',call.=FALSE)
+      network$country_iso2 <- codes
+    }
+    network$map_visibility <- 'public'
+    network <- network[,fields,drop=FALSE]
+    write.csv(network,file.path(staging,'network-stations.csv'),row.names=FALSE,na='')
+    args <- c(shQuote(normalizePath('scripts/build_network_registry.py')),'--source',shQuote(file.path(staging,'network-stations.csv')),'--target',shQuote(file.path(staging,'network-stations.geojson')))
+    output <- system2(Sys.getenv('GLOBE_PYTHON','python3'),args,stdout=TRUE,stderr=TRUE)
+    if(!is.null(attr(output,'status'))&&attr(output,'status')!=0L) stop('Network projection failed; current registries preserved',call.=FALSE)
+    files <- c(files,'network-stations.csv','network-stations.geojson')
+  }
   old <- lapply(files,function(f){path<-file.path(output_dir,f);if(file.exists(path)) readBin(path,'raw',n=file.info(path)$size) else NULL})
   success <- FALSE
   on.exit(if(!success) for(i in seq_along(files)) {

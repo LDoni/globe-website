@@ -1,0 +1,8 @@
+{
+  "brand": {"current": "GLOBE", "target": "GLOBO"},
+  "public": {"current": "https://globe-ocean.github.io", "target": "https://globo-ocean.github.io"},
+  "repository": {"current": "globe-ocean/globe-ocean.github.io", "target": "globo-ocean/globo-ocean.github.io"},
+  "private": {"current": "https://globe-partners.pages.dev", "target": "https://globo-partners.pages.dev"},
+  "activate": false,
+  "preserve": ["station and sample IDs", "KV namespace IDs and existing records", "authentication environment variable names", "original source documents", "existing public and private services"]
+}

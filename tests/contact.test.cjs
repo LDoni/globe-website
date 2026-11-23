@@ -1,7 +1,6 @@
-const test=require('node:test');const assert=require('node:assert/strict');
-const {buildEnquiry}=require('../assets/js/contact.js');
-const valid={name:'Test researcher',email:'test@example.invalid',institution:'TEST INSTITUTION',country:'Test country',interest:'Scientific collaboration',message:'Synthetic test enquiry.',consent:true};
-test('builds a draft from the supplied contact fields',()=>{const draft=buildEnquiry(valid);assert.equal(draft.subject,'GLOBE | Join the initiative | TEST INSTITUTION');assert.match(draft.body,/Email: test@example.invalid/);assert.match(draft.body,/Synthetic test enquiry/);});
-test('requires explicit consent and complete fields',()=>{assert.throws(()=>buildEnquiry({...valid,consent:false}),/consent/);for(const field of ['name','email','institution','country','interest','message'])assert.throws(()=>buildEnquiry({...valid,[field]:'  '}),/required/);});
-test('rejects an invalid email',()=>assert.throws(()=>buildEnquiry({...valid,email:'not-an-email'}),/valid email/));
-test('removes line breaks from the email subject',()=>{const result=buildEnquiry({...valid,institution:'TEST\r\nOTHER'});assert.doesNotMatch(result.subject,/[\r\n]/);});
+const test=require('node:test'),assert=require('node:assert/strict'),{collectEnquiry}=require('../assets/js/contact.js');
+const valid={name:'Synthetic scientist',email:'test@example.invalid',institution:'TEST',country:'Test',interest:'Scientific collaboration',message:'Synthetic enquiry',consent:true};
+test('collects structured direct-intake fields without generating an email draft',()=>{const result=collectEnquiry(valid);assert.equal(result.email,valid.email);assert.equal(result.message,valid.message);assert.equal(result.consent,true);assert.equal(result.website,'');assert.equal(result.subject,undefined);assert.equal(result.body,undefined);});
+test('requires contact consent and complete fields',()=>{assert.throws(()=>collectEnquiry({...valid,consent:false}));assert.throws(()=>collectEnquiry({...valid,name:''}));});
+test('rejects an invalid email',()=>assert.throws(()=>collectEnquiry({...valid,email:'not-an-email'})));
+test('preserves structured text rather than interpolating it into mail headers',()=>assert.equal(collectEnquiry({...valid,institution:'Synthetic\nInstitution'}).institution,'Synthetic\nInstitution'));

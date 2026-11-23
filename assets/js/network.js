@@ -4,6 +4,8 @@
  const ROOT = new URL('../../', document.currentScript.src);
  const colors={incursion:'#ed9465',pacific:'#52c8c4',reference:'#bbc9f1',unclassified:'#98b5c6'};
  const labels={incursion:'Pacific incursion',pacific:'Other Pacific',reference:'Non-Pacific reference',unclassified:'Unclassified'};
+ const statusLabels={planned:'Planned',confirmed:'Confirmed',active:'Active',unconfirmed:'Not reported',paused:'Paused',completed:'Completed'};
+ const statusStyle={planned:{fillOpacity:.12,dashArray:'3 2'},confirmed:{fillOpacity:.6},active:{fillOpacity:1,weight:2.5},unconfirmed:{fillOpacity:.3},paused:{fillOpacity:.25,dashArray:'1 3'},completed:{fillOpacity:.75}};
  const displayLng=x=>x<30?x+360:x;
  const color=v=>{const stops=[[-3,[54,91,154]],[-1,[165,210,221]],[0,[245,245,235]],[1,[246,223,184]],[2,[232,156,107]],[3,[184,76,67]]];v=Math.max(-3,Math.min(3,v));let i=1;while(i<stops.length-1&&v>stops[i][0])i++;const [a,ca]=stops[i-1],[b,cb]=stops[i],t=(v-a)/(b-a);return 'rgb('+ca.map((c,j)=>Math.round(c+(cb[j]-c)*t)).join(',')+')';};
  async function json(path){const res=await fetch(new URL(path,ROOT));if(!res.ok)throw new Error('Data unavailable');return res.json();}
@@ -30,13 +32,14 @@
   const stationRenderer=L.svg({pane:'stationMarkers'});
   const markers=L.layerGroup().addTo(map), observed=L.layerGroup();
   const registry=shell.querySelector('[data-registry]'),search=shell.querySelector('[data-search]'),category=shell.querySelector('[data-category]'),basin=shell.querySelector('[data-basin]'),date=shell.querySelector('[data-date]');
+  const samplingStatus=shell.querySelector('[data-sampling-status]');
   const list=shell.nextElementSibling,showStations=shell.querySelector('[data-show-stations]');
   if(showStations)showStations.addEventListener('change',()=>{if(showStations.checked)markers.addTo(map);else map.removeLayer(markers);});
   let collection={features:[]},mode='network',sst={frames:[]},serial=0,rasterSerial=0;
   function popup(feature){
    const props=feature.properties,node=document.createElement('div'),heading=document.createElement('h3');heading.textContent=props.station_name;node.append(heading);
    const dl=document.createElement('dl');
-   const info={'Station ID':props.station_id,'Country':props.country,'Institution':props.institution,'Category':labels[props.category]||props.category,'Ocean basin':props.ocean_basin,'Sampling status':props.sampling_status,'Coordinates':`${feature.geometry.coordinates[1]}°, ${feature.geometry.coordinates[0]}°`};
+   const info={'Station ID':props.station_id,'Country':props.country,'Institution':props.institution,'Category':labels[props.category]||props.category,'Ocean basin':props.ocean_basin,'Sampling status':statusLabels[props.sampling_status||'unconfirmed']||props.sampling_status,'Coordinates':`${feature.geometry.coordinates[1]}°, ${feature.geometry.coordinates[0]}°`};
    for(const [k,v] of Object.entries(info)){const dt=document.createElement('dt'),dd=document.createElement('dd');if(!v||v==='unconfirmed')continue;dt.textContent=k;dd.textContent=v;dl.append(dt,dd);}node.append(dl);
    const desc=document.createElement('p');desc.textContent=props.public_description||'';node.append(desc);
    if(props.institution_url&&/^https:\/\//i.test(props.institution_url)){const a=document.createElement('a');a.href=props.institution_url;a.textContent='Institution website';a.target='_blank';a.rel='noopener noreferrer';node.append(a);}return node;
@@ -45,8 +48,8 @@
   function render(){
    markers.clearLayers();list.replaceChildren();
    const q=search.value.toLowerCase().trim();
-   const visible=collection.features.filter(f=>{const p=f.properties;return (!category.value||p.category===category.value)&&(!basin.value||p.ocean_basin===basin.value)&&[p.station_id,p.station_name,p.country,p.institution].join(' ').toLowerCase().includes(q);});
-   visible.forEach(f=>{const p=f.properties,[lng,lat]=f.geometry.coordinates;const marker=L.circleMarker([lat,displayLng(lng)],{pane:'stationMarkers',renderer:stationRenderer,radius:7,color:'#e7f5f4',weight:1.4,fillColor:colors[p.category]||colors.unclassified,fillOpacity:.95}).bindPopup(popup(f)).addTo(markers);const b=document.createElement('button');b.type='button';b.className='station-item';b.textContent=p.station_name;const small=document.createElement('small');small.textContent=`${p.station_id} · ${p.country}`;b.append(small);b.addEventListener('click',()=>{map.setView(marker.getLatLng(),5);marker.openPopup();container.scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});});list.append(b);});
+   const visible=collection.features.filter(f=>{const p=f.properties;return (!category.value||p.category===category.value)&&(!basin.value||p.ocean_basin===basin.value)&&(!samplingStatus?.value||(p.sampling_status||'unconfirmed')===samplingStatus.value)&&[p.station_id,p.station_name,p.country,p.institution].join(' ').toLowerCase().includes(q);});
+   visible.forEach(f=>{const p=f.properties,[lng,lat]=f.geometry.coordinates;const marker=L.circleMarker([lat,displayLng(lng)],{pane:'stationMarkers',renderer:stationRenderer,radius:7,color:'#e7f5f4',weight:1.4,fillColor:colors[p.category]||colors.unclassified,fillOpacity:.95,...(statusStyle[p.sampling_status||'unconfirmed']||{})}).bindPopup(popup(f)).addTo(markers);const b=document.createElement('button');b.type='button';b.className='station-item';b.textContent=p.station_name;const small=document.createElement('small');small.textContent=`${p.station_id} · ${p.country} · ${statusLabels[p.sampling_status||'unconfirmed']||p.sampling_status}`;b.append(small);b.addEventListener('click',()=>{map.setView(marker.getLatLng(),5);marker.openPopup();container.scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});});list.append(b);});
    const demo=registry.value!=='approved';if(registry.value==='network')document.querySelectorAll('[data-network-count]').forEach(el=>el.textContent=collection.features.length);
    if(mode==='network')status.textContent=demo?`${visible.length} of ${collection.features.length} network stations shown.`:visible.length?`${visible.length} approved sampling coordinates.`:'No approved sampling coordinates published yet. Select Network stations to explore the partner register.';
    dateBanner.hidden=true;
@@ -54,6 +57,7 @@
    const legend=shell.querySelector('[data-legend]');legend.replaceChildren();
    if(mode==='observed'&&sst.frames[Number(date.value)||0]?.legend_url&&!sst.frames[Number(date.value)||0]?.raster_failed){const f=sst.frames[Number(date.value)||0],img=document.createElement('img');img.src=new URL(f.legend_url,ROOT);img.alt='NOAA SST anomaly legend, −5 to +5 °C';img.className='sst-official-legend';legend.append(img);}else if(mode==='observed'){legend.textContent='SST anomaly (°C): −3 to +3; colors clipped at endpoints, tooltip values retained. Missing cells remain transparent.';['#365b9a','#5b9ac2','#a5d2dd','#f6dfb8','#e89c6b','#b84c43'].forEach(c=>{const dot=document.createElement('i');dot.className='dot';dot.style.background=c;legend.append(dot);});}
    else for(const cat of [...new Set(collection.features.map(f=>f.properties.category))]){const span=document.createElement('span'),dot=document.createElement('i');dot.className='dot';dot.style.background=colors[cat]||colors.unclassified;span.append(dot,document.createTextNode(labels[cat]||cat));legend.append(span);}
+   const statuses=document.createElement('span');statuses.className='station-status-legend';statuses.textContent='Station status: Planned ◌ · Confirmed ◐ · Active ●. Not reported means no operating status is recorded.';legend.append(statuses);
   }
   function drawSST(){observed.clearLayers();const rasterRequest=++rasterSerial;const frame=sst.frames[Number(date.value)||0];if(!frame){status.textContent='Observed SST anomaly cache unavailable. No quantitative temperature field is displayed. NOAA/Copernicus sources are linked on the monitoring page.';return;}
    if(frame.units!=='degree_C'||!frame.baseline||!frame.observation_date||!Array.isArray(frame.cells)){status.textContent='SST cache metadata incomplete; layer withheld.';return;}
@@ -82,8 +86,8 @@
      if(/^[a-z]{2}$/.test(code||'')){const img=document.createElement('img');img.src=new URL('assets/vendor/flags/'+code+'.svg',ROOT).href;img.alt='';img.width=32;img.height=24;img.addEventListener('error',()=>img.remove());item.append(img);}item.append(text);flags.append(item);});
    }
    fill(category,'category');fill(basin,'ocean_basin');render();}catch(e){if(request!==serial)return;markers.clearLayers();list.replaceChildren();status.textContent='Station registry unavailable. Try again later; no substitute coordinates are shown.';}}
-  registry.addEventListener('change',loadRegistry);search.addEventListener('input',render);category.addEventListener('change',render);basin.addEventListener('change',render);date.addEventListener('change',render);
-  shell.querySelector('[data-reset]').addEventListener('click',()=>{search.value='';category.value='';basin.value='';resetView();render();});
+  registry.addEventListener('change',loadRegistry);search.addEventListener('input',render);category.addEventListener('change',render);basin.addEventListener('change',render);samplingStatus?.addEventListener('change',render);date.addEventListener('change',render);
+  shell.querySelector('[data-reset]').addEventListener('click',()=>{search.value='';category.value='';basin.value='';if(samplingStatus)samplingStatus.value='';resetView();render();});
   shell.querySelector('[data-map-view]').addEventListener('change',event=>{mode=event.target.value;shell.querySelector('[data-date-wrap]').hidden=mode!=='observed';if(mode==='observed')observed.addTo(map);else map.removeLayer(observed);render();});
   try{sst=await json('data/monitoring/sst.json');sst.frames.forEach((f,i)=>{const o=document.createElement('option');o.value=i;o.textContent=f.observation_date;date.append(o);});}catch(e){/* Explicit unavailable state is rendered above. */}
   await loadRegistry();new ResizeObserver(()=>map.invalidateSize()).observe(container);

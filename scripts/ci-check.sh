@@ -8,7 +8,7 @@ node --check assets/js/monitoring.js
 node --check assets/js/site.js
 node --check assets/js/contact.js
 node --check assets/js/climate.js
-node --test tests/contact.test.cjs
+node --test tests/contact.test.cjs tests/contact-worker.test.mjs tests/contact-mail.test.mjs
 node tests/partners-access.test.mjs
 node tests/partners-workspace.test.mjs
 node tests/partners-build.test.mjs
@@ -18,3 +18,5 @@ Rscript R/validate_stations.R
 Rscript R/prepare_shiny_cache.R
 quarto render
 python3 scripts/check_site.py _site
+
+node tests/quarto-listings.mjs

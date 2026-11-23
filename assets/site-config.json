@@ -1,4 +1,6 @@
 {
   "shiny_url": null,
-  "contact_email": "luigi.vezzulli@unige.it"
+  "contact_email": "luigi.vezzulli@unige.it",
+  "contact_endpoint": null,
+  "turnstile_site_key": null
 }

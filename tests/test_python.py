@@ -30,6 +30,12 @@ class CacheTests(unittest.TestCase):
     with self.assertRaises(ValueError):network.collection([row,row])
     with self.assertRaises(ValueError):network.collection([{**row,'longitude':'NaN'}])
     with self.assertRaises(ValueError):network.collection([{**row,'contact_email':'private@example.invalid'}])
+ def test_network_operational_status_and_hidden_coordinates_are_validated(self):
+    row={'station_id':'TEST','station_name':'Synthetic','country':'Test','latitude':'0','longitude':'179.9','category':'unclassified','coordinate_status':'verified','map_visibility':'public'}
+    for status in ['planned','confirmed','active','unconfirmed']:
+      out=network.collection([{**row,'sampling_status':status}]);self.assertEqual(out['features'][0]['properties']['sampling_status'],status)
+    with self.assertRaises(ValueError):network.collection([{**row,'sampling_status':'invented'}])
+    with self.assertRaises(ValueError):network.collection([{**row,'map_visibility':'hidden','longitude':'999'}])
  def test_noaa_units_missing_and_longitudes(self):
     raw='time,latitude,longitude,sea_surface_temperature_anomaly\nUTC,degrees_north,degrees_east,degree_C\n2024-01-01T12:00:00Z,10,350,1.5\n2024-01-01T12:00:00Z,11,2,NaN\n'
     date,cells=sst.parse_csv(raw);self.assertEqual(date,'2024-01-01');self.assertEqual(cells,[{'lat':10.,'lon':-10.,'value':1.5}])

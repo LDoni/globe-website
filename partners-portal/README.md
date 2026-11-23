@@ -56,3 +56,7 @@ The owner-supplied Google workbook is linked and embedded through the authentica
 Google Drive permissions are a separate boundary: Cloudflare does not restrict the direct Google URL. The initial anonymous XLSX export succeeded (HTTP 200), so the owner must set General access to Restricted and add the three named participants as Editors before claiming partner-only Google access. The Google Drive connector is admin-disabled and no connected document session exists; the agent could not inspect or change Google ACLs. No Google credentials or document content are committed. Google sign-in/editor permission remains necessary even after Cloudflare login.
 
 Uploaded files and sampling previews remain independent of the live shared Google workbook. Automatic private Google-to-plot synchronization requires authorized Google read access and an agreed sample/extraction schema; it is not silently enabled by embedding the editor. The existing XLSX import/template workflow remains available.
+
+## Prepared direct-enquiry inbox
+
+Coordinators can read the separate Join enquiry inbox. Additional named reviewers require the encrypted environment list GLOBE_CONTACT_REVIEWERS; ordinary partners receive HTTP 403. This is separate from shared tickets, which remain available to all authorized participants. Intake and notification delivery status use separate KV keys to respect the per-key write limit. No real public intake is enabled until the Worker, Turnstile and genuine mail sender are configured. See [contact setup](../docs/contact-form.md).

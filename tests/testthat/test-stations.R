@@ -41,3 +41,17 @@ test_that('empty registry and inactive stations publish valid empty collection',
   expect_identical(station_geojson(out)$features,list())
   expect_true(all(validate_stations(read.csv('data/stations.csv'))$publication_status == 'approved'))
 })
+test_that('approved Sheets updates stage canonical and visible network outputs together',{
+  path<-tempfile();dir.create(path);on.exit(unlink(path,recursive=TRUE))
+  x<-fixture();x$sampling_status<-'confirmed';x$country_iso2<-'gb'
+  publish_registry(x,path,publish_network=TRUE)
+  expect_setequal(list.files(path),c('stations.csv','stations.geojson','network-stations.csv','network-stations.geojson'))
+  out<-jsonlite::read_json(file.path(path,'network-stations.geojson'),simplifyVector=FALSE)
+  expect_equal(out$features[[1]]$properties$sampling_status,'confirmed')
+  expect_equal(out$features[[1]]$properties$country_iso2,'gb')
+  expect_false(grepl('PRIVATE|CONFIDENTIAL|private@example',paste(readLines(file.path(path,'network-stations.csv')),collapse='')))
+  before<-lapply(list.files(path,full.names=TRUE),readBin,what='raw',n=1e6)
+  bad<-x;bad$latitude<-91;expect_error(publish_registry(bad,path,publish_network=TRUE),'bounds')
+  after<-lapply(list.files(path,full.names=TRUE),readBin,what='raw',n=1e6)
+  expect_identical(before,after)
+})

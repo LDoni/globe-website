@@ -73,7 +73,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          git add data/stations.csv data/stations.geojson data/monitoring
+          git add data/stations.csv data/stations.geojson data/network-stations.csv data/network-stations.geojson data/monitoring
           if git diff --cached --quiet; then
             echo 'changed=false' >> "$GITHUB_OUTPUT"
           else

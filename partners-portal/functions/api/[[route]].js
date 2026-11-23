@@ -2,6 +2,7 @@
 import {collaboration,collaborationSnapshot} from '../../lib/collaboration.js';
 import {samplingApi,samplingCatalogue} from '../../lib/sampling.js';
 import {sharedSheet} from '../../lib/shared-sheet.js';
+import {enquiryApi,canReviewEnquiries} from '../../lib/enquiries.js';
 function json(value,status=200){return Response.json(value,{status,headers:{'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'}});}
 function coordinators(env){try{const v=JSON.parse(env.GLOBE_COORDINATOR_EMAILS||'[]');return Array.isArray(v)?v.filter(e=>typeof e==='string').map(e=>e.trim().toLowerCase()):[];}catch{return [];}}
 function text(v,max,required=true){if(typeof v!=='string'||v.length>max||(required&&!v.trim()))throw Error('Invalid text field');return v.trim();}
@@ -30,13 +31,14 @@ export async function onRequest(context){
  if(!data?.partner?.email)return json({error:'Access denied'},403);
  const email=data.partner.email,isCoordinator=coordinators(env).includes(email),url=new URL(request.url),path=url.pathname;
  try{
+  const inbox=await enquiryApi(context,{email,isCoordinator});if(inbox)return inbox;
   const shared=await collaboration(context,{email,isCoordinator});if(shared)return shared;
   const sampling=await samplingApi(context,{email,isCoordinator});if(sampling)return sampling;
   if(request.method==='GET'&&path==='/api/workspace'){
    const [resources,stations]=await Promise.all([asset(context,'/resources.json'),asset(context,'/data/network-stations.geojson')]);
    const requests=[];let cursor;
    if(env.GLOBE_WORKSPACE){do{const page=await env.GLOBE_WORKSPACE.list({prefix:'request:',...(cursor?{cursor}:{})});for(const key of page.keys){const row=await env.GLOBE_WORKSPACE.get(key.name,'json');if(row&&(row.created_by===email||isCoordinator))requests.push(row);}cursor=page.list_complete?null:page.cursor;}while(cursor);}
-   return json({user:{email,role:isCoordinator?'coordinator':'partner'},resources,stations:stations.features,requests:requests.sort((a,b)=>b.created_at.localeCompare(a.created_at)),submissions_available:Boolean(env.GLOBE_WORKSPACE),...await collaborationSnapshot(env.GLOBE_WORKSPACE),datasets:await samplingCatalogue(env.GLOBE_WORKSPACE),shared_sheet:sharedSheet(env)});
+   return json({user:{email,role:isCoordinator?'coordinator':'partner'},resources,stations:stations.features,requests:requests.sort((a,b)=>b.created_at.localeCompare(a.created_at)),submissions_available:Boolean(env.GLOBE_WORKSPACE),...await collaborationSnapshot(env.GLOBE_WORKSPACE),datasets:await samplingCatalogue(env.GLOBE_WORKSPACE),shared_sheet:sharedSheet(env),can_review_enquiries:canReviewEnquiries(env,email,isCoordinator)});
   }
   if(path==='/api/requests'||/^\/api\/requests\/[a-f0-9-]{36}$/.test(path)){
    if(!['POST','PATCH'].includes(request.method))return json({error:'Method not allowed'},405);

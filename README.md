@@ -4,7 +4,7 @@ A Global Initiative to Uncover Ocean Microbiome Responses to Super El Niño in a
 
 This release extends the supplied GLOBE starter into a public Quarto website, Leaflet network explorer, validated Google Sheets publication pipeline, cached NOAA integration and modular Shiny application. GLOBE is represented as an independent international collaboration. The Italian Omics Observatory Network is one participant.
 
-**Release status (22 November 2026):** the public site is published at **https://globe-ocean.github.io/** from `globe-ocean/globe-ocean.github.io`. Real Quarto, R/Shiny, Python/Node and browser checks have passed. The public site includes official ERA5 interactive charts, historical-rank boxes and cached high-resolution NOAA maps. The 21 November update broadens the microbiome framing, restores the original project title, adds the supplied UniGe mark and animates the original ocean colours. The separate partner workspace is deployed with exact-email Cloudflare Access policies on production and wildcard previews, isolated KV stores and a 50-user ceiling. Email OTP is enforced on both private applications. A Workers-specific login verification error has been corrected and tested in actual workerd; authenticated production operations still require verification; see [the deployment audit](docs/partners-cloudflare.md). Deployment outcomes are recorded in [STATUS.md](STATUS.md).
+**Release status (23 November 2026):** the public site is published at **https://globe-ocean.github.io/** from `globe-ocean/globe-ocean.github.io`. Real Quarto, R/Shiny, Python/Node and browser checks have passed. The public site includes official ERA5 interactive charts, historical-rank boxes and cached high-resolution NOAA maps. The 21 November update broadens the microbiome framing, restores the original project title, adds the supplied UniGe mark and animates the original ocean colours. The separate partner workspace is deployed with exact-email Cloudflare Access policies on production and wildcard previews, isolated KV stores and a 50-user ceiling. Email OTP is enforced on both private applications. A Workers-specific login verification error has been corrected and tested in actual workerd; authenticated production operations still require verification; see [the deployment audit](docs/partners-cloudflare.md). Deployment outcomes are recorded in [STATUS.md](STATUS.md).
 
 ## Quick start
 
@@ -118,7 +118,7 @@ GitHub Pages publication was authorized and completed. No paid plan changes, dom
 
 The current scientific framing focuses broadly on marine microbiome responses to Super El Niño in a warming world. Homepage, About, Research, Join and shared footers reflect this scope; Vibrio, including potentially pathogenic lineages, remains one targeted research component. The homepage uses only the original full project title. Sampling frequency is described as planned in the supplied project text, without presenting expected responses as results.
 
-The Join page is linked from the main navigation, homepage and partner page. It prepares an enquiry locally; the current draft recipient is configured as requested. See [contact form setup](docs/contact-form.md).
+The Join page uses a direct-submission client. Its Worker and email transports are implemented and tested locally, but sending remains disabled pending Cloudflare permissions, Turnstile and a genuine sender authorization. The page offers a manual contact link while unavailable. See [contact form setup](docs/contact-form.md).
 
 
 ## Current partner register and Climate Pulse
@@ -163,14 +163,22 @@ The globe-partners Git integration build is successful. Production and wildcard 
 
 Homepage overview (22 November): the owner-supplied network illustration replaces the interactive sampling-map section. All Leaflet controls, station filters and quantitative NOAA layers remain on the Network page. The homepage still retrieves the station count from the editable public registry, without loading Leaflet.
 
-The latest content cleanup removes the Network map-mode explanation, the undeployed Shiny application notice and the Join confidentiality note. Join still explicitly prepares an email draft until a real sending endpoint has been configured and verified. Cloudflare-only free sending to the requested verified recipient is feasible with an existing onboarded routing domain; see docs/contact-form.md for the remaining requirements.
+The latest content cleanup removes the Network map-mode explanation, the undeployed Shiny application notice and the Join confidentiality note. Join sending is disabled until the direct endpoint and mail transport are configured and verified. Cloudflare-only free sending to the requested verified recipient is feasible with an existing onboarded routing domain; see docs/contact-form.md for the remaining requirements.
 
 Current Access status: the organization is active and the owner-created One-time PIN provider is selected exclusively for both GLOBE applications. No additional API permission is needed for this configuration. The 50-user ceiling is enforced locally and at the origin; the owner has confirmed live login; authenticated new-feature write tests remain pending.
 
 Partner workspace is now linked directly in the navigation of all public pages. For Excel: Upload file accepts .xlsx; the Sampling overview template supplies Samples/Extractions sheets, preview and private publication. See [the partner guide](partners-portal/README.md).
 
-23 November update: larger institutional marks now appear Genoa / UAB / St. Jude in equal responsive boxes, the homepage network illustration is wider, and “The initial initiative” is corrected to “The initiative”. The private workspace embeds the owner-supplied Google workbook with an editor link; Google Restricted sharing and named Editor permissions are required separately from Cloudflare. The replacement name is confirmed as GLOBO. A full GLOBE → GLOBO branding/URL migration is estimated at 4–8 working hours; current branding and hosted URLs are retained pending that migration.
+23 November update: larger institutional marks now appear Genoa / UAB / St. Jude in equal responsive boxes, the homepage network illustration is wider, and “The initial initiative” is corrected to “The initiative”. The private workspace embeds the owner-supplied Google workbook with an editor link; Google Restricted sharing and named Editor permissions are required separately from Cloudflare. The replacement name is confirmed as GLOBO. An isolated branding/URL migration candidate is prepared with `node scripts/prepare_globo_migration.mjs`; current hosted URLs remain active until replacement hosts and access restrictions are verified. See [the migration checklist](docs/globo-migration.md).
 
 Header refinement: institutional marks are centered on the full viewport, independently of the left-hand GLOBE brand. Menu links use 16 px on desktop and 18 px on mobile, with four-width centering/overlap checks.
 
 Desktop navigation is aligned to the right of the sticky header; the institutional logos remain independently centered.
+
+## 23 November content and deployment preparation
+
+The homepage uses the supplied GLOBO network illustration higher on the page. [Sampling protocol](pages/protocol.qmd) provides the supplied PDF; its Google tracker link now points to the authenticated portal, with identical rendered protocol graphics. Project objectives, sampling and molecular approaches are consolidated, and Monitoring links to the sole interactive map on Network. Sampling-status filters distinguish planned, confirmed and active records without inventing a status for existing rows.
+
+The Sheets publication pipeline validates and stages the scientific registry and public map together, then publishes all four files or rolls back. Live Sheets synchronization is **not connected**: repository credentials/source configuration are absent, and the supplied shared workbook does not contain a Stations tab. The existing public map remains in use. Google Restricted sharing and Editor permissions still require owner verification.
+
+The direct Join Worker compiles and has synthetic client/server/email tests. Real deployment, Turnstile and email delivery remain pending; no receipt is fabricated. The private coordination inbox is separate from shared partner tickets and is restricted by role. No confidential file has been uploaded.

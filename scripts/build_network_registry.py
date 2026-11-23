@@ -15,7 +15,15 @@ def collection(rows):
   ids.add(identifier)
   visibility=row.get('map_visibility','public') or 'public'
   if visibility not in ['public','hidden']:raise ValueError('Invalid map visibility')
-  if visibility=='hidden':continue
+  row['sampling_status']=row.get('sampling_status') or 'unconfirmed'
+  if row['sampling_status'] not in ['planned','confirmed','active','unconfirmed','paused','completed']:raise ValueError('Invalid sampling status')
+  if visibility=='hidden':
+   supplied=[row.get('latitude',''),row.get('longitude','')]
+   if any(supplied):
+    if not all(supplied):raise ValueError('Coordinate pairs are required')
+    lat,lon=map(float,supplied)
+    if not math.isfinite(lat) or not math.isfinite(lon) or abs(lat)>90 or abs(lon)>180:raise ValueError('Invalid network coordinates')
+   continue
   if not all(row.get(k) for k in ['station_name','country','coordinate_status']):raise ValueError('Network station missing map metadata')
   lat,lon=float(row['latitude']),float(row['longitude'])
   if not math.isfinite(lat) or not math.isfinite(lon) or not -90<=lat<=90 or not -180<=lon<=180:raise ValueError('Invalid network coordinates')
@@ -34,4 +42,6 @@ def build(source=ROOT/'data/network-stations.csv',target=ROOT/'data/network-stat
  finally:
   if os.path.exists(temp):os.unlink(temp)
  print('Public network map generated:',len(result['features']),'stations; approved scientific registry unchanged')
-if __name__=='__main__':build()
+if __name__=='__main__':
+ import argparse
+ p=argparse.ArgumentParser();p.add_argument('--source',default=ROOT/'data/network-stations.csv',type=Path);p.add_argument('--target',default=ROOT/'data/network-stations.geojson',type=Path);a=p.parse_args();build(a.source,a.target)
