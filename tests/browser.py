@@ -132,7 +132,7 @@ async def main():
    assert await page.locator('.logo-current-overlay').count()==0
    video=page.locator('.hero-logo-video');assert await video.count()==1
    assert await video.evaluate('(v)=>v.autoplay&&v.muted&&v.loop&&v.playsInline&&!v.controls')
-   assert await video.evaluate('(v)=>v.videoWidth===2172&&v.videoHeight===724')
+   assert await video.evaluate('(v)=>v.videoWidth===480&&v.videoHeight===480')
    positions=[];frames=[]
    if width==1440:
     await page.locator('[data-logo-motion]').evaluate("root=>{const probe=document.createElement('div');probe.dataset.currentProbe='';probe.style.cssText='position:absolute;left:42%;top:42%;width:13%;height:20%;pointer-events:none';root.append(probe)}")
@@ -160,11 +160,28 @@ async def main():
    assert await disc.evaluate('(e)=>getComputedStyle(e).animationDuration')=='72s'
    assert await disc.evaluate('(e)=>getComputedStyle(e).animationIterationCount')=='infinite'
    assert await page.locator('.microbe-disc img').evaluate('(i)=>i.complete&&i.naturalWidth===2172')
-   assert await video.evaluate('(v)=>getComputedStyle(v).clipPath')!='none'
+   globe_box=await page.locator('.current-orbit').bounding_box()
+   assert abs(globe_box['width']-globe_box['height'])<1,'Globe crop must stay circular at every viewport'
    angle1=await disc.evaluate('(e)=>{const m=new DOMMatrixReadOnly(getComputedStyle(e).transform);return Math.atan2(m.m12,m.m11)*180/Math.PI;}')
    await page.wait_for_timeout(800)
    angle2=await disc.evaluate('(e)=>{const m=new DOMMatrixReadOnly(getComputedStyle(e).transform);return Math.atan2(m.m12,m.m11)*180/Math.PI;}')
    assert .5<(angle2-angle1)%360<12,'Second O must rotate slowly and continuously'
+   # Letter pixels and the crop corner must equal the PNG even with opaque black video.
+   await video.evaluate('(v)=>{v.pause();v.currentTime=5}')
+   await page.wait_for_function("!document.querySelector('.hero-logo-video').seeking")
+   await disc.evaluate("e=>e.style.animationPlayState='paused'")
+   await page.wait_for_timeout(100)
+   await page.locator('[data-logo-motion]').evaluate("root=>{for(const [name,box] of Object.entries({letters:'left:0;top:0;width:35%;height:100%',b:'left:59%;top:0;width:14%;height:100%',corner:'left:36.003683%;top:19.337017%;width:2.2099448%;height:6.6298343%'})){const e=document.createElement('div');e.dataset.opacityProbe=name;e.style.cssText='position:absolute;pointer-events:none;'+box;root.append(e)}}")
+   await video.evaluate("v=>v.style.visibility='hidden'")
+   png_letters=[await page.locator(f'[data-opacity-probe={name}]').screenshot() for name in ['letters','b','corner']]
+   await video.evaluate("v=>{v.style.visibility='';v.style.background='black'}")
+   opaque_letters=[await page.locator(f'[data-opacity-probe={name}]').screenshot() for name in ['letters','b','corner']]
+   assert png_letters==opaque_letters,f'Opaque video must leave letters and outside-globe corners equal to the PNG at {width}px'
+   Path('test-results').mkdir(exist_ok=True)
+   await page.locator('[data-logo-motion]').screenshot(path=f'test-results/opaque-video-black-{width}.png')
+   await page.locator('[data-opacity-probe]').evaluate_all('(nodes)=>nodes.forEach(e=>e.remove())')
+   await video.evaluate("v=>{v.style.background='';return v.play()}")
+   await disc.evaluate("e=>e.style.animationPlayState=''")
    await page.locator('.network-overview img').scroll_into_view_if_needed()
    await page.wait_for_function("document.querySelector('.network-overview img').naturalWidth===1743")
    assert 'Use the pause/play button' not in await page.locator('body').inner_text()
@@ -222,8 +239,15 @@ async def main():
   await late_page.wait_for_function("document.querySelector('[data-logo-motion]').dataset.motion==='running'")
   assert await late_page.locator('.hero-logo-video').is_visible()
   await late_context.close()
+  backup_context=await browser.new_context()
+  backup_page=await backup_context.new_page()
+  await backup_page.route('**/assets/videos/globo-currents-globe.mp4',lambda route:route.abort())
+  await backup_page.goto(BASE+'/index.html')
+  await backup_page.wait_for_function("document.querySelector('[data-logo-motion]').dataset.motion==='running'")
+  assert await backup_page.locator('.hero-logo-video').evaluate("v=>v.currentSrc.endsWith('globo-currents-globe.webm')&&!v.paused")
+  await backup_context.close()
   failed_media=await browser.new_context();failed_page=await failed_media.new_page()
-  await failed_page.route('**/assets/videos/globo-logo-currents.webm',lambda route:route.abort())
+  await failed_page.route('**/assets/videos/globo-currents-globe.*',lambda route:route.abort())
   async def delayed_logo_script(route):
    await asyncio.sleep(.3);await route.continue_()
   await failed_page.route('**/assets/js/logo-video.js*',delayed_logo_script)

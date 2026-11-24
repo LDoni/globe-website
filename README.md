@@ -153,7 +153,7 @@ The SST map displays its observation date prominently above the map, with the la
 
 ## Coordinators, flags and homepage motion
 
-The sticky header includes the original UAB, University of Genoa and St. Jude institutional marks (sources in assets/images/partners/README.md). The supplied GLOBO static PNG is used in public and private headers. The homepage plays the supplied 18-second WebM/VP9 logo automatically, muted and inline, in a continuous loop without controls. The paired static PNG is the poster and failed-media fallback. Browser checks verify real frame changes, loop restart, mobile autoplay and continuous playback under reduced-motion media. No new animation or scientific data is synthesized.
+The sticky header includes the original UAB, University of Genoa and St. Jude institutional marks (sources in assets/images/partners/README.md). The supplied GLOBO static PNG is used in public and private headers. The homepage animates only the first globe, using opaque 480 × 480 crops at native source resolution: MP4/H.264 with WebM/VP9 fallback, derived from the preserved original 18-second video. A circular container prevents black video backgrounds from reaching the letters or the surrounding page. The letters remain part of the static PNG; the second O keeps its independent 72-second orbit. Currents play continuously at 1.12×, muted and inline without controls, with the PNG as failed-media fallback. Browser checks cover actual changing frames, early playback, loop restart, format fallback and byte-identical PNG letter/corner pixels under simulated opaque-black video at four viewport widths. No scientific data is synthesized.
 
 Network country flags are derived from public station rows, using country and lowercase country_iso2. Edit data/network-stations.csv on GitHub to add partners; the Pages build regenerates the map and flags. Flag SVGs are vendored locally, including additional countries for future growth. The current workbook contains 24 distinct country labels; the separately declared project scope remains 23 countries until reconciled by the coordinators. Hidden rows are excluded. No scientific extraction approval is inferred.
 
@@ -179,7 +179,9 @@ Header refinement: institutional marks are centered on the full viewport, indepe
 
 Desktop navigation is aligned to the right of the sticky header; the institutional logos remain independently centered.
 
-## 23 November content and deployment preparation
+## Historical implementation notes — 23–24 November
+
+These notes describe earlier preparation stages and are superseded by the current release status above and STATUS.md.
 
 The homepage uses the supplied GLOBO network illustration higher on the page. [Sampling protocol](pages/protocol.qmd) provides the supplied PDF; its Google tracker link now points to the authenticated portal, with identical rendered protocol graphics. Project objectives, sampling and molecular approaches are consolidated, and Monitoring links to the sole interactive map on Network. Sampling-status filters distinguish planned, confirmed and active records without inventing a status for existing rows.
 

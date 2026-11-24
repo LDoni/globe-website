@@ -1,5 +1,11 @@
 # GLOBO verification and launch status
 
+## Mobile logo black-background correction — 24 November
+
+The owner reported black backgrounds behind the first four logo letters on a phone. The full-wordmark transparent video is replaced in the player by opaque, native-resolution 480 × 480 crops of the first globe, supplied as MP4/H.264 baseline and WebM/VP9. A circular clipped container confines the movie to the opaque Earth disc. G, L and B now come exclusively from the PNG; the second O retains its PNG-based 72-second orbit. Warm-current enhancement, continuous 1.12× playback and the unchanged original source are preserved. The selected derivatives are about 261/159 KiB instead of the original 2.2 MB.
+
+Both encodings are 18 seconds at 12 fps, YUV420P without alpha. The controller waits for all source formats to fail before selecting the static fallback and handles selection that failed before listeners attached. Local real Quarto render/link checks and the complete browser suite passed at four widths, including pixel-for-pixel comparison of letters and an outside-circle corner against the PNG-only baseline under forced-black video, actual current motion, early playback, MP4 failure with working WebM and failure of both formats. Phone-sized and desktop opaque-video screenshots were visually inspected and show no black rectangle. A physical-device verification is not claimed. Publication/CI results follow after deployment.
+
 ## Slightly stronger warm-current animation — 24 November
 
 The first O uses a selective native SVG filter: modest warm-colour saturation/red gain, blended using red dominance so blue regions and dark lettering retain their original colours. The original video is unchanged and plays at 1.12×; the second O still uses its original static-image orbit at 72 seconds. Playback stays muted, automatic and continuous, without user controls. Successful playback now also reveals video already playing before the script attaches its event listener.
