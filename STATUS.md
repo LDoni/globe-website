@@ -1,5 +1,11 @@
 # GLOBO verification and launch status
 
+## Join delivery verified; final group privacy check pending — 24 November
+
+The updated Google relay passes real signed authorization/quota checks and rejects unauthenticated calls. Google accepted the synthetic notification e11f6515-68b6-43eb-9389-0a567edefd7e, and the owner confirmed receipt. An actual workerd non-sending Google diagnostic also passed, as did a temporary non-personal production KV write/read fixture with 60-second expiry. The public client/configuration release 1bac58c passed Pages 45376660150 and full R/Shiny/site validation 45376660198; 22 contact/mail tests and local browser checks passed.
+
+CONTACT_ENABLED remains false solely pending the owner confirmation of restricted Google group conversations. Endpoint/site key/CSP and real sender secrets are prepared/published; no real enquiry intake or public form end-to-end submission has yet been verified. Google Groups privacy is outside the available send-only authorization. No public form contact record has been collected, no private Access policy changed, and no paid feature enabled.
+
 ## Calmer logo and Google delivery investigation — 24 November
 
 The microorganisms now rotate smoothly once every 72 seconds using the owner’s unchanged high-resolution PNG inside a fixed circular window; the first O continues with the original video at normal speed. Both run continuously. The compressed video’s second O is clipped out, avoiding its coarse source-frame changes without adding media weight. The original video and static source remain unchanged. Real Quarto render/link checks and the full public browser suite at four widths passed locally, including slow transform advancement, original-current playback, looping and reduced-motion playback. Screenshots were inspected.
