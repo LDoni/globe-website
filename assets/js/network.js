@@ -2,10 +2,10 @@
 'use strict';
 (() => {
  const ROOT = new URL('../../', document.currentScript.src);
- const colors={incursion:'#ed9465',pacific:'#52c8c4',reference:'#bbc9f1',unclassified:'#98b5c6'};
+ const colors={incursion:'#df4329',pacific:'#008f87',reference:'#6350bd',unclassified:'#526d82'};
  const labels={incursion:'Pacific incursion',pacific:'Other Pacific',reference:'Non-Pacific reference',unclassified:'Unclassified'};
  const statusLabels={planned:'Planned',confirmed:'Confirmed',active:'Active',unconfirmed:'Not reported',paused:'Paused',completed:'Completed'};
- const statusStyle={planned:{fillOpacity:.12,dashArray:'3 2'},confirmed:{fillOpacity:.6},active:{fillOpacity:1,weight:2.5},unconfirmed:{fillOpacity:.3},paused:{fillOpacity:.25,dashArray:'1 3'},completed:{fillOpacity:.75}};
+ const statusStyle={planned:{fillOpacity:.55,dashArray:'3 2'},confirmed:{fillOpacity:.95},active:{fillOpacity:1,weight:2.5},unconfirmed:{fillOpacity:.9},paused:{fillOpacity:.5,dashArray:'1 3'},completed:{fillOpacity:.85}};
  const displayLng=x=>x<30?x+360:x;
  const color=v=>{const stops=[[-3,[54,91,154]],[-1,[165,210,221]],[0,[245,245,235]],[1,[246,223,184]],[2,[232,156,107]],[3,[184,76,67]]];v=Math.max(-3,Math.min(3,v));let i=1;while(i<stops.length-1&&v>stops[i][0])i++;const [a,ca]=stops[i-1],[b,cb]=stops[i],t=(v-a)/(b-a);return 'rgb('+ca.map((c,j)=>Math.round(c+(cb[j]-c)*t)).join(',')+')';};
  async function json(path){const res=await fetch(new URL(path,ROOT));if(!res.ok)throw new Error('Data unavailable');return res.json();}
@@ -49,7 +49,7 @@
    markers.clearLayers();list.replaceChildren();
    const q=search.value.toLowerCase().trim();
    const visible=collection.features.filter(f=>{const p=f.properties;return (!category.value||p.category===category.value)&&(!basin.value||p.ocean_basin===basin.value)&&(!samplingStatus?.value||(p.sampling_status||'unconfirmed')===samplingStatus.value)&&[p.station_id,p.station_name,p.country,p.institution].join(' ').toLowerCase().includes(q);});
-   visible.forEach(f=>{const p=f.properties,[lng,lat]=f.geometry.coordinates;const marker=L.circleMarker([lat,displayLng(lng)],{pane:'stationMarkers',renderer:stationRenderer,radius:7,color:'#e7f5f4',weight:1.4,fillColor:colors[p.category]||colors.unclassified,fillOpacity:.95,...(statusStyle[p.sampling_status||'unconfirmed']||{})}).bindPopup(popup(f)).addTo(markers);const b=document.createElement('button');b.type='button';b.className='station-item';b.textContent=p.station_name;const small=document.createElement('small');small.textContent=`${p.station_id} · ${p.country} · ${statusLabels[p.sampling_status||'unconfirmed']||p.sampling_status}`;b.append(small);b.addEventListener('click',()=>{map.setView(marker.getLatLng(),5);marker.openPopup();container.scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});});list.append(b);});
+   visible.forEach(f=>{const p=f.properties,[lng,lat]=f.geometry.coordinates;const marker=L.circleMarker([lat,displayLng(lng)],{pane:'stationMarkers',renderer:stationRenderer,radius:7,color:'#000000',opacity:1,weight:1.8,fillColor:colors[p.category]||colors.unclassified,fillOpacity:.95,...(statusStyle[p.sampling_status||'unconfirmed']||{})}).bindPopup(popup(f)).addTo(markers);const b=document.createElement('button');b.type='button';b.className='station-item';b.textContent=p.station_name;const small=document.createElement('small');small.textContent=`${p.station_id} · ${p.country} · ${statusLabels[p.sampling_status||'unconfirmed']||p.sampling_status}`;b.append(small);b.addEventListener('click',()=>{map.setView(marker.getLatLng(),5);marker.openPopup();container.scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});});list.append(b);});
    const demo=registry.value!=='approved';if(registry.value==='network')document.querySelectorAll('[data-network-count]').forEach(el=>el.textContent=collection.features.length);
    if(mode==='network')status.textContent=demo?`${visible.length} of ${collection.features.length} network stations shown.`:visible.length?`${visible.length} approved sampling coordinates.`:'No approved sampling coordinates published yet. Select Network stations to explore the partner register.';
    dateBanner.hidden=true;

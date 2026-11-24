@@ -19,7 +19,7 @@ async def main():
   await page.route('https://server.arcgisonline.com/**',lambda route:route.abort())
   await page.goto(BASE+'/pages/network.html');await page.locator('[data-status]').filter(has_text='network stations').wait_for()
   assert await page.locator('.coordination-team h3').all_text_contents()==['Jaime Martinez Urtaza','Luigi Vezzulli','Salvador Almagro Moreno']
-  assert await page.locator('.coordination-team p').all_text_contents()==['Jaime.Martinez.Urtaza[AT]uab.cat','luigi.vezzulli[AT]unige.it','salvador.almagromoreno[AT]stjude.org']
+  assert await page.locator('.coordination-team .card p').all_text_contents()==['Jaime.Martinez.Urtaza[AT]uab.cat','luigi.vezzulli[AT]unige.it','salvador.almagromoreno[AT]stjude.org']
   assert await page.locator('.coordination-institution img').evaluate_all("imgs=>imgs.map(i=>i.getAttribute('src'))")==['../assets/images/partners/uab.png','../assets/images/partners/unige.png','../assets/images/partners/st-jude.svg']
   await page.wait_for_function("[...document.querySelectorAll('.coordination-institution img')].every(i=>i.complete&&i.naturalWidth>0)")
   assert await page.locator('.coordination-team .card').evaluate_all("cards=>cards.every(c=>getComputedStyle(c).textAlign==='center')")
@@ -29,6 +29,7 @@ async def main():
   assert await page.locator('[data-country-flags] li').count()==len(countries)
   await page.wait_for_function("[...document.querySelectorAll('[data-country-flags] img')].every(i=>i.complete&&i.naturalWidth>0)")
   await page.locator('.station-item').nth(expected-1).wait_for();assert await page.locator('.station-item').count()==expected
+  assert await page.locator('.leaflet-stationMarkers-pane path').evaluate_all("paths=>paths.length>0&&paths.every(p=>p.getAttribute('stroke')==='#000000'&&Number(p.getAttribute('stroke-width'))>=1.8&&Number(p.getAttribute('fill-opacity'))>=.5)")
   await page.fill('[data-search]','Fiji');assert await page.locator('.station-item').count()>=1
   await page.locator('.station-item').first.click();await page.locator('.leaflet-popup-content').wait_for();assert 'Fiji' in await page.locator('.leaflet-popup-content').inner_text()
   await page.click('[data-reset]');await page.select_option('[data-category]','incursion');assert await page.locator('.station-item').count()==incursion
