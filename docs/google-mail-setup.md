@@ -22,3 +22,9 @@ Verify that the intended coordinator is a subscribed group member. Automatic not
 Once owner authorization is complete, verify the actual deployed relay and group behavior, install GOOGLE_RELAY_URL securely and select `MAIL_TRANSPORT=google_apps_script`. Keep CONTACT_ENABLED=false until the end-to-end sending check is authorized and passes. Add the exact Worker origin to the public CSP and then publish the endpoint/site key. Do not replace an unavailable service with a fictitious receipt.
 
 References: [Google web app deployment](https://developers.google.com/apps-script/guides/web), [MailApp](https://developers.google.com/apps-script/reference/mail/mail-app), [Google quotas](https://developers.google.com/apps-script/guides/services/quotas), [Content Service redirects](https://developers.google.com/apps-script/guides/content).
+
+## Executable production checks
+
+`node scripts/check_google_mail.mjs` reads the external deployment URL and signing-key files, checks readiness and verifies that unsigned and incorrectly signed requests are rejected. It sends no valid notification. Before owner deployment it exits explicitly with a waiting status, rather than claiming a successful test.
+
+The owner requested an email test. After the owner completes Google authorization, `node scripts/check_google_mail.mjs --send-test` additionally submits one clearly labeled synthetic notification to the fixed project group. It records only a reference and provider acceptance, never credentials or the owner's address. Actual inbox receipt and coordinator group subscription still require confirmation by a group member. Sending remains opt-in and is not run just by opening the private setup guide or authorizing Google.
