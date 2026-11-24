@@ -18,6 +18,9 @@ async def main():
   # Basemap is an external service; behavior tests deliberately run without tiles.
   await page.route('https://server.arcgisonline.com/**',lambda route:route.abort())
   await page.goto(BASE+'/pages/network.html');await page.locator('[data-status]').filter(has_text='network stations').wait_for()
+  assert await page.locator('.coordination-team h3').all_text_contents()==['Jaime Martinez Urtaza','Luigi Vezzulli','Salvador Almagro Moreno']
+  assert await page.locator('.coordination-team p').all_text_contents()==['Jaime.Martinez.Urtaza[AT]uab.cat','luigi.vezzulli[AT]unige.it','salvador.almagromoreno[AT]stjude.org']
+  assert await page.evaluate("document.querySelector('.coordination-team').compareDocumentPosition(document.querySelector('.participating-countries')) & Node.DOCUMENT_POSITION_FOLLOWING")
   registry=await page.evaluate('fetch(new URL("../data/network-stations.geojson",location.href)).then(r=>r.json())');expected=len(registry['features']);incursion=sum(f['properties']['category']=='incursion' for f in registry['features'])
   countries={f['properties']['country'] for f in registry['features']}
   assert await page.locator('[data-country-flags] li').count()==len(countries)

@@ -1,10 +1,10 @@
 # GLOBO verification and launch status
 
-## Join delivery verified; final group privacy check pending — 24 November
+## Join active and public page updates — 24 November
 
-The updated Google relay passes real signed authorization/quota checks and rejects unauthenticated calls. Google accepted the synthetic notification e11f6515-68b6-43eb-9389-0a567edefd7e, and the owner confirmed receipt. An actual workerd non-sending Google diagnostic also passed, as did a temporary non-personal production KV write/read fixture with 60-second expiry. The public client/configuration release 1bac58c passed Pages 45376660150 and full R/Shiny/site validation 45376660198; 22 contact/mail tests and local browser checks passed.
+The owner confirmed that group conversations are restricted to members. The production contact Worker is enabled. Health, exact-origin preflight, foreign-origin rejection, invalid-challenge rejection and absence of a public inbox passed live checks. Automated browsers displayed the real managed Turnstile challenge and correctly waited for human verification. The owner then completed a real public submission and confirmed success. A production KV audit found the saved enquiry with consent and a separate provider_accepted delivery record; no contact fields were logged. Google test receipt was independently confirmed earlier. Mailbox delivery for individual group members depends on Google Groups subscriptions and has not been verified for each member.
 
-CONTACT_ENABLED remains false solely pending the owner confirmation of restricted Google group conversations. Endpoint/site key/CSP and real sender secrets are prepared/published; no real enquiry intake or public form end-to-end submission has yet been verified. Google Groups privacy is outside the available send-only authorization. No public form contact record has been collected, no private Access policy changed, and no paid feature enabled.
+Network now lists the three requested coordinators above participating countries. The requested Network, homepage and Monitoring introduction text has been removed. Real Quarto render and checks on all 12 HTML pages passed. The full browser suite passed at four widths, including coordinator names/emails, section order, maps, charts and no horizontal overflow. All 22 contact/mail tests passed. Quarto only reported the existing empty News/Publications listing warnings. Deployment verification follows publication. Public hosts, private Access policies, scientific datasets and paid-service settings are unchanged.
 
 ## Calmer logo and Google delivery investigation — 24 November
 

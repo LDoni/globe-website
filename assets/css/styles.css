@@ -55,3 +55,6 @@ html{scroll-padding-top:156px}.coordinator-logos{margin:0;gap:24px}.coordinator-
 
 /* Blend the supplied white-backed static wordmark into the light navigation. */
 .brand img{mix-blend-mode:multiply}
+
+.coordination-team { margin-bottom: 2.5rem; }
+.coordination-team .card p { overflow-wrap: anywhere; }

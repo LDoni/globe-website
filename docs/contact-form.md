@@ -1,6 +1,6 @@
 # Join contact service — current deployment
 
-The direct-submission client, Cloudflare Worker and Google notification relay are deployed and configured. **Public intake remains disabled pending confirmation of the group's restricted conversation visibility.** The existing coordination email link remains available while Worker health reports inactive.
+The direct-submission client, Cloudflare Worker and Google notification relay are deployed and configured. **Public intake is active.** The owner confirmed member-only conversation visibility and completed a real public form submission.
 
 ## Verified on 24 November 2026
 
@@ -8,7 +8,7 @@ The direct-submission client, Cloudflare Worker and Google notification relay ar
 - Google accepted one clearly labeled TEST notification to globo-initiative@googlegroups.com. The owner confirmed receipt. Provider acceptance and actual receipt are recorded separately.
 - A real workerd runtime successfully signed and fetched the Google non-sending diagnostic, including the Content Service redirect. No additional test email was sent by that runtime check.
 - The existing production KV passed a real write/read check using a non-personal fixture with 60-second expiry, outside the enquiry prefix.
-- Twenty-two contact/client/Worker/Google tests and the public browser suite pass. GitHub Pages 45376660150 and full R/Shiny/site validation 45376660198 succeeded. The public endpoint/site key and CSP origin are published; an inactive health check keeps the form unavailable.
+- Twenty-two contact/client/Worker/Google tests and the public browser suite pass. GitHub Pages 45376660150 and full R/Shiny/site validation 45376660198 succeeded. The public endpoint/site key and CSP origin are published; production health now enables the form.
 
 ## Runtime
 
@@ -20,13 +20,15 @@ Notifications use the owner's existing Google account through a send-only Apps S
 
 A success receipt requires both private intake and provider acceptance. A stored enquiry with an unconfirmed notification returns an explicit saved/unconfirmed reference. No success message claims inbox delivery, membership or station approval.
 
-## Remaining activation check
+## Production activation and member notifications
 
-The owner confirmed test receipt. Before enabling collection of real names/emails, confirm that Google Groups conversation visibility is restricted to members and that membership is controlled by the coordinators. Google group permissions are separate from Cloudflare Access and the agent has no authenticated Groups administration scope. Portal membership remains an explicit named-email list, capped at 50; group membership never adds portal users.
+CONTACT_ENABLED=true is deployed. Five live checks passed: active health, allowed-origin preflight, foreign-origin rejection, invalid Turnstile challenge rejection and no public inbox route. The real widget displayed at desktop/tablet/phone widths; automation did not bypass its human challenge. The owner completed the public form and confirmed success. A read-only production KV audit verified a saved enquiry, consent and a separate provider_accepted notification record without logging names, emails or message content. This proves persistence and provider acceptance; individual member inbox delivery is a separate Google Groups setting.
 
-After confirmation, set CONTACT_ENABLED=true in the private external Wrangler configuration and deploy the Worker. Verify production health, exact-origin preflight, denial of foreign origins and invalid challenges, and real public widget/form behavior. A genuine end-to-end web submission still needs a valid production Turnstile challenge; no test key or bypass is deployed. Confirm its private persistence and Google notification without publishing contact fields in logs.
+Google Groups membership settings → Subscription → Each email delivers each new group message to that member. The owner can manage subscriptions from the group's member list. Portal access does not automatically subscribe anyone to the mail group. Keep membership limited to approved recipients because messages contain enquiry contact details. The agent's send-only Google authorization does not permit changing group membership or subscriptions.
 
-The public fallback remains the previously approved coordinator mailbox. The group is the fixed automatic notification destination; publishing it as a general mailto destination additionally requires accepting outside senders.
+The public fallback remains the previously approved coordinator mailbox. No private Access policy, paid service or group membership was changed.
+
+[Google subscription settings](https://support.google.com/groups/answer/9792489).
 
 ## Tools and references
 
