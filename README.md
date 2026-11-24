@@ -186,3 +186,5 @@ The direct Join Worker compiles and has synthetic client/server/email tests. The
 Protocol is available directly in the main menu. Its page displays the PDF immediately below the title, without an intermediate resource page or required download click.
 
 24 November contact deployment: the globo-contact Worker is online with the existing KV and a production Turnstile secret. Sending remains disabled pending an authorized sender; the public fallback remains available. Eight real endpoint security checks and 13 contact/mail tests passed. Shiny hosting is optional for the current browser-based maps/charts; its separate application remains locally verified.
+
+The supplied standalone GLOBO static logo is staged for the migration candidate; the matching animation is awaited. A notification-only Google Apps Script relay is prepared and tested for the existing Gmail owner account, with a private local authorization guide and no Gmail-read permission. Owner Google authorization is still required; see docs/google-mail-setup.md.
