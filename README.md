@@ -182,3 +182,5 @@ The homepage uses the supplied GLOBO network illustration higher on the page. [S
 The Sheets publication pipeline validates and stages the scientific registry and public map together, then publishes all four files or rolls back. Live Sheets synchronization is **not connected**: repository credentials/source configuration are absent, and the supplied shared workbook does not contain a Stations tab. The existing public map remains in use. Google Restricted sharing and Editor permissions still require owner verification.
 
 The direct Join Worker compiles and has synthetic client/server/email tests. Real deployment, Turnstile and email delivery remain pending; no receipt is fabricated. The private coordination inbox is separate from shared partner tickets and is restricted by role. No confidential file has been uploaded.
+
+Protocol is available directly in the main menu. Its page displays the PDF immediately below the title, without an intermediate resource page or required download click.

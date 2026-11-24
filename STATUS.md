@@ -137,3 +137,7 @@ Final release 5a8a0d4 is published. Cloudflare production deployment https://62b
 Header centering revision: the institutional row is centered on the full viewport with UAB in its middle, independently of the left brand. Desktop navigation is 16 px, mobile navigation 18 px. Real Quarto render and the 11-page link/output check passed; full public browser checks passed at 375/768/1024/1440 px with exact center/equal-box/non-overlap assertions. The target rename GLOBE → GLOBO is now confirmed in the estimate; the current URLs and brand remain active until a separate migration is requested.
 
 Header navigation refinement: the six desktop links now align to the right edge of the header content area. The independent centered institutional row and existing menu sizes are preserved; mobile dropdown behavior is unchanged.
+
+## Protocol navigation — 24 November 2026
+
+Protocol is now a primary navigation item on all 12 public pages, after Monitoring. Its page places an eagerly loaded PDF viewer directly below the short title, with an optional download link underneath. The longer background explanation follows the document. Real Quarto render/link checks and Chromium checks at 375/768/900/1440 px passed: the PDF responds HTTP 200, the viewer starts within the first screen, active navigation is correct and the page has no horizontal overflow.
