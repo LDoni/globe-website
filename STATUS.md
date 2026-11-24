@@ -1,5 +1,11 @@
 # GLOBO verification and launch status
 
+## Calmer logo and Google delivery investigation — 24 November
+
+The microorganisms now rotate smoothly once every 72 seconds using the owner’s unchanged high-resolution PNG inside a fixed circular window; the first O continues with the original video at normal speed. Both run continuously. The compressed video’s second O is clipped out, avoiding its coarse source-frame changes without adding media weight. The original video and static source remain unchanged. Real Quarto render/link checks and the full public browser suite at four widths passed locally, including slow transform advancement, original-current playback, looping and reduced-motion playback. Screenshots were inspected.
+
+The real Google deployment URL was supplied outside Git. Readiness and unsigned/bad-signature rejection checks passed, and host/provider clocks matched. One signed email test did not confirm acceptance; the owner reported no email received. No claim of sending/delivery is made. Join remains disabled. Version 2 adds signed non-sending authorization/quota diagnostics, explicit UTF-8 and safe failure codes; 22 Node contact/mail tests pass. A private owner update guide is ready at /home/ldoni/GOOGLE-MAIL-UPDATE.html. The real Google app is still version 1 and must be updated by the owner; no further test mail was submitted.
+
 ## Supplied GLOBO animation — 24 November 2026
 
 The supplied WebM/VP9 is integrated into the homepage with muted autoplay, playsinline, native looping and no playback controls. Dimensions 2172×724, duration 18 seconds, size 2,257,140 bytes; actual browser stream inspection found zero audio tracks. The static GLOBO PNG is the poster/fallback and public/private header mark. Visible public project names and metadata are now GLOBO; scientific title, stable data identifiers, current URLs and Access/KV settings are preserved.

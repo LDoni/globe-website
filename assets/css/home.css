@@ -5,3 +5,9 @@
 .logo-currents[data-motion=running] .hero-logo-video{opacity:1}
 .logo-currents[data-motion=fallback] .hero-logo-video{display:none}
 .network-overview{margin:0}.network-overview img{display:block;width:100%;height:auto;border-radius:6px}.network-overview-link{margin:20px 0 0}
+/* Keep the original currents. Rotate the high-resolution PNG's second O independently. */
+.hero-logo-video{clip-path:inset(0 25.5985% 0 0)}
+.microbe-orbit{position:absolute;left:74.2173%;top:16.5746%;width:23.5727%;height:70.7182%;overflow:hidden;border-radius:50%;clip-path:circle(48% at 50% 50%);pointer-events:none}
+.microbe-disc{position:absolute;inset:0;overflow:hidden;border-radius:50%;transform-origin:50% 50%;animation:globo-microbes-orbit 72s linear infinite;will-change:transform;backface-visibility:hidden}
+.microbe-disc img{position:absolute;display:block;max-width:none;width:424.21875%;height:141.40625%;left:-314.84375%;top:-23.4375%}
+@keyframes globo-microbes-orbit{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}

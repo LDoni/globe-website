@@ -131,6 +131,15 @@ async def main():
     await page.wait_for_timeout(800)
    assert max(positions)-min(positions)>.6,'Supplied logo video must advance during normal playback'
    if width==1440:assert len(set(frames))>1,'Rendered colours must move in real elapsed time'
+   disc=page.locator('.microbe-disc')
+   assert await disc.evaluate('(e)=>getComputedStyle(e).animationDuration')=='72s'
+   assert await disc.evaluate('(e)=>getComputedStyle(e).animationIterationCount')=='infinite'
+   assert await page.locator('.microbe-disc img').evaluate('(i)=>i.complete&&i.naturalWidth===2172')
+   assert await video.evaluate('(v)=>getComputedStyle(v).clipPath')!='none'
+   angle1=await disc.evaluate('(e)=>{const m=new DOMMatrixReadOnly(getComputedStyle(e).transform);return Math.atan2(m.m12,m.m11)*180/Math.PI;}')
+   await page.wait_for_timeout(800)
+   angle2=await disc.evaluate('(e)=>{const m=new DOMMatrixReadOnly(getComputedStyle(e).transform);return Math.atan2(m.m12,m.m11)*180/Math.PI;}')
+   assert .5<(angle2-angle1)%360<12,'Second O must rotate slowly and continuously'
    await page.locator('.network-overview img').scroll_into_view_if_needed()
    await page.wait_for_function("document.querySelector('.network-overview img').naturalWidth===1743")
    assert 'Use the pause/play button' not in await page.locator('body').inner_text()
@@ -159,6 +168,7 @@ async def main():
   await page.emulate_media(reduced_motion='reduce');await page.goto(BASE+'/index.html')
   assert await page.locator('[data-logo-motion]').get_attribute('data-motion')=='running'
   assert await page.locator('[data-logo-motion-toggle]').count()==0
+  assert await page.locator('.microbe-disc').evaluate('(e)=>getComputedStyle(e).animationPlayState')=='running'
   await page.locator('[data-logo-motion]').scroll_into_view_if_needed()
   await page.wait_for_function("document.querySelector('[data-logo-motion]').dataset.motion==='running'")
   video=page.locator('.hero-logo-video');assert await video.evaluate('(v)=>!v.paused&&v.muted&&v.loop')

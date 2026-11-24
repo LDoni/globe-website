@@ -1,6 +1,6 @@
 'use strict';
 document.querySelectorAll('[data-logo-motion]').forEach(root=>{
- const video=root.querySelector('video');if(!video)return;
+ const video=root.querySelector('.hero-logo-video');if(!video)return;
  const fallback=()=>{root.dataset.motion='fallback';};
  video.muted=true;video.defaultMuted=true;
  video.addEventListener('playing',()=>{root.dataset.motion='running';});
