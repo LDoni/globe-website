@@ -1,5 +1,11 @@
 # GLOBE verification and launch status
 
+## Contact infrastructure — 24 November 2026
+
+The updated token now successfully deploys Workers and manages Turnstile. The globo-contact Worker is deployed at https://globo-contact.lapo-doni.workers.dev with the existing production KV, preview URLs disabled and a managed widget for the exact public hostname. The Turnstile secret is installed through Cloudflare; local credential backups are outside the repository. Eight real endpoint probes and 13 contact/client/mail Node tests passed. Disabled intake/health return 503, untrusted origins are rejected and no public inbox endpoint exists. No personal enquiry was stored and no email was sent.
+
+Email activation remains blocked by missing sender authorization, independently of the now-working Workers/Turnstile permissions. Email Routing inspection still returns 403 and no DNS zone is visible. The owner prefers avoiding a new mailbox: use an authorized existing mailbox/provider or an existing owned sender domain. No purchase, plan upgrade or Gmail authorization was performed. The public contact endpoint/site key remain unset until genuine email acceptance can be verified. Public hosting, private Access policies and partner data were not changed by this deployment. Shiny publication is optional for the current static monitoring site; no shinyapps.io deployment is claimed.
+
 ## Current work — 23 November 2026
 
 Local implementation is complete for the higher GLOBO homepage illustration, public Sampling protocol page/PDF, consolidated scientific content, one interactive map on Network and sampling-status filtering. Existing stations retain their recorded status; none was automatically classified active or confirmed. The public PDF's tracker action points to the authenticated portal; rendered graphics match the supplied original.
