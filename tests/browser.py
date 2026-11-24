@@ -120,13 +120,16 @@ async def main():
    await page.locator('[data-logo-motion]').scroll_into_view_if_needed()
    await page.wait_for_function("document.querySelector('[data-logo-motion]').dataset.motion==='running'")
    assert (await page.locator('.hero h1').inner_text())=='A Global Initiative to Uncover Ocean Microbiome Responses to Super El Niño in a Warming World.'
-   assert await page.locator('.logo-current-overlay image.ocean-color-field').count()==1
+   assert await page.locator('.logo-current-overlay').count()==0
+   video=page.locator('.hero-logo-video');assert await video.count()==1
+   assert await video.evaluate('(v)=>v.autoplay&&v.muted&&v.loop&&v.playsInline&&!v.controls')
+   assert await video.evaluate('(v)=>v.videoWidth===2172&&v.videoHeight===724')
    positions=[];frames=[]
    for _ in range(3):
-    positions.append(await page.locator('.ocean-color-field').evaluate('(e)=>new DOMMatrixReadOnly(getComputedStyle(e).transform).m41'))
+    positions.append(await video.evaluate('(v)=>v.currentTime'))
     if width==1440:frames.append(await page.locator('[data-logo-motion]').screenshot())
     await page.wait_for_timeout(800)
-   assert max(positions)-min(positions)>2,'Ocean colours must advance during normal playback'
+   assert max(positions)-min(positions)>.6,'Supplied logo video must advance during normal playback'
    if width==1440:assert len(set(frames))>1,'Rendered colours must move in real elapsed time'
    await page.locator('.network-overview img').scroll_into_view_if_needed()
    await page.wait_for_function("document.querySelector('.network-overview img').naturalWidth===1743")
@@ -158,12 +161,18 @@ async def main():
   assert await page.locator('[data-logo-motion-toggle]').count()==0
   await page.locator('[data-logo-motion]').scroll_into_view_if_needed()
   await page.wait_for_function("document.querySelector('[data-logo-motion]').dataset.motion==='running'")
-  assert await page.locator('.ocean-color-field').evaluate('(e)=>getComputedStyle(e).animationPlayState')=='running'
+  video=page.locator('.hero-logo-video');assert await video.evaluate('(v)=>!v.paused&&v.muted&&v.loop')
   reduced_positions=[]
   for _ in range(3):
-   reduced_positions.append(await page.locator('.ocean-color-field').evaluate('(e)=>new DOMMatrixReadOnly(getComputedStyle(e).transform).m41'))
+   reduced_positions.append(await video.evaluate('(v)=>v.currentTime'))
    await page.wait_for_timeout(800)
-  assert max(reduced_positions)-min(reduced_positions)>2,'Requested continuous motion must also run under reduced-motion media'
+  assert max(reduced_positions)-min(reduced_positions)>.6,'Requested continuous video must also run under reduced-motion media'
+  await video.evaluate('(v)=>{v.currentTime=v.duration-.2}')
+  await page.wait_for_function('document.querySelector(".hero-logo-video").currentTime<1.5&&!document.querySelector(".hero-logo-video").paused')
+  await page.route('**/assets/videos/globo-logo-currents.webm',lambda route:route.abort())
+  await page.reload();await page.wait_for_function("document.querySelector('[data-logo-motion]').dataset.motion==='fallback'")
+  assert await page.locator('.hero-art').is_visible();assert await page.locator('.hero-art').evaluate('(i)=>i.complete&&i.naturalWidth===2172')
+  await page.unroute('**/assets/videos/globo-logo-currents.webm')
   nojs=await browser.new_context(java_script_enabled=False)
   nojs_page=await nojs.new_page();await nojs_page.goto(BASE+'/pages/join.html');assert await nojs_page.locator('button[type=submit]').is_disabled()
   await nojs.close()

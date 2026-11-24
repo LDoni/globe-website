@@ -1,4 +1,10 @@
-# GLOBE verification and launch status
+# GLOBO verification and launch status
+
+## Supplied GLOBO animation — 24 November 2026
+
+The supplied WebM/VP9 is integrated into the homepage with muted autoplay, playsinline, native looping and no playback controls. Dimensions 2172×724, duration 18 seconds, size 2,257,140 bytes; actual browser stream inspection found zero audio tracks. The static GLOBO PNG is the poster/fallback and public/private header mark. Visible public project names and metadata are now GLOBO; scientific title, stable data identifiers, current URLs and Access/KV settings are preserved.
+
+Executed locally: real 12-page Quarto render/link checks; public browser suite at 375/768/1024/1440 px covering actual frame changes, native loop restart, reduced-motion playback and deliberately failed video fallback; separate touch/mobile inline-autoplay check (23 decoded frames, zero dropped in that short sample); private browser file/ticket/Excel tests at three widths; 31 contact/mail/Access/build Node tests. Screenshots were inspected. The supplied files are copied unchanged; no media conversion or generated replacement is used. This does not claim physical-device/Safari verification.
 
 ## Contact infrastructure — 24 November 2026
 

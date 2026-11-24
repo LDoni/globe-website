@@ -6,6 +6,7 @@ python3 -m unittest discover -s tests -p 'test_python.py' -v
 node --check assets/js/network.js
 node --check assets/js/monitoring.js
 node --check assets/js/site.js
+node --check assets/js/logo-video.js
 node --check assets/js/contact.js
 node --check assets/js/climate.js
 node --test tests/contact.test.cjs tests/contact-worker.test.mjs tests/contact-mail.test.mjs tests/contact-google-relay.test.mjs

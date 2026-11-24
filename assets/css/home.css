@@ -1,5 +1,7 @@
-/* Continuous movement of the original ocean colours, without playback controls. */
-.logo-currents .logo-current-overlay{display:block!important;opacity:1}
-.logo-currents .ocean-color-field{animation:globe-ocean-colours 5s linear infinite alternate!important;animation-play-state:running!important;transform-origin:0 0}
-@keyframes globe-ocean-colours{from{transform:translate(0,-2px)}to{transform:translate(68px,4px)}}
+/* Supplied GLOBO video loops continuously; the PNG remains underneath as fallback. */
+.logo-currents{position:relative;width:100%;max-width:600px;mix-blend-mode:multiply}
+.logo-currents .hero-art{display:block;width:100%;height:auto;max-width:none;opacity:1}
+.hero-logo-video{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;opacity:0}
+.logo-currents[data-motion=running] .hero-logo-video{opacity:1}
+.logo-currents[data-motion=fallback] .hero-logo-video{display:none}
 .network-overview{margin:0}.network-overview img{display:block;width:100%;height:auto;border-radius:6px}.network-overview-link{margin:20px 0 0}

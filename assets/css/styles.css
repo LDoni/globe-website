@@ -52,3 +52,6 @@ html{scroll-padding-top:156px}.coordinator-logos{margin:0;gap:24px}.coordinator-
 .join-honeypot{position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden}[data-join-availability]:empty{display:none}
 
 .protocol-intro{padding-top:36px;padding-bottom:20px}.protocol-intro h1{margin-bottom:12px}.protocol-document{padding-top:0}.protocol-viewer{height:calc(100vh - 210px);min-height:560px}@media(max-width:850px){.protocol-intro{padding-top:24px}.protocol-viewer{height:75vh;min-height:480px}}
+
+/* Blend the supplied white-backed static wordmark into the light navigation. */
+.brand img{mix-blend-mode:multiply}
