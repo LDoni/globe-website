@@ -2,7 +2,7 @@
 
 ## Coordinator institution logos — 24 November
 
-Network coordination cards now center each name and email and display the corresponding institution logo underneath: UAB for Jaime Martinez Urtaza, University of Genoa for Luigi Vezzulli, and St. Jude for Salvador Almagro Moreno. Existing institution assets are reused with aligned image boxes and preserved aspect ratios. Public navigation, maps, data and private Access configuration are unchanged.
+Network coordination cards now center each name and email and display the corresponding institution logo underneath: UAB for Jaime Martinez Urtaza, University of Genoa for Luigi Vezzulli, and St. Jude for Salvador Almagro Moreno. Existing institution assets are reused with aligned image boxes and preserved aspect ratios. The project email globo-initiative@googlegroups.com is shown below the team and on Join. Public navigation, maps, data and private Access configuration are unchanged. Real Quarto render and 12-page link/public-output checks passed. GitHub Pages browser tests passed for institution logos and centered cards (run 45415361066); local browser attempts timed out during navigation/screenshot capture, so no local browser pass is claimed for this update. Group external-sender acceptance is controlled in Google Groups and has not been verified; the website form sends through its already verified authorized relay.
 
 ## Join active and public page updates — 24 November
 

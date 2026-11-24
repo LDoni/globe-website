@@ -161,6 +161,9 @@ async def main():
     await page.goto(BASE+'/'+slug)
     await page.wait_for_load_state('networkidle')
     assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth+1'),f'{slug}: overflow at {width}'
+    if slug in ['pages/network.html','pages/join.html']:
+     assert await page.locator('.project-email a').get_attribute('href')=='mailto:globo-initiative@googlegroups.com'
+     assert await page.locator('.project-email a').is_visible()
     body=await page.locator('body').inner_text()
     assert 'Reading the two map modes' not in body
     assert 'Interactive Shiny application' not in body
