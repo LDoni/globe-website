@@ -95,6 +95,10 @@ python3 scripts/copernicus_stations.py --start YYYY-MM-DD --end YYYY-MM-DD
 
 Use an available past interval of at most 31 days. No coordinates, grid mappings, uncertainty thresholds or site representativeness assessments are inferred. See [scientific data sources](docs/data-sources.md).
 
+## Homepage news
+
+The homepage separates curated external media coverage (News from the world, with a visible linked headline and publisher) from automatically generated GLOBO Project updates. The monitoring teaser and People & Partners column have been removed from the homepage. Official monitoring remains in its dedicated page. Coordination names use Martinez-Urtaza and Almagro-Moreno.
+
 ## News and publications
 
 Create a draft QMD entry:

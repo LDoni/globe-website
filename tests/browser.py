@@ -18,7 +18,7 @@ async def main():
   # Basemap is an external service; behavior tests deliberately run without tiles.
   await page.route('https://server.arcgisonline.com/**',lambda route:route.abort())
   await page.goto(BASE+'/pages/network.html');await page.locator('[data-status]').filter(has_text='network stations').wait_for()
-  assert await page.locator('.coordination-team h3').all_text_contents()==['Jaime Martinez Urtaza','Luigi Vezzulli','Salvador Almagro Moreno']
+  assert await page.locator('.coordination-team h3').all_text_contents()==['Jaime Martinez-Urtaza','Luigi Vezzulli','Salvador Almagro-Moreno']
   assert await page.locator('.coordination-team .card p').all_text_contents()==['Jaime.Martinez.Urtaza[AT]uab.cat','luigi.vezzulli[AT]unige.it','salvador.almagromoreno[AT]stjude.org']
   assert await page.locator('.coordination-institution img').evaluate_all("imgs=>imgs.map(i=>i.getAttribute('src'))")==['../assets/images/partners/uab.png','../assets/images/partners/unige.png','../assets/images/partners/st-jude.svg']
   await page.wait_for_function("[...document.querySelectorAll('.coordination-institution img')].every(i=>i.complete&&i.naturalWidth>0)")
@@ -106,6 +106,19 @@ async def main():
    await page.set_viewport_size({'width':width,'height':900});await page.goto(BASE+'/index.html')
    await page.locator('[data-logo-motion]').wait_for()
    assert await page.locator('[data-logo-motion-toggle]').count()==0
+   assert await page.locator('.monitor-band, [data-enso-summary]').count()==0
+   assert await page.locator('script[src$="assets/js/monitoring.js"]').count()==0
+   headline=page.locator('.world-news-card h3 a[href^="https://"]')
+   assert await headline.is_visible()
+   assert len(await headline.inner_text())>100
+   assert await headline.get_attribute('href')=='https://www.dailymail.com/sciencetech/article-16314697/Super-El-Nino-MEGA-temperatures-skyrocket.html'
+   assert await headline.evaluate('(e)=>getComputedStyle(e).webkitLineClamp') in ['none','']
+   world=await page.locator('.world-news').bounding_box();updates=await page.locator('.project-news').bounding_box()
+   if width>850:assert world['x']+world['width']<=updates['x']
+   else:assert world['y']+world['height']<=updates['y']
+   home_text=await page.locator('#main-content').inner_text()
+   assert 'PEOPLE & PARTNERS' not in home_text and 'The oceanographic context' not in home_text
+
    assert await page.locator('[data-network]').count()==0
    assert await page.locator('.network-overview img').count()==1
    assert 'globo-sampling-network.png' in await page.locator('.network-overview img').get_attribute('src')
@@ -191,6 +204,7 @@ async def main():
     await page.click('.menu-toggle');assert await page.locator('.menu-toggle').get_attribute('aria-expanded')=='true'
     await page.click('.menu-toggle')
    Path('test-results').mkdir(exist_ok=True);await page.screenshot(path=f'test-results/home-{width}.png',full_page=True)
+   await page.locator('.world-news-card').screenshot(path=f'test-results/world-news-{width}.png')
    for slug in ['pages/network.html','pages/monitoring.html','pages/join.html','pages/protocol.html']:
     await page.goto(BASE+'/'+slug)
     await page.wait_for_load_state('networkidle')
