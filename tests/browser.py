@@ -169,10 +169,16 @@ async def main():
   assert max(reduced_positions)-min(reduced_positions)>.6,'Requested continuous video must also run under reduced-motion media'
   await video.evaluate('(v)=>{v.currentTime=v.duration-.2}')
   await page.wait_for_function('document.querySelector(".hero-logo-video").currentTime<1.5&&!document.querySelector(".hero-logo-video").paused')
-  await page.route('**/assets/videos/globo-logo-currents.webm',lambda route:route.abort())
-  await page.reload();await page.wait_for_function("document.querySelector('[data-logo-motion]').dataset.motion==='fallback'")
-  assert await page.locator('.hero-art').is_visible();assert await page.locator('.hero-art').evaluate('(i)=>i.complete&&i.naturalWidth===2172')
-  await page.unroute('**/assets/videos/globo-logo-currents.webm')
+  # A fresh context prevents media-cache reuse from bypassing the failure fixture.
+  failed_media=await browser.new_context();failed_page=await failed_media.new_page()
+  await failed_page.route('**/assets/videos/globo-logo-currents.webm',lambda route:route.abort())
+  async def delayed_logo_script(route):
+   await asyncio.sleep(.3);await route.continue_()
+  await failed_page.route('**/assets/js/logo-video.js*',delayed_logo_script)
+  await failed_page.goto(BASE+'/index.html');await failed_page.wait_for_function("document.querySelector('[data-logo-motion]').dataset.motion==='fallback'")
+  assert await failed_page.locator('.hero-art').is_visible();assert await failed_page.locator('.hero-art').evaluate('(i)=>i.complete&&i.naturalWidth===2172')
+  assert not await failed_page.locator('.hero-logo-video').is_visible()
+  await failed_media.close()
   nojs=await browser.new_context(java_script_enabled=False)
   nojs_page=await nojs.new_page();await nojs_page.goto(BASE+'/pages/join.html');assert await nojs_page.locator('button[type=submit]').is_disabled()
   await nojs.close()
