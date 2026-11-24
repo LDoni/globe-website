@@ -11,3 +11,6 @@
 .microbe-disc{position:absolute;inset:0;overflow:hidden;border-radius:50%;transform-origin:50% 50%;animation:globo-microbes-orbit 72s linear infinite;will-change:transform;backface-visibility:hidden}
 .microbe-disc img{position:absolute;display:block;max-width:none;width:424.21875%;height:141.40625%;left:-314.84375%;top:-23.4375%}
 @keyframes globo-microbes-orbit{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* Apply a small warm-colour boost without changing the supplied media. */
+.logo-filter-defs{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}

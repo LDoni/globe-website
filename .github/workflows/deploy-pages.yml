@@ -58,6 +58,13 @@ jobs:
           .venv/bin/python -m playwright install --with-deps chromium
           python3 -m http.server 8765 --directory _site > /tmp/globo-http.log 2>&1 &
           .venv/bin/python tests/browser.py
+      - name: Save public browser previews
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: globo-browser-previews
+          path: test-results/
+          retention-days: 3
       - uses: actions/upload-pages-artifact@v4
         with:
           path: _site

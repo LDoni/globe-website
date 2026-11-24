@@ -134,12 +134,28 @@ async def main():
    assert await video.evaluate('(v)=>v.autoplay&&v.muted&&v.loop&&v.playsInline&&!v.controls')
    assert await video.evaluate('(v)=>v.videoWidth===2172&&v.videoHeight===724')
    positions=[];frames=[]
+   if width==1440:
+    await page.locator('[data-logo-motion]').evaluate("root=>{const probe=document.createElement('div');probe.dataset.currentProbe='';probe.style.cssText='position:absolute;left:42%;top:42%;width:13%;height:20%;pointer-events:none';root.append(probe)}")
    for _ in range(3):
     positions.append(await video.evaluate('(v)=>v.currentTime'))
-    if width==1440:frames.append(await page.locator('[data-logo-motion]').screenshot())
+    if width==1440:frames.append(await page.locator('[data-current-probe]').screenshot())
     await page.wait_for_timeout(800)
    assert max(positions)-min(positions)>.6,'Supplied logo video must advance during normal playback'
-   if width==1440:assert len(set(frames))>1,'Rendered colours must move in real elapsed time'
+   if width==1440:
+    assert len(set(frames))>1,'Warm currents in the first O must visibly move, independently of the second O'
+    Path('test-results').mkdir(exist_ok=True)
+    for i,frame in enumerate(frames):Path(f'test-results/first-o-flow-{i}.png').write_bytes(frame)
+    await page.locator('[data-current-probe]').evaluate('(e)=>e.remove()')
+    await video.evaluate('(v)=>{v.pause();v.currentTime=5}')
+    await page.wait_for_function("!document.querySelector('.hero-logo-video').seeking")
+    await page.locator('.microbe-disc').evaluate("e=>e.style.animationPlayState='paused'")
+    effect=await video.get_attribute('style')
+    await video.evaluate("v=>v.style.filter='none'")
+    await page.locator('[data-logo-motion]').screenshot(path='test-results/currents-before.png')
+    await video.evaluate('(v,effect)=>v.setAttribute("style",effect)',effect)
+    await page.locator('[data-logo-motion]').screenshot(path='test-results/currents-after.png')
+    await video.evaluate('(v)=>v.play()')
+    await page.locator('.microbe-disc').evaluate("e=>e.style.animationPlayState=''")
    disc=page.locator('.microbe-disc')
    assert await disc.evaluate('(e)=>getComputedStyle(e).animationDuration')=='72s'
    assert await disc.evaluate('(e)=>getComputedStyle(e).animationIterationCount')=='infinite'
@@ -196,6 +212,16 @@ async def main():
   await video.evaluate('(v)=>{v.currentTime=v.duration-.2}')
   await page.wait_for_function('document.querySelector(".hero-logo-video").currentTime<1.5&&!document.querySelector(".hero-logo-video").paused')
   # A fresh context prevents media-cache reuse from bypassing the failure fixture.
+  late_context=await browser.new_context()
+  late_page=await late_context.new_page()
+  async def already_playing_script(route):
+   await late_page.locator('.hero-logo-video').evaluate('(v)=>{v.muted=true;return v.play()}')
+   await route.continue_()
+  await late_page.route('**/assets/js/logo-video.js*',already_playing_script)
+  await late_page.goto(BASE+'/index.html')
+  await late_page.wait_for_function("document.querySelector('[data-logo-motion]').dataset.motion==='running'")
+  assert await late_page.locator('.hero-logo-video').is_visible()
+  await late_context.close()
   failed_media=await browser.new_context();failed_page=await failed_media.new_page()
   await failed_page.route('**/assets/videos/globo-logo-currents.webm',lambda route:route.abort())
   async def delayed_logo_script(route):

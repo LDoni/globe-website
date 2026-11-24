@@ -1,5 +1,11 @@
 # GLOBO verification and launch status
 
+## Slightly stronger warm-current animation — 24 November
+
+The first O uses a selective native SVG filter: modest warm-colour saturation/red gain, blended using red dominance so blue regions and dark lettering retain their original colours. The original video is unchanged and plays at 1.12×; the second O still uses its original static-image orbit at 72 seconds. Playback stays muted, automatic and continuous, without user controls. Successful playback now also reveals video already playing before the script attaches its event listener.
+
+Browser verification isolates the warm first-O region when comparing changing frames, covers playback already started before script execution, and captures before/after previews at the same frame. The Pages workflow retains public-only browser previews for three days for visual review. Local Quarto/link checks pass; local browser attempts timed out, including unchanged Network navigation. CI checks and preview inspection are recorded after execution. No scientific data, original media, hosting identifiers or private permissions change.
+
 ## GLOBO identifiers and larger country flags — 24 November
 
 The owner requested GLOBO throughout the application and station register, then explicitly deferred URL/organization migration. All 30 station IDs now use GLOBO with the same numeric suffix. A recorded alias table and Python/R/Excel normalization retain compatibility with old station codes and reject duplicates after normalization. Exact per-station comparison confirms coordinates, categories, operational status and scientific approval unchanged. Sample/extraction IDs and private records are preserved.
