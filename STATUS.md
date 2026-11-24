@@ -1,5 +1,9 @@
 # GLOBO verification and launch status
 
+## Coordinator institution logos — 24 November
+
+Network coordination cards now center each name and email and display the corresponding institution logo underneath: UAB for Jaime Martinez Urtaza, University of Genoa for Luigi Vezzulli, and St. Jude for Salvador Almagro Moreno. Existing institution assets are reused with aligned image boxes and preserved aspect ratios. Public navigation, maps, data and private Access configuration are unchanged.
+
 ## Join active and public page updates — 24 November
 
 The owner confirmed that group conversations are restricted to members. The production contact Worker is enabled. Health, exact-origin preflight, foreign-origin rejection, invalid-challenge rejection and absence of a public inbox passed live checks. Automated browsers displayed the real managed Turnstile challenge and correctly waited for human verification. The owner then completed a real public submission and confirmed success. A production KV audit found the saved enquiry with consent and a separate provider_accepted delivery record; no contact fields were logged. Google test receipt was independently confirmed earlier. Mailbox delivery for individual group members depends on Google Groups subscriptions and has not been verified for each member.

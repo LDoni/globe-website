@@ -20,6 +20,9 @@ async def main():
   await page.goto(BASE+'/pages/network.html');await page.locator('[data-status]').filter(has_text='network stations').wait_for()
   assert await page.locator('.coordination-team h3').all_text_contents()==['Jaime Martinez Urtaza','Luigi Vezzulli','Salvador Almagro Moreno']
   assert await page.locator('.coordination-team p').all_text_contents()==['Jaime.Martinez.Urtaza[AT]uab.cat','luigi.vezzulli[AT]unige.it','salvador.almagromoreno[AT]stjude.org']
+  assert await page.locator('.coordination-institution img').evaluate_all("imgs=>imgs.map(i=>i.getAttribute('src'))")==['../assets/images/partners/uab.png','../assets/images/partners/unige.png','../assets/images/partners/st-jude.svg']
+  await page.wait_for_function("[...document.querySelectorAll('.coordination-institution img')].every(i=>i.complete&&i.naturalWidth>0)")
+  assert await page.locator('.coordination-team .card').evaluate_all("cards=>cards.every(c=>getComputedStyle(c).textAlign==='center')")
   assert await page.evaluate("document.querySelector('.coordination-team').compareDocumentPosition(document.querySelector('.participating-countries')) & Node.DOCUMENT_POSITION_FOLLOWING")
   registry=await page.evaluate('fetch(new URL("../data/network-stations.geojson",location.href)).then(r=>r.json())');expected=len(registry['features']);incursion=sum(f['properties']['category']=='incursion' for f in registry['features'])
   countries={f['properties']['country'] for f in registry['features']}
