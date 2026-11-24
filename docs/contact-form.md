@@ -28,7 +28,7 @@ Google Groups membership settings → Subscription → Each email delivers each 
 
 The public fallback remains the previously approved coordinator mailbox. No private Access policy, paid service or group membership was changed.
 
-[Google subscription settings](https://support.google.com/groups/answer/9792489).
+[Google subscription settings](https://support.google.com/groups/answer/9792489). Gmail can suppress inbox copies of messages sent by the same account to its own group; see [Google’s documented behavior](https://knowledge.workspace.google.com/admin/support/troubleshooting/messages-sent-to-email-alias-or-group-arent-in-my-inbox). Subscribing an existing different mailbox is an option; no membership changes or invitations were performed.
 
 ## Tools and references
 
