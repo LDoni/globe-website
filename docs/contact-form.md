@@ -52,3 +52,7 @@ An existing Gmail account can configure the group as a verified Send mail as add
 Group membership never grants partner-workspace access. Cloudflare's named-email allowlist, coordinator separation and 50-user ceiling remain unchanged. No automatic synchronization from Google Groups into Access is implemented.
 
 Google authorization preparation: [the notification-only Google relay](google-mail-setup.md) now offers an alternative using the existing owner Gmail account, without a new mailbox/domain or manually configured OAuth client. Eighteen synthetic contact/mail tests pass, including signed relay integration and unauthorized/quota/provider failure cases. The Google web app is not deployed or authorized; actual mail delivery remains disabled.
+
+## Real Google acceptance — 24 November
+
+The owner's updated deployment passed version-2 signed non-sending authorization/quota checks and rejected unsigned/incorrectly signed calls. Google accepted one clearly labeled TEST notification to the fixed project group. Receipt by a group member is requested separately and remains unconfirmed at this preparation step. The production Worker has real credentials installed as secrets and uses the existing KV/Turnstile, but CONTACT_ENABLED remains false until receipt verification. Public endpoint and site-key configuration is now prepared; the fallback remains available while health reports inactive. Automated tests mock production configuration from the start so local/CI navigation cannot call the live sending service.

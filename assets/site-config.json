@@ -1,6 +1,6 @@
 {
   "shiny_url": null,
   "contact_email": "luigi.vezzulli@unige.it",
-  "contact_endpoint": null,
-  "turnstile_site_key": null
+  "contact_endpoint": "https://globo-contact.lapo-doni.workers.dev/api/join",
+  "turnstile_site_key": "0x4AAAAAAGQXVDVW0fJMxk7T"
 }

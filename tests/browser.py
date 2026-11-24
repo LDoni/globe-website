@@ -13,6 +13,8 @@ async def main():
   browser=await p.chromium.launch(**args)
   page=await browser.new_page(viewport={'width':1440,'height':1000});errors=[]
   page.on('pageerror',lambda e:errors.append(str(e)))
+  # Avoid contacting production intake/Turnstile during generic navigation tests.
+  await page.route('**/assets/site-config.json',lambda route:route.fulfill(json={'shiny_url':None,'contact_email':'luigi.vezzulli@unige.it','contact_endpoint':None,'turnstile_site_key':None}))
   # Basemap is an external service; behavior tests deliberately run without tiles.
   await page.route('https://server.arcgisonline.com/**',lambda route:route.abort())
   await page.goto(BASE+'/pages/network.html');await page.locator('[data-status]').filter(has_text='network stations').wait_for()
