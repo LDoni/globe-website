@@ -1,5 +1,5 @@
-Package: globewebsite
-Title: GLOBE Public Scientific Website and Ocean Monitoring
+Package: globowebsite
+Title: GLOBO Public Scientific Website and Ocean Monitoring
 Version: 0.1.0
 Description: Public website, station registry validation and cached ocean monitoring.
 License: MIT

@@ -7,7 +7,7 @@ options(repos=c(CRAN='https://cloud.r-project.org'),timeout=300)
 if(!nzchar(Sys.getenv('USE_BUNDLED_LIBUV'))) Sys.setenv(USE_BUNDLED_LIBUV='1')
 if(!requireNamespace('renv',quietly=TRUE)) install.packages('renv',repos='https://cloud.r-project.org')
 lock <- renv::lockfile_read('renv.lock')
-bootstrap <- isTRUE(lock$GLOBE$Bootstrap)
+bootstrap <- isTRUE(lock$GLOBO$Bootstrap)
 if(!file.exists('renv/activate.R')) {
   renv::init(bare=TRUE,restart=FALSE)
   renv::lockfile_write(lock,'renv.lock')

@@ -1,8 +1,29 @@
 {
-  "brand": {"current": "GLOBE", "target": "GLOBO"},
-  "public": {"current": "https://globe-ocean.github.io", "target": "https://globo-ocean.github.io"},
-  "repository": {"current": "globe-ocean/globe-ocean.github.io", "target": "globo-ocean/globo-ocean.github.io"},
-  "private": {"current": "https://globe-partners.pages.dev", "target": "https://globo-partners.pages.dev"},
+  "brand": {
+    "previous": "GLOBE",
+    "current": "GLOBO",
+    "target": "GLOBO"
+  },
+  "public": {
+    "current": "https://globe-ocean.github.io",
+    "target": "https://globo-ocean.github.io"
+  },
+  "repository": {
+    "current": "globe-ocean/globe-ocean.github.io",
+    "target": "globo-ocean/globo-ocean.github.io"
+  },
+  "private": {
+    "current": "https://globe-partners.pages.dev",
+    "target": "https://globo-partners.pages.dev"
+  },
   "activate": false,
-  "preserve": ["station and sample IDs", "KV namespace IDs and existing records", "authentication environment variable names", "original source documents", "existing public and private services"]
+  "preserve": [
+    "station numbering and scientific metadata",
+    "sample and extraction IDs",
+    "KV namespace IDs and existing records",
+    "original source documents",
+    "existing public/private services and URLs"
+  ],
+  "host_migration": "deferred_by_owner_2026-11-24",
+  "station_aliases": "data/station-id-aliases.json"
 }

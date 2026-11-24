@@ -1,15 +1,15 @@
 """Browser behavior tests against a rendered Quarto site or Pandoc fallback.
-Run: GLOBE_TEST_URL=http://127.0.0.1:8765 python tests/browser.py
-Optional GLOBE_CHROMIUM_PATH for environments with a system browser.
+Run: GLOBO_TEST_URL=http://127.0.0.1:8765 python tests/browser.py
+Optional GLOBO_CHROMIUM_PATH for environments with a system browser.
 """
 import asyncio,json,os,subprocess,sys,time,urllib.request,urllib.parse
 from pathlib import Path
 from playwright.async_api import async_playwright
-BASE=os.getenv('GLOBE_TEST_URL','http://127.0.0.1:8765').rstrip('/')
+BASE=os.getenv('GLOBO_TEST_URL','http://127.0.0.1:8765').rstrip('/')
 async def main():
  async with async_playwright() as p:
   args={'headless':True}
-  if os.getenv('GLOBE_CHROMIUM_PATH'):args['executable_path']=os.environ['GLOBE_CHROMIUM_PATH']
+  if os.getenv('GLOBO_CHROMIUM_PATH'):args['executable_path']=os.environ['GLOBO_CHROMIUM_PATH']
   browser=await p.chromium.launch(**args)
   page=await browser.new_page(viewport={'width':1440,'height':1000});errors=[]
   page.on('pageerror',lambda e:errors.append(str(e)))
@@ -165,6 +165,10 @@ async def main():
     if slug in ['pages/network.html','pages/join.html']:
      assert await page.locator('.project-email a').get_attribute('href')=='mailto:globo-initiative@googlegroups.com'
      assert await page.locator('.project-email a').is_visible()
+    if slug=='pages/network.html':
+     assert await page.locator('[data-country-flags] img').first.evaluate('(i)=>i.getBoundingClientRect().width') >= (40 if width<=550 else 48)
+     station_ids=await page.evaluate("fetch(new URL('../data/network-stations.geojson',location.href)).then(r=>r.json()).then(d=>d.features.map(f=>f.properties.station_id))")
+     assert all(s.startswith('GLOBO-') for s in station_ids)
     body=await page.locator('body').inner_text()
     assert 'Reading the two map modes' not in body
     assert 'Interactive Shiny application' not in body
@@ -208,7 +212,7 @@ async def main():
   await browser.close();print('PASS: map filters, popups, mode switching, synthetic observed layer, navigation, cache chart and four viewport widths')
 server=None
 try:
- if os.getenv('GLOBE_START_SITE')=='true':
+ if os.getenv('GLOBO_START_SITE')=='true':
   port=urllib.parse.urlsplit(BASE).port or 8765
   server=subprocess.Popen([sys.executable,'-m','http.server',str(port),'--bind','127.0.0.1','--directory','_site'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
   for _ in range(50):

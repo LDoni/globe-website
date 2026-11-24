@@ -3,7 +3,7 @@ import asyncio,os,socket,subprocess,urllib.request,time,base64
 from pathlib import Path
 from playwright.async_api import async_playwright
 with socket.socket() as port_probe:
- port_probe.bind(('127.0.0.1',0));PORT=int(os.getenv('GLOBE_PORTAL_PORT',port_probe.getsockname()[1]))
+ port_probe.bind(('127.0.0.1',0));PORT=int(os.getenv('GLOBO_PORTAL_PORT',port_probe.getsockname()[1]))
 BASE=f'http://127.0.0.1:{PORT}'
 async def main():
  async with async_playwright() as p:
@@ -38,7 +38,7 @@ async def main():
   await page.select_option('#ticket-filter','resolved');assert await page.locator('#ticket-list article').count()==1
   await page.fill('#ticket-search','missing-ticket');assert await page.locator('#ticket-empty').is_visible();await page.fill('#ticket-search','')
   # Generate a genuine XLSX entirely in the browser; no real scientific records.
-  workbook=await cp.evaluate('''()=>{const X=window.XLSX,b=X.utils.book_new();X.utils.book_append_sheet(b,X.utils.aoa_to_sheet([['sample_id','station_id','collection_date','latitude','longitude'],['TEST-S1','GLOBE-001','2026-11-01',0,179.9],['TEST-S2','GLOBE-001'],['TEST-S3','GLOBE-002','2026-11-01',-1,-179.9]]),'Samples');X.utils.book_append_sheet(b,X.utils.aoa_to_sheet([['extraction_id','sample_id','dna_yield_ng'],['TEST-E1','TEST-S1',10],['TEST-E2','TEST-S1',0],['TEST-E3','TEST-S3']]),'Extractions');return X.write(b,{bookType:'xlsx',type:'base64'});}''')
+  workbook=await cp.evaluate('''()=>{const X=window.XLSX,b=X.utils.book_new();X.utils.book_append_sheet(b,X.utils.aoa_to_sheet([['sample_id','station_id','collection_date','latitude','longitude'],['TEST-S1','GLOBO-001','2026-11-01',0,179.9],['TEST-S2','GLOBO-001'],['TEST-S3','GLOBO-002','2026-11-01',-1,-179.9]]),'Samples');X.utils.book_append_sheet(b,X.utils.aoa_to_sheet([['extraction_id','sample_id','dna_yield_ng'],['TEST-E1','TEST-S1',10],['TEST-E2','TEST-S1',0],['TEST-E3','TEST-S3']]),'Extractions');return X.write(b,{bookType:'xlsx',type:'base64'});}''')
   await cp.locator('#upload-panel summary').click()
   await cp.locator('#upload-form input[type=file]').set_input_files({'name':'synthetic-sampling.xlsx','mimeType':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','buffer':base64.b64decode(workbook)})
   await cp.locator('#upload-form [name=title]').fill('Synthetic sampling records');await cp.locator('#upload-form button').click();await cp.locator('#upload-form [data-result]').filter(has_text='File uploaded').wait_for()
@@ -61,7 +61,7 @@ async def main():
   await page.locator('#tickets details summary').click();await form.locator('[name=title]').fill('Synthetic failure');await form.locator('[name=description]').fill('Keep this draft on failure.');await form.locator('button').click();await form.locator('[data-result]').filter(has_text='could not be saved').wait_for();assert await form.locator('[name=title]').input_value()=='Synthetic failure'
   assert not errors,errors
   await browser.close();print('PASS: shared tickets, cross-member comments, resolution/history, private Excel upload/download, validated sampling counts, failed-save draft and three widths')
-server=subprocess.Popen(['node','tests/portal-preview.mjs'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,env={**os.environ,'GLOBE_PORTAL_PORT':str(PORT)})
+server=subprocess.Popen(['node','tests/portal-preview.mjs'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,env={**os.environ,'GLOBO_PORTAL_PORT':str(PORT)})
 try:
  for _ in range(100):
   try:urllib.request.urlopen(BASE,timeout=1).close();break

@@ -26,7 +26,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: globe-private-validation-${{ github.ref }}
+  group: globo-private-validation-${{ github.ref }}
   cancel-in-progress: false
 jobs:
   validate:
@@ -48,17 +48,17 @@ jobs:
           node tests/partners-cloudflare.test.mjs
           node tests/partners-collaboration.test.mjs
           node tests/partners-shared-sheet.test.mjs
-          node --test tests/contact-worker.test.mjs tests/contact-mail.test.mjs tests/contact-google-relay.test.mjs
+          node --test tests/contact-worker.test.mjs tests/contact-mail.test.mjs tests/contact-google-relay.test.mjs tests/station-renaming.test.mjs
           node --check partners-portal/public/workspace.js
       - name: Build using the exact Cloudflare dashboard command and root
         working-directory: partners-portal
         env:
-          GLOBE_PRIVATE_CONTENT_DIR: ''
+          GLOBO_PRIVATE_CONTENT_DIR: ''
         run: node ../scripts/build_partner_portal.mjs
       - name: Compile actual Pages Functions
         env:
           WRANGLER_SEND_METRICS: 'false'
-        run: npx --yes wrangler@4.165.0 pages functions build partners-portal/functions --outdir /tmp/globe-partner-worker --project-directory partners-portal
+        run: npx --yes wrangler@4.165.0 pages functions build partners-portal/functions --outdir /tmp/globo-partner-worker --project-directory partners-portal
       - name: Compile direct-contact Worker without deploying
         run: npx --yes wrangler@4.165.0 deploy --config contact-service/wrangler.example.toml --dry-run --outdir /tmp/globo-contact-worker
       - name: Verify local KV persistence across processes

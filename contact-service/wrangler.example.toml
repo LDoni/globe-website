@@ -6,7 +6,7 @@ workers_dev = true
 CONTACT_ALLOWED_ORIGIN = "https://globe-ocean.github.io"
 CONTACT_TURNSTILE_HOSTNAME = "globe-ocean.github.io"
 CONTACT_ENABLED = "false"
-# Bind GLOBE_ENQUIRIES to the existing production workspace KV in an external deployment configuration.
+# Bind GLOBO_ENQUIRIES to the existing production workspace KV in an external deployment configuration.
 # TURNSTILE_SECRET_KEY is a Cloudflare secret. Never put it in this file.
 
 # Email activation requires CONTACT_MAIL_FROM, CONTACT_MAIL_TO and MAIL_TRANSPORT.

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {authorized,onRequest,identity} from '../partners-portal/functions/_middleware.js';
 const pair=await crypto.subtle.generateKey({name:'RSASSA-PKCS1-v1_5',modulusLength:2048,publicExponent:new Uint8Array([1,0,1]),hash:'SHA-256'},true,['sign','verify']);
 const jwk={...await crypto.subtle.exportKey('jwk',pair.publicKey),kid:'TEST',alg:'RS256',use:'sig'};
-const env={CF_ACCESS_TEAM_DOMAIN:'https://synthetic-test.cloudflareaccess.com',CF_ACCESS_AUD:'TEST-AUDIENCE',GLOBE_PARTNER_EMAILS:'["partner@example.invalid"]'};
+const env={CF_ACCESS_TEAM_DOMAIN:'https://synthetic-test.cloudflareaccess.com',CF_ACCESS_AUD:'TEST-AUDIENCE',GLOBO_PARTNER_EMAILS:'["partner@example.invalid"]'};
 const claims={iss:env.CF_ACCESS_TEAM_DOMAIN,aud:[env.CF_ACCESS_AUD],exp:2000,nbf:900,email:'partner@example.invalid'};
 const encode=x=>Buffer.from(JSON.stringify(x)).toString('base64url');
 async function request(values={},header={alg:'RS256',kid:'TEST'}){const body=encode(header)+'.'+encode({...claims,...values});const sig=await crypto.subtle.sign('RSASSA-PKCS1-v1_5',pair.privateKey,new TextEncoder().encode(body));return new Request('https://synthetic.invalid/private/file.pdf',{headers:{'Cf-Access-Jwt-Assertion':body+'.'+Buffer.from(sig).toString('base64url')}});}
@@ -11,7 +11,7 @@ const keys=async()=>Response.json({keys:[jwk]});
 test('verified partner with signed expected issuer and audience is admitted',async()=>assert.equal(await authorized(await request(),env,keys,1000),true));
 test('origin enforces the 50-user ceiling and rejects wildcard addresses',async()=>{
  const emails=[claims.email,...Array.from({length:49},(_,i)=>`partner${i}@example.invalid`)];
- const check=list=>authorized(requestToken,{...env,GLOBE_PARTNER_EMAILS:JSON.stringify(list)},keys,1000);
+ const check=list=>authorized(requestToken,{...env,GLOBO_PARTNER_EMAILS:JSON.stringify(list)},keys,1000);
  const requestToken=await request();
  assert.equal(await check([...emails,claims.email.toUpperCase()]),true);
  assert.equal(await check([...emails,'extra@example.invalid']),false);
@@ -26,7 +26,7 @@ test('denial references identify the failing check without exposing identity or 
   const reasons=[];assert.equal(await identity(requestValue,settings,keys,1000,value=>reasons.push(value)),false);assert.deepEqual(reasons,[reason]);
  }
  const response=await onRequest({request:new Request('https://synthetic.invalid'),env,data:{},next:()=>{throw Error('Must not run');}});
- assert.equal(response.status,403);assert.equal(response.headers.get('X-GLOBE-Access-Reason'),'MISSING_ASSERTION');assert.equal(await response.text(),'Access denied. Reference: GLOBE-AUTH-MISSING_ASSERTION');
+ assert.equal(response.status,403);assert.equal(response.headers.get('X-GLOBO-Access-Reason'),'MISSING_ASSERTION');assert.equal(await response.text(),'Access denied. Reference: GLOBO-AUTH-MISSING_ASSERTION');
 });
 test('wrong audience, issuer, expired/future token and outside partner are denied',async()=>{
  for(const values of [{aud:['WRONG']},{iss:'https://wrong.cloudflareaccess.com'},{exp:999},{nbf:1001},{email:'outsider@example.invalid'}])assert.equal(await authorized(await request(values),env,keys,1000),false);
@@ -39,7 +39,7 @@ test('unsigned/unknown algorithm, key mismatch and invalid signature are denied'
 });
 test('key service failure and removed partner fail closed',async()=>{
  assert.equal(await authorized(await request(),env,async()=>{throw new Error('Synthetic failure')},1000),false);
- assert.equal(await authorized(await request(),{...env,GLOBE_PARTNER_EMAILS:'[]'},keys,1000),false);
+ assert.equal(await authorized(await request(),{...env,GLOBO_PARTNER_EMAILS:'[]'},keys,1000),false);
 });
 test('JWKS retrieval uses Workers-compatible manual redirects and rejects every redirect',async()=>{
  const signed=await request();

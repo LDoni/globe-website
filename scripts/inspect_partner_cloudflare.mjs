@@ -11,7 +11,7 @@ export function validateRoles(value){
  if(!value||!Array.isArray(value.partners)||!value.partners.length||!Array.isArray(value.coordinators))throw Error('Private role file needs nonempty partners and a coordinators array');
  const normalize=list=>list.map(x=>{if(typeof x!=='string'||!/^[^\s@*]+@[^\s@*]+\.[^\s@*]+$/.test(x))throw Error('Invalid address in private role file');return x.trim().toLowerCase();});
  const partners=[...new Set(normalize(value.partners))],coordinators=[...new Set(normalize(value.coordinators))];
- if(partners.length>MAX_PARTNERS)throw Error('GLOBE permits at most 50 authorized users; no addresses were added');
+ if(partners.length>MAX_PARTNERS)throw Error('GLOBO permits at most 50 authorized users; no addresses were added');
  if(coordinators.some(x=>!partners.includes(x)))throw Error('Coordinators must also be authorized partners');return{partners,coordinators};
 }
 function domains(app){return [app.domain,...(app.self_hosted_domains||[]),...(app.destinations||[]).filter(x=>x.type==='public').map(x=>x.uri)].filter(x=>typeof x==='string').map(x=>x.replace(/^https?:\/\//,'').replace(/\/$/,''));}
@@ -23,8 +23,8 @@ export function restrictedPolicy(policies){
 export function summarize(project,applications){
  const build=project.build_config||{},configs=project.deployment_configs||{};
  const result={project:project.name,hostname:project.subdomain||HOST,build_config_correct:build.root_dir==='partners-portal'&&build.build_command==='node ../scripts/build_partner_portal.mjs'&&build.destination_dir==='.build'&&project.production_branch==='main',latest_deployment:project.latest_deployment?{url:project.latest_deployment.url,status:project.latest_deployment.latest_stage?.status}:null,environments:{}};
- for(const [name,host]of [['production',HOST],['preview','*.'+HOST]]){const env=configs[name]||{},app=applications.find(a=>a.type==='self_hosted'&&domains(a).includes(host));result.environments[name]={fail_closed:env.fail_open===false,kv_bound:Boolean(env.kv_namespaces?.GLOBE_WORKSPACE?.namespace_id),secrets_present:['GLOBE_PARTNER_EMAILS','GLOBE_COORDINATOR_EMAILS'].every(k=>env.env_vars?.[k]?.type==='secret_text'),issuer_present:Boolean(env.env_vars?.CF_ACCESS_TEAM_DOMAIN),audience_present:Boolean(env.env_vars?.CF_ACCESS_AUD),access_application_found:Boolean(app),email_only_policy:app?restrictedPolicy(app.policies||[]):false,audience_matches:app&&env.env_vars?.CF_ACCESS_AUD?.value?app.aud===env.env_vars.CF_ACCESS_AUD.value:null};}
- const a=configs.production?.kv_namespaces?.GLOBE_WORKSPACE?.namespace_id,b=configs.preview?.kv_namespaces?.GLOBE_WORKSPACE?.namespace_id;
+ for(const [name,host]of [['production',HOST],['preview','*.'+HOST]]){const env=configs[name]||{},app=applications.find(a=>a.type==='self_hosted'&&domains(a).includes(host));result.environments[name]={fail_closed:env.fail_open===false,kv_bound:Boolean(env.kv_namespaces?.GLOBO_WORKSPACE?.namespace_id),secrets_present:['GLOBO_PARTNER_EMAILS','GLOBO_COORDINATOR_EMAILS'].every(k=>env.env_vars?.[k]?.type==='secret_text'),issuer_present:Boolean(env.env_vars?.CF_ACCESS_TEAM_DOMAIN),audience_present:Boolean(env.env_vars?.CF_ACCESS_AUD),access_application_found:Boolean(app),email_only_policy:app?restrictedPolicy(app.policies||[]):false,audience_matches:app&&env.env_vars?.CF_ACCESS_AUD?.value?app.aud===env.env_vars.CF_ACCESS_AUD.value:null};}
+ const a=configs.production?.kv_namespaces?.GLOBO_WORKSPACE?.namespace_id,b=configs.preview?.kv_namespaces?.GLOBO_WORKSPACE?.namespace_id;
  result.storage_isolated=Boolean(a&&b&&a!==b);return result;
 }
 export async function inspect(env=process.env,fetcher=fetch){

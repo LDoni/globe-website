@@ -2,6 +2,6 @@
 # production and preview bindings/secrets remain managed in the Pages dashboard.
 name = "globe-partners"
 compatibility_date = "2026-11-19"
-# Local: wrangler pages dev .build --kv GLOBE_WORKSPACE
+# Local: wrangler pages dev .build --kv GLOBO_WORKSPACE
 # Production: Pages root partners-portal, build node ../scripts/build_partner_portal.mjs,
-# output .build. Configure GLOBE_WORKSPACE separately in production and preview.
+# output .build. Configure GLOBO_WORKSPACE separately in production and preview.

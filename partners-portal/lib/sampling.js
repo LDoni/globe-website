@@ -2,7 +2,7 @@ import {validateSampling,samplingSummary} from '../public/sampling-schema.js';
 const json=(v,status=200)=>Response.json(v,{status,headers:{'Cache-Control':'private, no-store'}});
 export async function samplingCatalogue(kv){if(!kv)return[];const p=await kv.list({prefix:'sampling-meta:',limit:200});if(!p.list_complete)throw Error('Sampling catalogue capacity reached');return(await Promise.all(p.keys.filter(k=>k.name.startsWith('sampling-meta:')).map(k=>kv.get(k.name,'json')))).filter(Boolean).sort((a,b)=>b.updated_at.localeCompare(a.updated_at));}
 export async function samplingApi(context,{email,isCoordinator}){
- const {request,env}=context,u=new URL(request.url),kv=env.GLOBE_WORKSPACE;if(!/^\/api\/sampling(\/|$)/.test(u.pathname))return null;if(!email)return json({error:'Access denied'},403);if(!kv)return json({error:'Shared storage unavailable.'},503);
+ const {request,env}=context,u=new URL(request.url),kv=env.GLOBO_WORKSPACE;if(!/^\/api\/sampling(\/|$)/.test(u.pathname))return null;if(!email)return json({error:'Access denied'},403);if(!kv)return json({error:'Shared storage unavailable.'},503);
  try{if(u.pathname==='/api/sampling'&&request.method==='POST'){
   if(!isCoordinator)return json({error:'Only coordinators can publish a sampling workbook.'},403);
   if(request.headers.get('Origin')!==u.origin)return json({error:'Request origin rejected.'},403);

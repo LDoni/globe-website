@@ -14,7 +14,7 @@ The direct-submission client, Cloudflare Worker and Google notification relay ar
 
 Public site: https://globe-ocean.github.io/. Worker: https://globo-contact.lapo-doni.workers.dev. A managed Turnstile widget is limited to the actual public hostname and action join. Preview Worker URLs are disabled.
 
-The Worker validates bounded structured fields, consent, exact origin, honeypot and the real Turnstile response/hostname/action. It stores no challenge token or visitor IP in the enquiry. The existing production workspace KV is reused as GLOBE_ENQUIRIES, with separate join: and join-delivery: prefixes. There is no public enquiry read route. Only coordinators and named reviewers access the workspace inbox.
+The Worker validates bounded structured fields, consent, exact origin, honeypot and the real Turnstile response/hostname/action. It stores no challenge token or visitor IP in the enquiry. The existing production workspace KV is reused as GLOBO_ENQUIRIES, with separate join: and join-delivery: prefixes. There is no public enquiry read route. Only coordinators and named reviewers access the workspace inbox.
 
 Notifications use the owner's existing Google account through a send-only Apps Script relay. The Google deployment URL, HMAC signing key, fixed recipient and sender are Cloudflare secrets. The owner account and local credentials stay outside Git. No new mailbox, domain, paid service or plan upgrade was created. The relay has only script.send_mail scope, a fixed group recipient, signed timestamped requests, quota checks and safe error codes. Its replay cache is best effort, not durable exactly-once delivery.
 

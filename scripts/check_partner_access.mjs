@@ -6,7 +6,7 @@ export function allowedHost(host){return typeof host==='string'&&/^(?:[a-z0-9][a
 export function denied(response){if([401,403].includes(response.status))return true;if(![301,302,303,307,308].includes(response.status))return false;try{return /^https:\/\/[a-z0-9-]+\.cloudflareaccess\.com\//.test(response.headers.get('location')||'');}catch{return false;}}
 export async function probe(hostnames=[HOST],cookies={},fetcher=fetch){
  const report={checked_at:new Date().toISOString(),hosts:[],authenticated_tests:'not_run_missing_user_sessions'};
- const paths=['/','/api/workspace','/documents/access-canary.txt','/assets/globe.png'];
+ const paths=['/','/api/workspace','/documents/access-canary.txt','/assets/globo.png'];
  for(const host of hostnames){if(!allowedHost(host))throw Error('Refusing to send authentication to a non-partner hostname');
   const result={host,anonymous:[],forged_identity:[],sessions:[]};
   for(const path of paths){const r=await fetcher('https://'+host+path,{redirect:'manual',signal:AbortSignal.timeout(15000)});result.anonymous.push({path,status:r.status,denied:denied(r),login_challenge:!!r.headers.get('location')?.includes('.cloudflareaccess.com/')});}
@@ -21,8 +21,8 @@ export async function probe(hostnames=[HOST],cookies={},fetcher=fetch){
  return report;
 }
 if(process.argv[1]===fileURLToPath(import.meta.url))try{
- const hosts=process.env.GLOBE_PARTNER_HOSTS?JSON.parse(process.env.GLOBE_PARTNER_HOSTS):[HOST];
- const cookies=process.env.GLOBE_PARTNER_SESSION_FILE?JSON.parse(await readExternal(process.env.GLOBE_PARTNER_SESSION_FILE)):{};
+ const hosts=process.env.GLOBO_PARTNER_HOSTS?JSON.parse(process.env.GLOBO_PARTNER_HOSTS):[HOST];
+ const cookies=process.env.GLOBO_PARTNER_SESSION_FILE?JSON.parse(await readExternal(process.env.GLOBO_PARTNER_SESSION_FILE)):{};
  const report=await probe(hosts,cookies);console.log(JSON.stringify(report,null,2));
  if(!report.anonymous_denied||!report.all_supplied_sessions_pass)process.exitCode=1;
  else if(!report.login_challenges_present||!report.authorization_complete)process.exitCode=2;

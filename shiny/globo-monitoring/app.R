@@ -12,7 +12,7 @@ sst <- read_cache('sst.json',list(frames=list()))
 stations <- read_cache('stations.geojson',list(features=list()))
 environment <- if(file.exists('cache/station-environment.csv')) read.csv('cache/station-environment.csv',stringsAsFactors=FALSE) else data.frame()
 environment_meta <- read_cache('station-environment.meta.json',list())
-ui <- navbarPage('GLOBE Ocean Monitoring',id='tabs',
+ui <- navbarPage('GLOBO Ocean Monitoring',id='tabs',
   header=tags$div(style='padding:12px 25px;background:#edf5f5;color:#17374b',
     'Public oceanographic data only. Cached analyses are distinct from official forecasts. No unpublished microbiological data.'),
   tabPanel('ENSO Overview',enso_ui('enso')),

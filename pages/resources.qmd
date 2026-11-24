@@ -1,7 +1,7 @@
 ---
 title: "Publications & Resources"
 listing:
-  id: globe-publications
+  id: globo-publications
   contents: ../publications/**/*.qmd
   sort: date desc
   fields: [title, date, author]
@@ -11,7 +11,7 @@ listing:
 <a class="skip" href="#main-content">Skip to content</a><header class="site-nav"><a class="brand" href="../index.html" aria-label="GLOBO home"><img src="../assets/images/globo-logo-static.png" alt="GLOBO" width="2172" height="724"></a><div class="coordinator-logos" role="group" aria-label="Coordinating partners"><a class="unige-logo" href="https://distav.unige.it/" title="University of Genoa — DISTAV"><img src="../assets/images/partners/unige.png" alt="Università di Genova — DISTAV" width="1915" height="485"></a><a href="https://www.uab.cat/" title="Universitat Autònoma de Barcelona"><img src="../assets/images/partners/uab.png" alt="UAB — Universitat Autònoma de Barcelona" width="1881" height="706"></a><a href="https://www.stjude.org/" title="St. Jude Children's Research Hospital"><img src="../assets/images/partners/st-jude.svg" alt="St. Jude Children's Research Hospital" width="110" height="32"></a></div><button class="menu-toggle" aria-expanded="false" aria-controls="main-nav">Menu</button><nav class="nav-links" id="main-nav" aria-label="Main navigation"><a href="../index.html">Home</a><a href="../pages/about.html">Project</a><a href="../pages/network.html">Network</a><a href="../pages/monitoring.html">Monitoring</a><a href="../pages/protocol.html">Protocol</a><a href="../pages/join.html">Join</a><a href="https://globe-partners.pages.dev/">Partner workspace</a></nav></header><div id="main-content"><section class="wrap prose"><h2>Sampling protocol</h2><p><a href="protocol.html">Read the GLOBO sampling protocol and download the PDF ↗</a></p></section><section class="page-intro"><p class="eyebrow">PUBLICATIONS & RESOURCES</p><h1>Methods, evidence<br>and shared resources.</h1><p>Approved publications and public research materials from the GLOBO initiative.</p></section><section class="wrap prose"><p><a href="../data/network-stations.csv">Download the network station register (CSV) ↗</a></p><h2>Project publications</h2>
 ```
 
-::: {#globe-publications}
+::: {#globo-publications}
 :::
 
 ```{=html}

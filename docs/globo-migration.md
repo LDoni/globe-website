@@ -1,25 +1,19 @@
-# Prepared GLOBE → GLOBO migration
+# GLOBO names and deferred hosting migration
 
-The owner authorized preparation on 23 November 2026. Existing public and private URLs remain active. No organization was renamed, custom domain purchased or production data moved.
+Updated 24 November 2026. The owner requested the GLOBO name throughout the website, station identifiers, application paths, exports and runtime configuration. Public station IDs now use GLOBO-001 through GLOBO-030. Numeric suffixes, station coordinates, categories, operational status and scientific approval are unchanged.
 
-`config/globo-migration.json` records the proposed free hosting targets:
+`data/station-id-aliases.json` records the exact old/new correspondence. Python and R station ingestion normalize historical codes before duplicate detection. Sampling workbook validation accepts old station codes and stores their canonical GLOBO equivalents. Sample and extraction identifiers are not rewritten. Original owner workbooks and source documents remain preserved.
 
-- Public: `https://globo-ocean.github.io/`, repository `globo-ocean/globo-ocean.github.io`.
-- Private: `https://globo-partners.pages.dev/`, separately protected production and wildcard previews.
+The Shiny source now lives in `shiny/globo-monitoring/`. Internal build/test variables and Cloudflare runtime bindings use `GLOBO_*`. Production and preview reuse their original, separate KV namespaces. New secret names were configured before deploying source; old cloud aliases remain temporarily available for rollback. No authorization was broadened and the 50-user ceiling remains enforced.
 
-These names are candidates, not reserved or deployed URLs. A custom email domain is a separate decision and requires domain ownership; neither hosting address supplies an email domain.
+## Hosting stays unchanged
 
-After committing source, run `node scripts/prepare_globo_migration.mjs`. It copies tracked files into ignored `.local-data/globo-migration`, changes visible Quarto/portal branding and hosting references, and emits `MIGRATION-REVIEW.json`. It refuses to overwrite a candidate and never writes to the live source, Git remotes or cloud configuration. Use a different ignored output path for a later candidate. The candidate is for review, not ready for automatic deployment.
+The owner explicitly deferred URL and GitHub organization changes. The active services remain:
 
-Stable station/sample IDs, `GLOBE_*` environment bindings and existing KV records remain unchanged to preserve scientific joins and authorization. Historical documents and supplied raster/PDF assets are preserved. The supplied standalone GLOBO static PNG is now available at assets/images/globo-logo-static.png (2172 × 724, RGB with a white background). The candidate uses it in public headers, the hero and the private workspace. The matching 18-second WebM is now integrated into the public homepage. The previous SVG animation mask has been replaced by native video playback; visible public/private branding is GLOBO. Only the hosting/repository/Access host migration remains pending.
+- Public: https://globe-ocean.github.io/, source `globe-ocean/globe-ocean.github.io`.
+- Private: https://globe-partners.pages.dev/, Cloudflare Pages project `globe-partners`.
+- Join Worker: https://globo-contact.lapo-doni.workers.dev/.
 
-## Activation gates
+These literal hosting/resource names are deliberately retained. Replacing them in text without migrating their actual providers would break links and authentication. No new organization, Pages project, Access application or domain was created. No services, subscriptions, private files or existing KV records were deleted.
 
-1. The owner creates or authorizes the new GitHub organization. The ordinary repository token does not create a GitHub organization. Verify actual name availability before publishing the URL.
-2. Create the target repository and deploy the candidate public site. Test canonical links, all pages, maps, chart caches, navigation and logo at all viewport widths.
-3. Create the replacement private Pages project using the existing source/build settings and KV namespaces. Set roles and Google URL securely, configure OTP-only exact-email Access for production and wildcard previews, and update issuer/audiences. Retain the 50-user ceiling. Never expose a private file during migration.
-4. Verify anonymous/forged denial and real member/coordinator access, uploads, tickets, comments and existing-data persistence on the new origin.
-5. Update the public protocol's tracker link, Turnstile hostnames, Worker allowed origin, contact endpoint and Google editor return links. Configure genuine email delivery before enabling Join.
-6. Only after successful checks change canonical URLs, publish links and decide the old-site redirect strategy. Git repository redirects do not guarantee GitHub Pages redirects. Preserve the original services until this is verified.
-
-The updated Cloudflare token now manages Workers and Turnstile. Owner Google authorization and replacement-host verification remain separate prerequisites. No paid features, seats or subscriptions are required by this preparation.
+`config/globo-migration.json` keeps the potential free-hosting targets for later review. `globo-ocean` was not an available authenticated organization when checked. `node scripts/prepare_globo_migration.mjs` can still produce an isolated review candidate under ignored `.local-data`; it never activates cloud changes. When hosting migration is resumed, verify organization ownership, canonical URLs, private production/wildcard-preview Access, Turnstile hostnames, Worker origins, PDF links and real authorized login before changing published links.

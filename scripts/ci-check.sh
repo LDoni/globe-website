@@ -10,6 +10,7 @@ node --check assets/js/logo-video.js
 node --check assets/js/contact.js
 node --check assets/js/climate.js
 node --test tests/contact.test.cjs tests/contact-worker.test.mjs tests/contact-mail.test.mjs tests/contact-google-relay.test.mjs
+node --test tests/station-renaming.test.mjs
 node tests/partners-access.test.mjs
 node tests/partners-workspace.test.mjs
 node tests/partners-build.test.mjs

@@ -14,6 +14,6 @@ def build():
         text=source.read_text();title=re.search(r'^title:\s*"?(.*?)"?$',text,re.M).group(1).strip('"')
         result=subprocess.run(['pandoc',str(source),'-f','markdown','-t','html5'],capture_output=True,text=True,check=True).stdout
         prefix='../'*(len(relative.parts)-1)
-        destination.write_text(f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="GLOBE international ocean microbiome initiative"><title>{html.escape(title)} | GLOBE</title><link rel="icon" href="{prefix}assets/favicon.svg"><link rel="stylesheet" href="{prefix}assets/css/styles.css"></head><body>{result}</body></html>')
+        destination.write_text(f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="GLOBO international ocean microbiome initiative"><title>{html.escape(title)} | GLOBO</title><link rel="icon" href="{prefix}assets/favicon.svg"><link rel="stylesheet" href="{prefix}assets/css/styles.css"></head><body>{result}</body></html>')
     print(f'Preview created: {OUT}')
 if __name__=='__main__':build()

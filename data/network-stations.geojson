@@ -1,7 +1,7 @@
 {
   "type": "FeatureCollection",
   "dataset_status": "public_partner_network",
-  "source": "GLOBE editable public map register",
+  "source": "GLOBO editable public map register",
   "features": [
     {
       "type": "Feature",
@@ -13,7 +13,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-001",
+        "station_id": "GLOBO-001",
         "station_name": "Canada",
         "country": "Canada",
         "country_iso2": "ca",
@@ -37,7 +37,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-002",
+        "station_id": "GLOBO-002",
         "station_name": "USA (California)",
         "country": "United States",
         "country_iso2": "us",
@@ -61,7 +61,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-003",
+        "station_id": "GLOBO-003",
         "station_name": "Ensenada",
         "country": "Mexico",
         "country_iso2": "mx",
@@ -85,7 +85,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-004",
+        "station_id": "GLOBO-004",
         "station_name": "Los Cabos",
         "country": "Mexico",
         "country_iso2": "mx",
@@ -109,7 +109,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-005",
+        "station_id": "GLOBO-005",
         "station_name": "Costa Rica",
         "country": "Costa Rica",
         "country_iso2": "cr",
@@ -133,7 +133,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-006",
+        "station_id": "GLOBO-006",
         "station_name": "Piura",
         "country": "Peru",
         "country_iso2": "pe",
@@ -157,7 +157,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-007",
+        "station_id": "GLOBO-007",
         "station_name": "Lambayeque",
         "country": "Peru",
         "country_iso2": "pe",
@@ -181,7 +181,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-008",
+        "station_id": "GLOBO-008",
         "station_name": "Lima",
         "country": "Peru",
         "country_iso2": "pe",
@@ -205,7 +205,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-009",
+        "station_id": "GLOBO-009",
         "station_name": "Chile",
         "country": "Chile",
         "country_iso2": "cl",
@@ -229,7 +229,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-010",
+        "station_id": "GLOBO-010",
         "station_name": "Hawaii",
         "country": "United States",
         "country_iso2": "us",
@@ -253,7 +253,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-011",
+        "station_id": "GLOBO-011",
         "station_name": "China",
         "country": "China",
         "country_iso2": "cn",
@@ -277,7 +277,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-012",
+        "station_id": "GLOBO-012",
         "station_name": "Japan",
         "country": "Japan",
         "country_iso2": "jp",
@@ -301,7 +301,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-013",
+        "station_id": "GLOBO-013",
         "station_name": "Vietnam",
         "country": "Vietnam",
         "country_iso2": "vn",
@@ -325,7 +325,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-014",
+        "station_id": "GLOBO-014",
         "station_name": "Thailand",
         "country": "Thailand",
         "country_iso2": "th",
@@ -349,7 +349,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-015",
+        "station_id": "GLOBO-015",
         "station_name": "Philippines",
         "country": "Philippines",
         "country_iso2": "ph",
@@ -373,7 +373,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-016",
+        "station_id": "GLOBO-016",
         "station_name": "Singapore",
         "country": "Singapore",
         "country_iso2": "sg",
@@ -397,7 +397,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-017",
+        "station_id": "GLOBO-017",
         "station_name": "Indonesia",
         "country": "Indonesia",
         "country_iso2": "id",
@@ -421,7 +421,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-018",
+        "station_id": "GLOBO-018",
         "station_name": "Fiji",
         "country": "Fiji",
         "country_iso2": "fj",
@@ -445,7 +445,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-019",
+        "station_id": "GLOBO-019",
         "station_name": "Australia",
         "country": "Australia",
         "country_iso2": "au",
@@ -469,7 +469,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-020",
+        "station_id": "GLOBO-020",
         "station_name": "New Zealand",
         "country": "New Zealand",
         "country_iso2": "nz",
@@ -493,7 +493,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-021",
+        "station_id": "GLOBO-021",
         "station_name": "Saudi Arabia",
         "country": "Saudi Arabia",
         "country_iso2": "sa",
@@ -517,7 +517,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-022",
+        "station_id": "GLOBO-022",
         "station_name": "Abu Dhabi",
         "country": "United Arab Emirates",
         "country_iso2": "ae",
@@ -541,7 +541,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-023",
+        "station_id": "GLOBO-023",
         "station_name": "India",
         "country": "India",
         "country_iso2": "in",
@@ -565,7 +565,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-024",
+        "station_id": "GLOBO-024",
         "station_name": "UK",
         "country": "United Kingdom",
         "country_iso2": "gb",
@@ -589,7 +589,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-025",
+        "station_id": "GLOBO-025",
         "station_name": "Italy",
         "country": "Italy",
         "country_iso2": "it",
@@ -613,7 +613,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-026",
+        "station_id": "GLOBO-026",
         "station_name": "Vigo (Spain)",
         "country": "Spain",
         "country_iso2": "es",
@@ -637,7 +637,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-027",
+        "station_id": "GLOBO-027",
         "station_name": "C\u00e1diz (Spain)",
         "country": "Spain",
         "country_iso2": "es",
@@ -661,7 +661,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-028",
+        "station_id": "GLOBO-028",
         "station_name": "USA (Florida)",
         "country": "United States",
         "country_iso2": "us",
@@ -685,7 +685,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-029",
+        "station_id": "GLOBO-029",
         "station_name": "South Africa",
         "country": "South Africa",
         "country_iso2": "za",
@@ -709,7 +709,7 @@
         ]
       },
       "properties": {
-        "station_id": "GLOBE-030",
+        "station_id": "GLOBO-030",
         "station_name": "Argentina",
         "country": "Argentina",
         "country_iso2": "ar",

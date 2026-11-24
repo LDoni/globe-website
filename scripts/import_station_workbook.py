@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Local workbook intake. Never approves coordinates or publishes private columns."""
-import argparse,csv,io,json
+import argparse,csv,io,json,re
 from pathlib import Path
 from xml.etree import ElementTree as ET
 from zipfile import ZipFile
@@ -26,7 +26,7 @@ def canonical(row):
  category={'Incursion':'incursion','Pacific':'pacific','Reference':'reference'}.get(row.get('station_category'),'unclassified')
  region=row.get('ocean_region','')
  basin='Pacific' if 'Pacific' in region else 'Mediterranean' if 'Mediterranean' in region else 'Atlantic' if 'Atlantic' in region and 'Indian' not in region else 'Indian' if region in ['Indian Ocean','Persian Gulf','Red Sea'] else ''
- return dict(zip(FIELDS,[row.get('station_id',''),row.get('map_label',''),row.get('country',''),row.get('latitude',''),row.get('longitude',''),row.get('institution',''),category,basin,'unconfirmed','','',row.get('coordinate_status',''),row.get('publication_status','draft')]))
+ return dict(zip(FIELDS,[re.sub(r'^GLOBE-(\d{3})$', r'GLOBO-\1', row.get('station_id','')),row.get('map_label',''),row.get('country',''),row.get('latitude',''),row.get('longitude',''),row.get('institution',''),category,basin,'unconfirmed','','',row.get('coordinate_status',''),row.get('publication_status','draft')]))
 def intake(path,output):
  rows=read_stations(path);output.mkdir(parents=True,exist_ok=True)
  with (output/'stations-input.csv').open('w',newline='') as f:

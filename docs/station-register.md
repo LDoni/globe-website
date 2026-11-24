@@ -1,6 +1,6 @@
 # Station register and coordinator workflow
 
-Use one worksheet named `Stations`, one header row, and one row per station. IDs must remain stable when names or affiliations change. Store the sheet ID as `GLOBE_SHEET_ID`; select the tab with `GLOBE_SHEET_TAB`.
+Use one worksheet named `Stations`, one header row, and one row per station. Use canonical GLOBO station IDs and keep their numeric suffix stable when names or affiliations change. Historical GLOBE station IDs are normalized on import; see data/station-id-aliases.json. Original source workbook filenames need not change. Store the sheet ID as `GLOBO_SHEET_ID`; select the tab with `GLOBO_SHEET_TAB`.
 
 | Column | Required for approval | Allowed content |
 | --- | --- | --- |
@@ -35,7 +35,7 @@ Use `inactive` to remove a station from the current map. Previous public version
 
 Recommended: private Google Sheet, shared read-only with a dedicated Google service account. Enable Google Sheets API. Put the service-account JSON in the repository secret `GOOGLE_SERVICE_ACCOUNT_JSON`. The action writes it to a temporary file with restricted permissions, uses read-only Sheets scope, then deletes it even when a step fails. Never commit the JSON. No Google Drive-wide scope is requested.
 
-A public read-only sheet avoids credentials only when **every sheet cell is public**, including hidden tabs and columns. Do not make the internal partner sheet public. If using a separate public-only export sheet, set repository variable `GLOBE_SHEET_PUBLIC=true`; `gs4_deauth()` will be used. Removing private fields from exported GeoJSON does not make private columns safe in a publicly accessible Sheet.
+A public read-only sheet avoids credentials only when **every sheet cell is public**, including hidden tabs and columns. Do not make the internal partner sheet public. If using a separate public-only export sheet, set repository variable `GLOBO_SHEET_PUBLIC=true`; `gs4_deauth()` will be used. Removing private fields from exported GeoJSON does not make private columns safe in a publicly accessible Sheet.
 
 ## Failure and review
 
@@ -49,7 +49,7 @@ Tests use synthetic records and verify approval filtering, invalid metadata, pri
 The supplied local workbook has 30 rows, all `draft`, and separate schematic map coordinates. It is excluded from Git and deployment. Its 24 raw country labels are not substituted for the declared 23-country project scope without review.
 
 ```bash
-python3 scripts/import_station_workbook.py GLOBE_sampling_stations.xlsx
+python3 scripts/import_station_workbook.py PATH_TO_ORIGINAL_WORKBOOK.xlsx
 # Validate the canonical intake without publishing it:
 Rscript -e 'source("R/validate_stations.R"); print(nrow(validate_stations(read.csv(".local-data/stations-input.csv"))))'
 quarto render
@@ -59,7 +59,7 @@ python3 -m http.server 8768 --directory _local_preview
 
 `.local-data` and `_local_preview` are local-only and excluded from Git. Never deploy `_local_preview`. It contains unapproved schematic locations and is provided for coordinator review.
 
-When the workbook is converted to Google Sheets, set `GLOBE_SHEET_ID` and use the `Stations` tab. Both the canonical schema above and the supplied workbook schema are accepted. `map_label` maps to `station_name`, and category labels are normalized. `latitude` and `longitude` must contain verified sampling coordinates before approval: `map_latitude_approx` and `map_longitude_approx` are never used as replacements. Ambiguous ocean regions require an explicit `ocean_basin`; institutions and category approval remain required. `notes`, `contact_name`, `contact_email` and schematic coordinate columns are excluded from the approved export.
+When the workbook is converted to Google Sheets, set `GLOBO_SHEET_ID` and use the `Stations` tab. Both the canonical schema above and the supplied workbook schema are accepted. `map_label` maps to `station_name`, and category labels are normalized. `latitude` and `longitude` must contain verified sampling coordinates before approval: `map_latitude_approx` and `map_longitude_approx` are never used as replacements. Ambiguous ocean regions require an explicit `ocean_basin`; institutions and category approval remain required. `notes`, `contact_name`, `contact_email` and schematic coordinate columns are excluded from the approved export.
 
 Add partners as new rows with stable unique IDs; no station count or coordinate list is hard-coded in the map or Shiny modules. The declared initial scope is 30 stations; live approved counts and filters follow the published registry. The existing 29-point demo is a legacy demonstration and is not the workbook intake.
 

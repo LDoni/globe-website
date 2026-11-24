@@ -1,7 +1,7 @@
 withr::local_dir(normalizePath('../..'))
 library(shiny)
-source('shiny/globe-monitoring/modules/enso.R')
-source('shiny/globe-monitoring/modules/stations.R')
+source('shiny/globo-monitoring/modules/enso.R')
+source('shiny/globo-monitoring/modules/stations.R')
 test_that('ENSO module produces a cached summary without remote calls',{
  cache<-jsonlite::read_json('data/monitoring/enso.json',simplifyVector=FALSE)
  shiny::testServer(enso_server,args=list(cache=cache),{

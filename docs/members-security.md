@@ -4,9 +4,9 @@ The public `pages/members.qmd` is only access information. It contains no privat
 
 ## Configured Cloudflare Access
 
-Use a separately controlled private origin/service and a private source repository. Protect all documents, download routes, attachments and API routes. Use named participant identities and an explicit allow policy; verify authorization as well as authentication. A valid identity outside the approved GLOBE group must not be admitted.
+Use a separately controlled private origin/service and a private source repository. Protect all documents, download routes, attachments and API routes. Use named participant identities and an explicit allow policy; verify authorization as well as authentication. A valid identity outside the approved GLOBO group must not be admitted.
 
-Cloudflare's [published pricing table](https://www.cloudflare.com/plans/) specifies 50 users for Zero Trust Free. GLOBE rejects more than 50 distinct authorized email addresses, including coordinators, without automatic enrollment or truncation. Check the account's actual seats and limits before invitation. Purchasing seats or changing plans requires separate authorization.
+Cloudflare's [published pricing table](https://www.cloudflare.com/plans/) specifies 50 users for Zero Trust Free. GLOBO rejects more than 50 distinct authorized email addresses, including coordinators, without automatic enrollment or truncation. Check the account's actual seats and limits before invitation. Purchasing seats or changing plans requires separate authorization.
 
 For a private Pages project, a policy on a custom domain alone is insufficient. Inventory its production `pages.dev` hostname, custom hostname, branch aliases, per-deployment preview URLs, old deployments and any object-storage download URL. Apply protection to each reachable route, or disable public reachability. A Page is not made private merely by its source repository being private. Do not upload a sensitive document while protection is still being configured.
 
@@ -26,7 +26,7 @@ Do not use shinyapps.io public app URLs to protect documents. Built-in Shiny aut
 | --- | --- |
 | Anonymous request to every production, custom and preview hostname | Authentication challenge or denial; never private content |
 | Anonymous direct file, attachment, API and object-storage request | Denied |
-| Logged-in identity outside the GLOBE allow group | Denied |
+| Logged-in identity outside the GLOBO allow group | Denied |
 | Authorized member | Access limited to assigned resources |
 | Removed member, expired token and wrong-audience token | Denied after documented session/revocation policy |
 | Invalid signature, missing assertion and spoofed identity header | Denied at the origin |

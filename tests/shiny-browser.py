@@ -9,7 +9,7 @@ async def main():
   errors=[]
   page.on("pageerror",lambda e:errors.append(str(e)))
   await page.route("https://server.arcgisonline.com/**",lambda r:r.abort())
-  await page.goto(os.getenv("GLOBE_SHINY_URL","http://127.0.0.1:8766"))
+  await page.goto(os.getenv("GLOBO_SHINY_URL","http://127.0.0.1:8766"))
   await page.locator("#enso-latest").filter(has_text="RONI").wait_for()
   await page.locator("#enso-trend img").wait_for()
   assert await page.locator("#enso-table tbody tr").count()>0

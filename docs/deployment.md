@@ -10,13 +10,13 @@ The independent R/Shiny validation workflow verifies the complete application. S
 
 ## Cloudflare Pages
 
-The primary public website remains GitHub Pages. Existing Cloudflare projects are globe-ocean (optional public mirror) and globe-partners (private workspace). Do not migrate or change the public hostname for this work.
+The primary public website remains GitHub Pages. Existing Cloudflare projects are globo-ocean (optional public mirror) and globo-partners (private workspace). Do not migrate or change the public hostname for this work.
 
 The private project uses Git integration: root partners-portal, framework None, command node ../scripts/build_partner_portal.mjs, output .build, production branch main. Its successful initial Cloudflare build and anonymous denial responses were verified on 22 November 2026. Access configuration and authorized requests still require account authorization. See [the executed partner audit and completion procedure](partners-cloudflare.md).
 
 The private Wrangler file is local-only so the Pages dashboard remains authoritative for runtime KV bindings and secrets. Production and preview must use separate request stores, explicit email allowlists, correct issuer/audience and Fail closed. Confidential files stay outside Git and are not uploaded until real host/user tests pass.
 
-The optional public Cloudflare deployment workflow retains its existing enable flag and deploys only _site to globe-ocean; it never deploys the private artifact. Its enable flag, secrets and public hosting configuration are not changed. Private-only and documentation-only commits do not trigger public GitHub Actions deployment. Manual/reusable public entry points and public data refresh remain available.
+The optional public Cloudflare deployment workflow retains its existing enable flag and deploys only _site to globo-ocean; it never deploys the private artifact. Its enable flag, secrets and public hosting configuration are not changed. Private-only and documentation-only commits do not trigger public GitHub Actions deployment. Manual/reusable public entry points and public data refresh remain available.
 
 ## Google Sheets
 
@@ -24,9 +24,9 @@ See [station-register.md](station-register.md). Repository variables:
 
 | Variable | Purpose |
 | --- | --- |
-| `GLOBE_SHEET_ID` | Real sheet ID; empty disables synchronization |
-| `GLOBE_SHEET_TAB` | Default `stations` |
-| `GLOBE_SHEET_PUBLIC` | Default `false`; use `true` only for an entirely public sheet |
+| `GLOBO_SHEET_ID` | Real sheet ID; empty disables synchronization |
+| `GLOBO_SHEET_TAB` | Default `stations` |
+| `GLOBO_SHEET_PUBLIC` | Default `false`; use `true` only for an entirely public sheet |
 | `MONITORING_REFRESH_ENABLED` | `true` enables NOAA cache jobs |
 | `COPERNICUS_ENABLED` | Default off; enable only after product/grid/account validation |
 
@@ -58,7 +58,7 @@ No subscription-dependent capability has been selected. Published plan examples 
 
 Shiny reads caches once per worker startup. A static website refresh does **not** refresh an existing shinyapps.io bundle. Redeploy the public Shiny app after approved cache updates. Do not schedule authenticated redeployment before checking account usage. Provider instance filesystems are ephemeral and not shared; they are never treated as the data source of record.
 
-Portability: `Rscript R/prepare_shiny_cache.R`, then `shiny::runApp('shiny/globe-monitoring')`. No shinyapps.io APIs are used by the app itself. The site output can be served by any static web host. The preprocessing scripts remain ordinary R/Python commands, independent of Actions.
+Portability: `Rscript R/prepare_shiny_cache.R`, then `shiny::runApp('shiny/globo-monitoring')`. No shinyapps.io APIs are used by the app itself. The site output can be served by any static web host. The preprocessing scripts remain ordinary R/Python commands, independent of Actions.
 
 ## Rollback
 

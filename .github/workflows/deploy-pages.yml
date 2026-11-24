@@ -44,7 +44,7 @@ jobs:
           python3 scripts/build_network_registry.py
           python3 scripts/check_security.py
           python3 -m unittest discover -s tests -p test_python.py -v
-          node --test tests/contact.test.cjs
+          node --test tests/contact.test.cjs tests/station-renaming.test.mjs
           node tests/partners-access.test.mjs
           node tests/partners-workspace.test.mjs
           node tests/partners-build.test.mjs
@@ -56,7 +56,7 @@ jobs:
           python3 -m venv .venv
           .venv/bin/pip install -r requirements-test.txt
           .venv/bin/python -m playwright install --with-deps chromium
-          python3 -m http.server 8765 --directory _site > /tmp/globe-http.log 2>&1 &
+          python3 -m http.server 8765 --directory _site > /tmp/globo-http.log 2>&1 &
           .venv/bin/python tests/browser.py
       - uses: actions/upload-pages-artifact@v4
         with:

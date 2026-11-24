@@ -6,7 +6,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: globe-data-refresh
+  group: globo-data-refresh
   cancel-in-progress: false
 jobs:
   update:
@@ -27,7 +27,7 @@ jobs:
           use-public-rspm: true
       - run: Rscript R/bootstrap.R
       - name: Prepare private Google credential
-        if: vars.GLOBE_SHEET_ID != '' && vars.GLOBE_SHEET_PUBLIC != 'true'
+        if: vars.GLOBO_SHEET_ID != '' && vars.GLOBO_SHEET_PUBLIC != 'true'
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
         shell: python
@@ -35,16 +35,16 @@ jobs:
           import os, pathlib
           value = os.environ['GOOGLE_SERVICE_ACCOUNT_JSON']
           if not value: raise SystemExit('Private sheet credential missing')
-          path = pathlib.Path(os.environ['RUNNER_TEMP']) / 'globe-google.json'
+          path = pathlib.Path(os.environ['RUNNER_TEMP']) / 'globo-google.json'
           path.write_text(value)
           path.chmod(0o600)
       - name: Synchronize approved station metadata
-        if: vars.GLOBE_SHEET_ID != ''
+        if: vars.GLOBO_SHEET_ID != ''
         env:
-          GLOBE_SHEET_ID: ${{ vars.GLOBE_SHEET_ID }}
-          GLOBE_SHEET_TAB: ${{ vars.GLOBE_SHEET_TAB || 'Stations' }}
-          GLOBE_SHEET_PUBLIC: ${{ vars.GLOBE_SHEET_PUBLIC || 'false' }}
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/globe-google.json
+          GLOBO_SHEET_ID: ${{ vars.GLOBO_SHEET_ID }}
+          GLOBO_SHEET_TAB: ${{ vars.GLOBO_SHEET_TAB || 'Stations' }}
+          GLOBO_SHEET_PUBLIC: ${{ vars.GLOBO_SHEET_PUBLIC || 'false' }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/globo-google.json
         run: Rscript R/update_partners.R
       - name: Refresh NOAA products
         if: vars.MONITORING_REFRESH_ENABLED == 'true'
@@ -77,15 +77,15 @@ jobs:
           if git diff --cached --quiet; then
             echo 'changed=false' >> "$GITHUB_OUTPUT"
           else
-            git config user.name 'GLOBE data updater'
-            git config user.email 'globe-data@users.noreply.github.com'
+            git config user.name 'GLOBO data updater'
+            git config user.email 'globo-data@users.noreply.github.com'
             git commit -m 'Refresh approved public station and ocean data'
             git push origin HEAD:main
             echo 'changed=true' >> "$GITHUB_OUTPUT"
           fi
       - name: Remove Google credential
         if: always()
-        run: rm -f "$RUNNER_TEMP/globe-google.json"
+        run: rm -f "$RUNNER_TEMP/globo-google.json"
       - name: Report failure
         if: failure()
         run: echo 'Data refresh failed. No data commit or deployment was made; last published data remain available. Inspect the failing step; do not paste private sheet rows into issues.' >> "$GITHUB_STEP_SUMMARY"

@@ -18,13 +18,13 @@
 __pycache__/
 *.pyc
 /.venv/
-/GLOBE_sampling_stations.xlsx
+/GLOBO_sampling_stations.xlsx
 /.local-data/
 /_local_preview/
 
 **/*.quarto_ipynb
 
-/GLOBE Climate Earth Wordmark.png
+/GLOBO Climate Earth Wordmark.png
 
 /partners-portal/.build/
 /partners-portal/.wrangler/
@@ -32,3 +32,11 @@ __pycache__/
 /logo_orizzontale_COLORE.png
 /WhatsApp*.jpeg
 /.wrangler/
+
+# Preserve original owner-supplied source assets outside release artifacts.
+/GLOBE_sampling_stations.xlsx
+/GLOBE Climate Earth Wordmark.png
+/GLOBE3.png
+/GLOBO-Sampling_Protocol.pdf
+/GLOBO_logo_statico.png
+/GLOBO_logo_correnti_rosso_scuro_piu_visibili.webm

@@ -10,7 +10,7 @@ export async function identity(request, env, fetchKeys=fetch, now=Math.floor(Dat
   const issuer=(env.CF_ACCESS_TEAM_DOMAIN||'').replace(/\/$/,'');
   const audience=env.CF_ACCESS_AUD;
   let emails;
-  try { emails=JSON.parse(env.GLOBE_PARTNER_EMAILS||'[]'); } catch { return deny('CONFIGURATION'); }
+  try { emails=JSON.parse(env.GLOBO_PARTNER_EMAILS||'[]'); } catch { return deny('CONFIGURATION'); }
   if (!/^https:\/\/[a-z0-9-]+\.cloudflareaccess\.com$/.test(issuer) || !audience || !Array.isArray(emails) || !emails.length || emails.some(e=>typeof e!=='string')) return deny('CONFIGURATION');
   emails=[...new Set(emails.map(e=>e.trim().toLowerCase()))];
   if(emails.length>50 || emails.some(e=>! /^[^\s@*]+@[^\s@*]+\.[^\s@*]+$/.test(e)))return deny('MEMBERSHIP_CONFIGURATION');
@@ -51,7 +51,7 @@ export async function onRequest(context) {
  try{
   let reason='VERIFICATION';
   const partner=await identity(context.request,context.env,fetch,Math.floor(Date.now()/1000),value=>{reason=value;});
-  if(!partner)return guarded(new Response('Access denied. Reference: GLOBE-AUTH-'+reason,{status:403,headers:{'Content-Type':'text/plain; charset=utf-8','X-GLOBE-Access-Reason':reason}}),true);
+  if(!partner)return guarded(new Response('Access denied. Reference: GLOBO-AUTH-'+reason,{status:403,headers:{'Content-Type':'text/plain; charset=utf-8','X-GLOBO-Access-Reason':reason}}),true);
   context.data.partner=partner;
   return guarded(await context.next());
  }catch{return guarded(new Response('Workspace unavailable',{status:503,headers:{'Content-Type':'text/plain; charset=utf-8'}}),true);}

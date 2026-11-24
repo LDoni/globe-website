@@ -24,13 +24,13 @@ jobs:
       - run: python3 -m venv .venv && .venv/bin/pip install -r requirements-test.txt && .venv/bin/python -m playwright install --with-deps chromium
       - name: Browser checks
         run: |
-          python3 -m http.server 8765 --directory _site > /tmp/globe-http.log 2>&1 &
+          python3 -m http.server 8765 --directory _site > /tmp/globo-http.log 2>&1 &
           .venv/bin/python tests/browser.py
-          GLOBE_SHINY_BROWSER=true .venv/bin/python tests/shiny-startup.py
+          GLOBO_SHINY_BROWSER=true .venv/bin/python tests/shiny-startup.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: globe-validation
+          name: globo-validation
           path: |
             renv.lock
             test-results/

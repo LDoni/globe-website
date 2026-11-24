@@ -5,6 +5,13 @@ def load(name):
     spec=importlib.util.spec_from_file_location(name,ROOT/'scripts'/f'{name}.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);return module
 sst=load('fetch_sst');cop=load('copernicus_stations');pulse=load('fetch_pulse');network=load('build_network_registry');raster=load('fetch_sst_raster')
 class CacheTests(unittest.TestCase):
+ def test_station_rename_preserves_metadata_and_rejects_alias_collisions(self):
+    import csv
+    with (ROOT/'data/network-stations.csv').open() as f:row=next(csv.DictReader(f))
+    old={**row,'station_id':row['station_id'].replace('GLOBO-','GLOBE-')}
+    self.assertEqual(network.collection([old]),network.collection([row]))
+    with self.assertRaises(ValueError):network.collection([old,row])
+
  def test_cached_raster_preserves_actual_retrieval_time_after_checkout(self):
     import os
     from unittest.mock import patch

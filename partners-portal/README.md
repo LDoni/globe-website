@@ -1,10 +1,10 @@
-# GLOBE partner workspace
+# GLOBO partner workspace
 
 The private Cloudflare Pages application at https://globe-partners.pages.dev/ is separate from public GitHub Pages. Production and wildcard previews require email one-time PIN, an exact-email Access policy and a verified origin JWT. Three participants are configured privately, including one coordinator; the owner confirmed that real production login opens after the Workers redirect-mode fix. The configuration rejects more than 50 distinct participants. No confidential content or partner-address list is committed.
 
 ## Documents and Excel files
 
-Coordinators can open **Documents & files → Upload file**, choose a file, enter its title/category/description and upload. All authorized members can search and download it. Supported formats: XLSX, DOCX, PDF, CSV, TXT, PNG and JPEG; maximum 10 MiB each. Files use the existing private GLOBE_WORKSPACE KV binding, not the public repository or Quarto output. Downloads require the same authenticated membership as the workspace and are sent as attachments with no-store/nosniff headers. Executable/HTML/SVG uploads, invalid filenames, mislabeled signatures, empty files and oversized bodies are rejected.
+Coordinators can open **Documents & files → Upload file**, choose a file, enter its title/category/description and upload. All authorized members can search and download it. Supported formats: XLSX, DOCX, PDF, CSV, TXT, PNG and JPEG; maximum 10 MiB each. Files use the existing private GLOBO_WORKSPACE KV binding, not the public repository or Quarto output. Downloads require the same authenticated membership as the workspace and are sent as attachments with no-store/nosniff headers. Executable/HTML/SVG uploads, invalid filenames, mislabeled signatures, empty files and oversized bodies are rejected.
 
 The library checks a 200-file/250-MiB application budget per environment; concurrent uploads and KV eventual consistency mean this is a capacity check, not an atomic global quota. Provider Free account limits remain authoritative. No R2, subscription upgrade or paid seat was enabled. Failed multi-key uploads may leave inaccessible binary objects without a catalogue entry; no automatic deletion job is used.
 
@@ -43,7 +43,7 @@ The browser test uses a real synthetic XLSX and exercises shared comments, resol
 
 ## Cloudflare configuration
 
-Pages root `partners-portal`; build `node ../scripts/build_partner_portal.mjs`; output `.build`; production branch `main`. Wrangler is local-only: do not add pages_build_output_dir without migrating every dashboard binding. Both environments retain Fail closed, issuer CF_ACCESS_TEAM_DOMAIN, respective audience CF_ACCESS_AUD, encrypted GLOBE_PARTNER_EMAILS/GLOBE_COORDINATOR_EMAILS, and separate existing GLOBE_WORKSPACE namespaces. Coordinators must be in the partner list. The token and real role register stay outside Git. Email OTP is the only selected provider; no broad email-domain or Everyone rules are allowed.
+Pages root `partners-portal`; build `node ../scripts/build_partner_portal.mjs`; output `.build`; production branch `main`. Wrangler is local-only: do not add pages_build_output_dir without migrating every dashboard binding. Both environments retain Fail closed, issuer CF_ACCESS_TEAM_DOMAIN, respective audience CF_ACCESS_AUD, encrypted GLOBO_PARTNER_EMAILS/GLOBO_COORDINATOR_EMAILS, and separate existing GLOBO_WORKSPACE namespaces. Coordinators must be in the partner list. The token and real role register stay outside Git. Email OTP is the only selected provider; no broad email-domain or Everyone rules are allowed.
 
 KV Free has account-wide limits, including 1 GB storage, 100,000 daily reads and 1,000 daily writes. Same-key writes are limited to one per second. It is eventually consistent: another session/region can briefly show an earlier state; use Refresh after propagation. Quota/storage errors return errors and never claim successful persistence. See [official limits](https://developers.cloudflare.com/kv/platform/limits/) and [the deployment audit](../docs/partners-cloudflare.md).
 
@@ -51,7 +51,7 @@ Externally staged document manifests remain supported by the separate builder, w
 
 ## Shared Google workbook
 
-The owner-supplied Google workbook is linked and embedded through the authenticated workspace. Its clean URL is configured outside Git as the encrypted Pages secret GLOBE_PARTNER_SHEET_URL in both environments. The API exposes it only after JWT/membership verification. The iframe uses the private Google edit URL, never Publish to web/pubhtml, and the parent CSP permits frames only from docs.google.com. An Open in Google Sheets button supports top-level Google sign-in when browser cookie/frame restrictions prevent embedded editing.
+The owner-supplied Google workbook is linked and embedded through the authenticated workspace. Its clean URL is configured outside Git as the encrypted Pages secret GLOBO_PARTNER_SHEET_URL in both environments. The API exposes it only after JWT/membership verification. The iframe uses the private Google edit URL, never Publish to web/pubhtml, and the parent CSP permits frames only from docs.google.com. An Open in Google Sheets button supports top-level Google sign-in when browser cookie/frame restrictions prevent embedded editing.
 
 Google Drive permissions are a separate boundary: Cloudflare does not restrict the direct Google URL. The initial anonymous XLSX export succeeded (HTTP 200), so the owner must set General access to Restricted and add the three named participants as Editors before claiming partner-only Google access. The Google Drive connector is admin-disabled and no connected document session exists; the agent could not inspect or change Google ACLs. No Google credentials or document content are committed. Google sign-in/editor permission remains necessary even after Cloudflare login.
 
@@ -59,4 +59,4 @@ Uploaded files and sampling previews remain independent of the live shared Googl
 
 ## Prepared direct-enquiry inbox
 
-Coordinators can read the separate Join enquiry inbox. Additional named reviewers require the encrypted environment list GLOBE_CONTACT_REVIEWERS; ordinary partners receive HTTP 403. This is separate from shared tickets, which remain available to all authorized participants. Intake and notification delivery status use separate KV keys to respect the per-key write limit. No real public intake is enabled until the Worker, Turnstile and genuine mail sender are configured. See [contact setup](../docs/contact-form.md).
+Coordinators can read the separate Join enquiry inbox. Additional named reviewers require the encrypted environment list GLOBO_CONTACT_REVIEWERS; ordinary partners receive HTTP 403. This is separate from shared tickets, which remain available to all authorized participants. Intake and notification delivery status use separate KV keys to respect the per-key write limit. No real public intake is enabled until the Worker, Turnstile and genuine mail sender are configured. See [contact setup](../docs/contact-form.md).

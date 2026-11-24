@@ -10,7 +10,7 @@ def collection(rows):
  features=[];ids=set()
  for row in rows:
   if set(row)-FIELDS:raise ValueError('Network CSV contains unsupported columns; use only public map fields')
-  row={k:(v or '').strip() for k,v in row.items()};identifier=row.get('station_id','')
+  row={k:(v or '').strip() for k,v in row.items()};identifier=re.sub(r'^GLOBE-(\d{3})$', r'GLOBO-\1', row.get('station_id',''));row['station_id']=identifier
   if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]{0,63}',identifier) or identifier in ids:raise ValueError('Missing or duplicate network station ID')
   ids.add(identifier)
   visibility=row.get('map_visibility','public') or 'public'
@@ -32,7 +32,7 @@ def collection(rows):
   props={k:v for k,v in row.items() if k not in ['latitude','longitude','map_visibility']}
   props['publication_status']='network_display_only'
   features.append({'type':'Feature','geometry':{'type':'Point','coordinates':[lon,lat]},'properties':props})
- return {'type':'FeatureCollection','dataset_status':'public_partner_network','source':'GLOBE editable public map register','features':features}
+ return {'type':'FeatureCollection','dataset_status':'public_partner_network','source':'GLOBO editable public map register','features':features}
 def build(source=ROOT/'data/network-stations.csv',target=ROOT/'data/network-stations.geojson'):
  with Path(source).open(newline='') as f:result=collection(list(csv.DictReader(f)))
  target=Path(target);fd,temp=tempfile.mkstemp(prefix='.network-',dir=target.parent)

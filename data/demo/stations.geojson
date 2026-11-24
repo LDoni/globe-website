@@ -1,7 +1,7 @@
 {
   "type": "FeatureCollection",
   "dataset_status": "demonstration",
-  "source": "Previously supplied GLOBE starter; approximate locations; original figure not independently verified",
+  "source": "Previously supplied GLOBO starter; approximate locations; original figure not independently verified",
   "features": [
     {
       "type": "Feature",
@@ -20,7 +20,7 @@
         "category": "incursion",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -42,7 +42,7 @@
         "category": "incursion",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -64,7 +64,7 @@
         "category": "incursion",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -86,7 +86,7 @@
         "category": "incursion",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -108,7 +108,7 @@
         "category": "incursion",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -130,7 +130,7 @@
         "category": "incursion",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -152,7 +152,7 @@
         "category": "incursion",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -174,7 +174,7 @@
         "category": "incursion",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -196,7 +196,7 @@
         "category": "incursion",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -218,7 +218,7 @@
         "category": "pacific",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -240,7 +240,7 @@
         "category": "pacific",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -262,7 +262,7 @@
         "category": "pacific",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -284,7 +284,7 @@
         "category": "pacific",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -306,7 +306,7 @@
         "category": "pacific",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -328,7 +328,7 @@
         "category": "pacific",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -350,7 +350,7 @@
         "category": "pacific",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -372,7 +372,7 @@
         "category": "pacific",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -394,7 +394,7 @@
         "category": "pacific",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -416,7 +416,7 @@
         "category": "pacific",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -438,7 +438,7 @@
         "category": "pacific",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -460,7 +460,7 @@
         "category": "reference",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -482,7 +482,7 @@
         "category": "reference",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -504,7 +504,7 @@
         "category": "reference",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -526,7 +526,7 @@
         "category": "reference",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -548,7 +548,7 @@
         "category": "reference",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -570,7 +570,7 @@
         "category": "reference",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -592,7 +592,7 @@
         "category": "reference",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -614,7 +614,7 @@
         "category": "reference",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }
@@ -636,7 +636,7 @@
         "category": "reference",
         "ocean_basin": "Unverified",
         "sampling_status": "unconfirmed",
-        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBE sampling station. Category is a preliminary transcription.",
+        "public_description": "Approximate place coordinate from the starter. Not a validated GLOBO sampling station. Category is a preliminary transcription.",
         "coordinate_status": "approximate",
         "publication_status": "demo"
       }

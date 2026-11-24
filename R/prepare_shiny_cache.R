@@ -1,5 +1,5 @@
 prepare_shiny_cache <- function() {
-  destination <- 'shiny/globe-monitoring/cache'
+  destination <- 'shiny/globo-monitoring/cache'
   dir.create(destination,recursive=TRUE,showWarnings=FALSE)
   files <- c('data/monitoring/enso.json','data/monitoring/sst.json','data/stations.geojson','data/monitoring/station-environment.csv','data/monitoring/station-environment.meta.json')
   if(!all(file.exists(files))) stop('Required public cache missing')

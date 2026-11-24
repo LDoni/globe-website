@@ -55,3 +55,23 @@ test_that('approved Sheets updates stage canonical and visible network outputs t
   after<-lapply(list.files(path,full.names=TRUE),readBin,what='raw',n=1e6)
   expect_identical(before,after)
 })
+
+test_that('legacy station IDs normalize without changing coordinates or approval',{
+  x <- fixture(); x$station_id <- 'GLOBE-007'
+  out <- validate_stations(x)
+  expect_equal(out$station_id,'GLOBO-007')
+  expect_equal(out$latitude,x$latitude)
+  expect_equal(out$coordinate_status,x$coordinate_status)
+  current <- x; current$station_id <- 'GLOBO-007'
+  expect_error(validate_stations(rbind(x,current)),'Duplicate')
+})
+
+test_that('legacy-ID Sheets publication retains matching country flag metadata',{
+  x <- fixture(); x$station_id <- 'GLOBE-007'; x$country_iso2 <- 'it'
+  output <- tempfile('renamed-register-')
+  withr::defer(unlink(output,recursive=TRUE))
+  publish_registry(x,output_dir=output,publish_network=TRUE)
+  network <- read.csv(file.path(output,'network-stations.csv'))
+  expect_equal(network$station_id,'GLOBO-007')
+  expect_equal(network$country_iso2,'it')
+})

@@ -42,7 +42,7 @@ Test the current Toolbox response, variable names, subset bounds and metadata wi
 
 ## Attribution and basemap
 
-Credit NOAA CPC, NOAA Coral Reef Watch and Copernicus Marine/Met Office with the product identifiers and available DOI. OSTIA product DOI: [10.48670/moi-00165](https://doi.org/10.48670/moi-00165). Follow each product's current citation terms when releasing a figure or dataset. Esri Ocean basemap attribution remains visible on the Leaflet map. Basemap tiles contain geography, not GLOBE scientific observations.
+Credit NOAA CPC, NOAA Coral Reef Watch and Copernicus Marine/Met Office with the product identifiers and available DOI. OSTIA product DOI: [10.48670/moi-00165](https://doi.org/10.48670/moi-00165). Follow each product's current citation terms when releasing a figure or dataset. Esri Ocean basemap attribution remains visible on the Leaflet map. Basemap tiles contain geography, not GLOBO scientific observations.
 
 
 ## Updated raster and ERA5 panels

@@ -6,6 +6,7 @@ public_station_fields <- c('station_id','station_name','country','latitude','lon
 # Accept the supplied workbook's columns when it later becomes a Google Sheet.
 # Approximate map coordinates and private notes are never publication fallbacks.
 normalize_station_input <- function(x) {
+  if('station_id' %in% names(x)) x$station_id <- sub('^GLOBE-([0-9]{3})$', 'GLOBO-\\1', trimws(x$station_id))
   if(!'map_label' %in% names(x)) return(x)
   x$station_name <- x$map_label
   if(!'category' %in% names(x)) x$category <- tolower(x$station_category)
@@ -73,6 +74,7 @@ station_geojson <- function(x) {
 }
 
 publish_registry <- function(x, output_dir = 'data', publish_network = FALSE) {
+  x <- normalize_station_input(x)
   public <- validate_stations(x)
   dir.create(output_dir, recursive=TRUE, showWarnings=FALSE)
   staging <- tempfile('.registry-',tmpdir=output_dir)
@@ -97,7 +99,7 @@ publish_registry <- function(x, output_dir = 'data', publish_network = FALSE) {
     network <- network[,fields,drop=FALSE]
     write.csv(network,file.path(staging,'network-stations.csv'),row.names=FALSE,na='')
     args <- c(shQuote(normalizePath('scripts/build_network_registry.py')),'--source',shQuote(file.path(staging,'network-stations.csv')),'--target',shQuote(file.path(staging,'network-stations.geojson')))
-    output <- system2(Sys.getenv('GLOBE_PYTHON','python3'),args,stdout=TRUE,stderr=TRUE)
+    output <- system2(Sys.getenv('GLOBO_PYTHON','python3'),args,stdout=TRUE,stderr=TRUE)
     if(!is.null(attr(output,'status'))&&attr(output,'status')!=0L) stop('Network projection failed; current registries preserved',call.=FALSE)
     files <- c(files,'network-stations.csv','network-stations.geojson')
   }

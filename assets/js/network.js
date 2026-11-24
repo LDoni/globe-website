@@ -83,7 +83,7 @@
    const flags=document.querySelector('[data-country-flags]');
    if(flags){flags.replaceChildren();const countries=new Map();data.features.forEach(f=>countries.set(f.properties.country,f.properties.country_iso2));
     [...countries].sort(([a],[b])=>a.localeCompare(b,'en')).forEach(([name,code])=>{const item=document.createElement('li'),text=document.createElement('span');text.textContent=name;
-     if(/^[a-z]{2}$/.test(code||'')){const img=document.createElement('img');img.src=new URL('assets/vendor/flags/'+code+'.svg',ROOT).href;img.alt='';img.width=32;img.height=24;img.addEventListener('error',()=>img.remove());item.append(img);}item.append(text);flags.append(item);});
+     if(/^[a-z]{2}$/.test(code||'')){const img=document.createElement('img');img.src=new URL('assets/vendor/flags/'+code+'.svg',ROOT).href;img.alt='';img.width=48;img.height=36;img.addEventListener('error',()=>img.remove());item.append(img);}item.append(text);flags.append(item);});
    }
    fill(category,'category');fill(basin,'ocean_basin');render();}catch(e){if(request!==serial)return;markers.clearLayers();list.replaceChildren();status.textContent='Station registry unavailable. Try again later; no substitute coordinates are shown.';}}
   registry.addEventListener('change',loadRegistry);search.addEventListener('input',render);category.addEventListener('change',render);basin.addEventListener('change',render);samplingStatus?.addEventListener('change',render);date.addEventListener('change',render);

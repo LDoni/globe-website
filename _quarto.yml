@@ -12,6 +12,7 @@ project:
     - 'data/stations.csv'
     - 'data/network-stations.geojson'
     - 'data/network-stations.csv'
+    - 'data/station-id-aliases.json'
     - 'data/monitoring/**'
     - '_headers'
 website:

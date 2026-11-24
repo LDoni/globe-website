@@ -4,16 +4,16 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const portal=path.join(root,'partners-portal'),target=path.join(portal,'.build');
-const output=process.env.GLOBE_PARTNER_BUILD_DIR?path.resolve(process.env.GLOBE_PARTNER_BUILD_DIR):target;
+const output=process.env.GLOBO_PARTNER_BUILD_DIR?path.resolve(process.env.GLOBO_PARTNER_BUILD_DIR):target;
 await fs.mkdir(output,{recursive:true});
 // Refuse to reuse a document-bearing artifact: stale private files must not survive a rebuild.
-try{const old=await fs.readdir(path.join(output,'documents'));if(old.length)throw Error('Build output already contains documents. Choose a new GLOBE_PARTNER_BUILD_DIR for a fresh build.');}catch(e){if(e.code!=='ENOENT')throw e;}
+try{const old=await fs.readdir(path.join(output,'documents'));if(old.length)throw Error('Build output already contains documents. Choose a new GLOBO_PARTNER_BUILD_DIR for a fresh build.');}catch(e){if(e.code!=='ENOENT')throw e;}
 if(output!==target){try{if((await fs.readdir(output)).length)throw Error('Choose an empty build directory');}catch(e){if(e.code!=='ENOENT')throw e;}}
 await fs.mkdir(output,{recursive:true});await fs.cp(path.join(portal,'public'),output,{recursive:true});
 await fs.mkdir(path.join(output,'data'),{recursive:true});await fs.copyFile(path.join(root,'data/network-stations.geojson'),path.join(output,'data/network-stations.geojson'));
 const resources=[];
-if(process.env.GLOBE_PRIVATE_CONTENT_DIR){
- const source=await fs.realpath(process.env.GLOBE_PRIVATE_CONTENT_DIR);
+if(process.env.GLOBO_PRIVATE_CONTENT_DIR){
+ const source=await fs.realpath(process.env.GLOBO_PRIVATE_CONTENT_DIR);
  if(source===root||source.startsWith(root+path.sep))throw Error('Private documents must live outside the public repository');
  const manifest=JSON.parse(await fs.readFile(path.join(source,'resources.json'),'utf8'));
  if(!Array.isArray(manifest))throw Error('Resource manifest must be an array');

@@ -2,11 +2,13 @@
 
 A Global Initiative to Uncover Ocean Microbiome Responses to Super El Niño in a Warming World.
 
-This release extends the supplied GLOBE starter into a public Quarto website, Leaflet network explorer, validated Google Sheets publication pipeline, cached NOAA integration and modular Shiny application. GLOBO is represented as an independent international collaboration. The Italian Omics Observatory Network is one participant.
+This release extends the supplied GLOBO starter into a public Quarto website, Leaflet network explorer, validated Google Sheets publication pipeline, cached NOAA integration and modular Shiny application. GLOBO is represented as an independent international collaboration. The Italian Omics Observatory Network is one participant.
 
 **Release status (24 November 2026):** the public site is published at **https://globe-ocean.github.io/** from `globe-ocean/globe-ocean.github.io`. Real Quarto, R/Shiny, Python/Node and browser checks have passed. The public site includes official ERA5 interactive charts, historical-rank boxes and cached high-resolution NOAA maps. The 21 November update broadens the microbiome framing, restores the original project title, adds the supplied UniGe mark and animates the original ocean colours. The separate partner workspace is deployed with exact-email Cloudflare Access policies on production and wildcard previews, isolated KV stores and a 50-user ceiling. Email OTP is enforced on both private applications. A Workers-specific login verification error has been corrected and tested in actual workerd; authenticated production operations still require verification; see [the deployment audit](docs/partners-cloudflare.md). Deployment outcomes are recorded in [STATUS.md](STATUS.md).
 
 Join direct submission is active with a real Turnstile challenge, private KV persistence and Google group notifications. The owner completed a real public submission; storage and provider acceptance were checked separately. Group conversations are restricted to members (owner confirmed). Individual member mailbox delivery depends on their Google Groups subscription. Network includes the published coordination team above participating countries. See [contact service verification](docs/contact-form.md).
+
+Station identifiers now use **GLOBO-001 … GLOBO-030**. Historical station codes are accepted during import through the [identifier correspondence](data/station-id-aliases.json); scientific metadata and approval status are unchanged. Shiny is now in `shiny/globo-monitoring/`, and runtime variables use `GLOBO_*`. The owner deferred URL/organization changes, so the current public and private hosts remain active. Network flags are enlarged for desktop and mobile. See [migration status](docs/globo-migration.md).
 
 ## Quick start
 
@@ -30,7 +32,7 @@ python3 -m venv .venv
 python3 -m http.server 8765 --directory _site
 # In another terminal:
 .venv/bin/python tests/browser.py
-GLOBE_SHINY_BROWSER=true .venv/bin/python tests/shiny-startup.py
+GLOBO_SHINY_BROWSER=true .venv/bin/python tests/shiny-startup.py
 ```
 
 If only Pandoc is installed, the same QMD bodies can be previewed without claiming a Quarto render:
@@ -46,7 +48,7 @@ Start the separate dashboard with:
 
 ```bash
 Rscript R/prepare_shiny_cache.R
-Rscript -e 'shiny::runApp("shiny/globe-monitoring",host="127.0.0.1",port=8766)'
+Rscript -e 'shiny::runApp("shiny/globo-monitoring",host="127.0.0.1",port=8766)'
 ```
 
 The Data Explorer is an explicit future-results placeholder. Station Explorer correctly reports no approved stations; it displays no invented station measurements.
@@ -64,7 +66,7 @@ The Data Explorer is an explicit future-results placeholder. Station Explorer co
 | `data/monitoring/` | Small public processed ocean caches and provenance |
 | `R/` | Validation, Sheets synchronization, NOAA preprocessing and Shiny deployment |
 | `scripts/` | NOAA spatial cache, optional Copernicus extraction, build and QA helpers |
-| `shiny/globe-monitoring/` | Portable Shiny app, modules and public cache |
+| `shiny/globo-monitoring/` | Portable Shiny app, modules and public cache |
 | `config/` | Station categories, ocean product choice and reviewed grid mappings |
 | `.github/workflows/` | Pull-request QA, deployment, daily refresh and Shiny deployment |
 | `docs/` | Coordinator, deployment, scientific-source and security documentation |
@@ -104,7 +106,7 @@ python3 scripts/new_content.py publication paper-slug --title 'Approved paper ti
 
 Edit the file and remove `draft: true` only after authorization. Standard Quarto metadata support dates, authors, categories, descriptions, image paths, external links and DOI links in the body. New entries use the existing page layout. The homepage lists the three latest public news entries; the news and resource pages list all matching public entries. No invented announcement or publication is shipped. RSS can be enabled with `feed: true` in the news listing after the actual `website.site-url` is configured; it is not enabled against a fabricated domain.
 
-For a publication add a link such as `https://doi.org/ACTUAL-DOI`. Store only approved imagery with appropriate rights. The current site uses the owner-supplied transparent GLOBE wordmark and scientific network illustration; the GLOBO rebrand is prepared separately. The schematic globe is not used as a quantitative map.
+For a publication add a link such as `https://doi.org/ACTUAL-DOI`. Store only approved imagery with appropriate rights. The current site uses the owner-supplied transparent GLOBO wordmark and scientific network illustration; the GLOBO rebrand is prepared separately. The schematic globo is not used as a quantitative map.
 
 ## Deployment and account connections
 
@@ -127,7 +129,7 @@ The Join page uses a direct-submission client. Its Worker and email transports a
 
 The initial scope is now 30 stations. The supplied XLSX is a local intake file, excluded from Git. See [the workbook/Sheets workflow](docs/station-register.md) for repeatable import and the separate local preview of its unapproved approximate locations. Adding approved rows to the connected Sheet updates station lists, filters and maps automatically.
 
-GLOBE is a free and independent network of scientists, open to new partners and proposals for coordinated sampling during exceptional ocean events. Participation and campaign planning are agreed with the relevant teams.
+GLOBO is a free and independent network of scientists, open to new partners and proposals for coordinated sampling during exceptional ocean events. Participation and campaign planning are agreed with the relevant teams.
 
 The monitoring page includes a year-comparison RONI chart, pointer readout and SVG export. It links to the official C3S/ECMWF Climate Pulse application for ERA5 analyses. Climate Pulse currently sends `frame-ancestors 'self'` and `X-Frame-Options: SAMEORIGIN`, so it is linked rather than embedded. NOAA RONI and ERA5 indicators retain separate definitions and attribution.
 
@@ -141,7 +143,7 @@ When Google Sheets is connected, configure it as the single authoritative source
 
 ## Official ERA5 interactive monitoring
 
-The daily Niño 3.4, Niño 3, Niño 4 and Niño 1+2 panels use the public CSVs distributed by C3S/ECMWF for Climate Pulse. Each cached region has 17,488 dates from 1979 through 17 November 2026. GLOBE provides the interactive rendering, year comparisons, date selection and statistics; the original Climate Pulse app remains linked. All 69,952 rows were compared with independent original CSV intakes. The CSV notes identify 12 UTC SST values; their full sampling and quality notes are retained.
+The daily Niño 3.4, Niño 3, Niño 4 and Niño 1+2 panels use the public CSVs distributed by C3S/ECMWF for Climate Pulse. Each cached region has 17,488 dates from 1979 through 17 November 2026. GLOBO provides the interactive rendering, year comparisons, date selection and statistics; the original Climate Pulse app remains linked. All 69,952 rows were compared with independent original CSV intakes. The CSV notes identify 12 UTC SST values; their full sampling and quality notes are retained.
 
 Rank is calculated from actual SST values on the same calendar date across available years; equal values share a rank. Missing values are not filled. Daily ERA5 SST/anomalies, seasonal NOAA RONI, NOAA CRW gridded anomalies, official forecasts and optional Copernicus Marine station extraction are distinct products.
 
@@ -161,19 +163,19 @@ The separate partners-portal application provides coordinator file uploads, shar
 
 ## Cloudflare partner deployment — 22 November
 
-The globe-partners Git integration build is successful. Production and wildcard previews redirect anonymous and forged requests to Cloudflare Access. Existing isolated KV stores, encrypted named-email role lists, matching issuer/audiences and email OTP are configured. Real authorized application requests remain to be tested. The private deployment remains separate from the public GitHub Pages site. Read [the executed audit, current configuration and required authorization](docs/partners-cloudflare.md). The dedicated private workflow builds/compiles and tests this application without publishing _site.
+The globo-partners Git integration build is successful. Production and wildcard previews redirect anonymous and forged requests to Cloudflare Access. Existing isolated KV stores, encrypted named-email role lists, matching issuer/audiences and email OTP are configured. Real authorized application requests remain to be tested. The private deployment remains separate from the public GitHub Pages site. Read [the executed audit, current configuration and required authorization](docs/partners-cloudflare.md). The dedicated private workflow builds/compiles and tests this application without publishing _site.
 
 Homepage overview (22 November): the owner-supplied network illustration replaces the interactive sampling-map section. All Leaflet controls, station filters and quantitative NOAA layers remain on the Network page. The homepage still retrieves the station count from the editable public registry, without loading Leaflet.
 
 The latest content cleanup removes the Network map-mode explanation, the undeployed Shiny application notice and the Join confidentiality note. Join sending is disabled until the direct endpoint and mail transport are configured and verified. Cloudflare-only free sending to the requested verified recipient is feasible with an existing onboarded routing domain; see docs/contact-form.md for the remaining requirements.
 
-Current Access status: the organization is active and the owner-created One-time PIN provider is selected exclusively for both GLOBE applications. No additional API permission is needed for this configuration. The 50-user ceiling is enforced locally and at the origin; the owner has confirmed live login; authenticated new-feature write tests remain pending.
+Current Access status: the organization is active and the owner-created One-time PIN provider is selected exclusively for both GLOBO applications. No additional API permission is needed for this configuration. The 50-user ceiling is enforced locally and at the origin; the owner has confirmed live login; authenticated new-feature write tests remain pending.
 
 Partner workspace is now linked directly in the navigation of all public pages. For Excel: Upload file accepts .xlsx; the Sampling overview template supplies Samples/Extractions sheets, preview and private publication. See [the partner guide](partners-portal/README.md).
 
 23 November update: larger institutional marks now appear Genoa / UAB / St. Jude in equal responsive boxes, the homepage network illustration is wider, and “The initial initiative” is corrected to “The initiative”. The private workspace embeds the owner-supplied Google workbook with an editor link; Google Restricted sharing and named Editor permissions are required separately from Cloudflare. The replacement name is confirmed as GLOBO. An isolated branding/URL migration candidate is prepared with `node scripts/prepare_globo_migration.mjs`; current hosted URLs remain active until replacement hosts and access restrictions are verified. See [the migration checklist](docs/globo-migration.md).
 
-Header refinement: institutional marks are centered on the full viewport, independently of the left-hand GLOBE brand. Menu links use 16 px on desktop and 18 px on mobile, with four-width centering/overlap checks.
+Header refinement: institutional marks are centered on the full viewport, independently of the left-hand GLOBO brand. Menu links use 16 px on desktop and 18 px on mobile, with four-width centering/overlap checks.
 
 Desktop navigation is aligned to the right of the sticky header; the institutional logos remain independently centered.
 
@@ -191,7 +193,7 @@ Protocol is available directly in the main menu. Its page displays the PDF immed
 
 The supplied standalone GLOBO static logo is staged for the migration candidate; the matching animation is awaited. A notification-only Google Apps Script relay is prepared and tested for the existing Gmail owner account, with a private local authorization guide and no Gmail-read permission. Owner Google authorization is still required; see docs/google-mail-setup.md.
 
-24 November logo release: the supplied GLOBO animation and static wordmark replace the previous GLOBE mark. Public titles, visible project references and the private header now say GLOBO. Existing GitHub/Cloudflare URLs, station/sample IDs, KV records and authentication identifiers remain stable while replacement-host migration is pending.
+24 November logo release: the supplied GLOBO animation and static wordmark replace the previous GLOBO mark. Public titles, visible project references and the private header now say GLOBO. Existing GitHub/Cloudflare URLs, station/sample IDs, KV records and authentication identifiers remain stable while replacement-host migration is pending.
 
 Calmer logo update: the second O now rotates the original static PNG at one revolution per 72 seconds, inside a fixed circular window. The first O retains the supplied video and its original current speed. No extra video file is downloaded. Google readiness/security checks passed on the owner deployment, but the first delivery test was not confirmed and no group email was received; version-2 signed diagnostics are prepared and require an owner deployment update before another send test.
 
