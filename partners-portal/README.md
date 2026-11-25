@@ -4,7 +4,7 @@ The private Cloudflare Pages application at https://globe-partners.pages.dev/ is
 
 ## Short partner instructions
 
-The English [quick guide](public/guide.html) is available through **Quick guide** in the workspace header and at https://globe-partners.pages.dev/guide.html after authentication. It covers sign-in, the shared workbook, tickets, comments, resolution/history and owner-only ticket deletion. The guide contains no partner identities or confidential documents and uses the same Access/origin guard as the rest of the portal.
+Partner instructions are shared separately by email. The Quick guide page and navigation link have been removed from the portal.
 
 ## Retained private file backend
 
@@ -47,7 +47,7 @@ node tests/portal-preview.mjs
 # http://127.0.0.1:8790 — synthetic identities and documents only, never deploy.
 ```
 
-The browser test uses a real synthetic XLSX and exercises shared comments, resolved history, permissions, binary download, preview/publish/counts, failed-save drafts and 375/768/1440 px. The runtime regression uses actual workerd; no fake login code is deployed. Local tests do not establish successful authenticated production submissions or downloads.
+The browser test exercises shared comments, resolved history, permissions, failed-save drafts, owner-only deletion (cancel/failure/success) and 375/768/1440 px. The runtime regression uses actual workerd and persistent synthetic KV; no fake login code is deployed. Local tests do not establish successful authenticated production operations.
 
 ## Cloudflare configuration
 

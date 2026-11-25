@@ -12,7 +12,7 @@ Station identifiers now use **GLOBO-001 … GLOBO-030**. Historical station code
 
 ## Quick start
 
-Partners: the protected [quick guide](https://globe-partners.pages.dev/guide.html) explains sign-in, the shared workbook, ticket discussions and resolved-ticket history. See [workspace verification](STATUS.md) for the distinction between automated local tests and authenticated production checks.
+Partner instructions are shared separately by email. See [workspace verification](STATUS.md) for the distinction between automated local tests and authenticated production checks.
 
 The private workspace currently shows the shared Google workbook and tickets. Documents & files/uploads, Join enquiries and Sampling overview/import were removed from its interface at the owner's request; their existing private records are retained.
 

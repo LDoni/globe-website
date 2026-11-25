@@ -1,5 +1,9 @@
 # GLOBO verification and launch status
 
+## Partner instructions by email and confirmed ticket owner — 25 November 2026
+
+Removed the Quick guide link and its HTML page at the owner's request; partner instructions are shared separately by email. The owner confirmed the existing approved email. `GLOBO_TICKET_ADMIN_EMAIL` is now configured as an encrypted Cloudflare Pages secret in production and preview, for that one account only. Configuration readback verified preservation of all existing variables, KV bindings and fail-closed guards. No membership was added, and no real ticket was deleted.
+
 ## Ticket-owner deletion and simplified workspace — 25 November 2026
 
 Removed Documents & files, its search/category/empty-state controls and Upload file from the interface. Shared Google workbook and tickets remain. Existing private files/requests/sampling data and their protected APIs are retained; no production records were deleted. Updated the English partner guide and READMEs.
