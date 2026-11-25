@@ -18,6 +18,14 @@ async def main():
   assert await page.locator('#shared-sheet-frame').get_attribute('src')=='https://docs.google.com/spreadsheets/d/SYNTHETIC_TEST_ONLY/edit?rm=minimal'
   assert await page.locator('#shared-sheet-frame').get_attribute('referrerpolicy')=='no-referrer'
   assert await page.locator('#campaign-form,#station-form,#request-list').count()==0
+  guide=await partner.new_page()
+  await guide.goto(BASE+'/guide.html')
+  assert await guide.title()=='Partner quick guide · GLOBO'
+  assert await guide.locator('.guide-steps li').count()==6
+  for width in [375,768,1440]:
+   await guide.set_viewport_size({'width':width,'height':900})
+   assert await guide.evaluate('document.documentElement.scrollWidth <= innerWidth'),f'Guide overflow at {width}'
+  await guide.close()
   assert not await page.locator('#upload-panel').is_visible()
   assert await page.locator('#resource-list li').count()==1
   await page.fill('#resource-search','missing-resource');assert await page.locator('#resource-empty').is_visible();await page.fill('#resource-search','')

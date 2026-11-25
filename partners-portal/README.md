@@ -2,6 +2,10 @@
 
 The private Cloudflare Pages application at https://globe-partners.pages.dev/ is separate from public GitHub Pages. Production and wildcard previews require email one-time PIN, an exact-email Access policy and a verified origin JWT. Three participants are configured privately, including one coordinator; the owner confirmed that real production login opens after the Workers redirect-mode fix. The configuration rejects more than 50 distinct participants. No confidential content or partner-address list is committed.
 
+## Short partner instructions
+
+The English [quick guide](public/guide.html) is available through **Quick guide** in the workspace header and at https://globe-partners.pages.dev/guide.html after authentication. It covers sign-in, the shared workbook, files, tickets, comments, resolution/history and coordinator-only uploads/imports. The guide contains no partner identities or confidential documents and uses the same Access/origin guard as the rest of the portal.
+
 ## Documents and Excel files
 
 Coordinators can open **Documents & files → Upload file**, choose a file, enter its title/category/description and upload. All authorized members can search and download it. Supported formats: XLSX, DOCX, PDF, CSV, TXT, PNG and JPEG; maximum 10 MiB each. Files use the existing private GLOBO_WORKSPACE KV binding, not the public repository or Quarto output. Downloads require the same authenticated membership as the workspace and are sent as attachments with no-store/nosniff headers. Executable/HTML/SVG uploads, invalid filenames, mislabeled signatures, empty files and oversized bodies are rejected.
@@ -33,6 +37,7 @@ node --test tests/partners-access.test.mjs tests/partners-workspace.test.mjs \
   tests/partners-cloudflare.test.mjs tests/partners-build.test.mjs \
   tests/partners-collaboration.test.mjs tests/partners-shared-sheet.test.mjs
 node tests/partners-runtime.mjs
+node tests/partners-ticket-runtime.mjs
 node tests/partners-kv-persistence.mjs
 .venv/bin/python tests/portal-browser.py
 node tests/portal-preview.mjs

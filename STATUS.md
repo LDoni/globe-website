@@ -1,5 +1,13 @@
 # GLOBO verification and launch status
 
+## Partner quick guide and ticket verification — 25 November 2026
+
+The private workspace now includes a Quick guide link and an English six-step guide at `/guide.html`, covering email-PIN access, Google Sheets permissions, files, ticket creation/comments and retained resolved discussions. Public website content is unchanged.
+
+Twenty-five selected Node access/workspace/collaboration tests passed. Synthetic browser integration passed ticket creation, cross-member comments, author/coordinator resolution and history, protected Excel upload/download, sampling counts and failed-save draft preservation at 375/768/1440 px. Actual workerd tests passed signed authentication and a complete ticket lifecycle with concurrent comments, denial of resolution by another ordinary partner, coordinator resolution, author reopen/resolve, and native local KV persistence after runtime restart. Independent-process Wrangler KV persistence also passed. These use synthetic local identities and data, not production user sessions.
+
+An authenticated production ticket test is awaiting the owner: create a clearly labelled TEST ticket, add a comment, resolve it and check the Resolved filter. No Cloudflare Access session is available to the automated runner; administrative API access is not a substitute for an end-user login. No confidential document was uploaded for these checks.
+
 ## Homepage world-news column and coordinator spelling — 24 November
 
 Removed the homepage ENSO/ocean-monitoring teaser, its cached RONI summary and its unused monitoring script. Monitoring remains available in its dedicated page. Replaced the homepage People & Partners column with News from the world, to the left of the existing Project updates listing on desktop and above it on phones. The supplied Daily Mail link displays its full headline, publisher, publication date and Media coverage label; no article body, images, extracted temperature values or forecast claims are republished as project results. The publisher blocks automated reading; the displayed title/date were corroborated through indexed NewsPrisma and NewsCord metadata, with the direct publisher URL retained.

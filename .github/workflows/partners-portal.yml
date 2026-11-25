@@ -65,6 +65,8 @@ jobs:
         run: node tests/partners-kv-persistence.mjs
       - name: Verify signed authentication in the actual Workers runtime
         run: node tests/partners-runtime.mjs
+      - name: Verify ticket lifecycle and persistent KV in the actual Workers runtime
+        run: node tests/partners-ticket-runtime.mjs
       - name: Browser tests with synthetic users and documents
         run: |
           python3 -m venv .venv
