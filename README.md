@@ -14,6 +14,8 @@ Station identifiers now use **GLOBO-001 … GLOBO-030**. Historical station code
 
 Partners: the protected [quick guide](https://globe-partners.pages.dev/guide.html) explains sign-in, shared workbooks, documents, ticket discussions and resolved-ticket history. See [workspace verification](STATUS.md) for the distinction between automated local tests and authenticated production checks.
 
+The private workspace currently shows the shared Google workbook, documents and tickets. Join enquiries and Sampling overview/import were removed from its interface at the owner's request; their existing private records are retained.
+
 Locally verified: R 4.3.3, Quarto 1.11.9, Python 3.12.3, Node 24.14.0 and Chromium 159. CI also verifies R 4.4.3, Quarto 1.8.27 and Node 22. The public website has no runtime R dependency; R is used for preprocessing and the separate Shiny application.
 
 ```bash

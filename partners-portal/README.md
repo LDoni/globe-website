@@ -4,7 +4,7 @@ The private Cloudflare Pages application at https://globe-partners.pages.dev/ is
 
 ## Short partner instructions
 
-The English [quick guide](public/guide.html) is available through **Quick guide** in the workspace header and at https://globe-partners.pages.dev/guide.html after authentication. It covers sign-in, the shared workbook, files, tickets, comments, resolution/history and coordinator-only uploads/imports. The guide contains no partner identities or confidential documents and uses the same Access/origin guard as the rest of the portal.
+The English [quick guide](public/guide.html) is available through **Quick guide** in the workspace header and at https://globe-partners.pages.dev/guide.html after authentication. It covers sign-in, the shared workbook, files, tickets, comments, resolution/history and coordinator-only file uploads. The guide contains no partner identities or confidential documents and uses the same Access/origin guard as the rest of the portal.
 
 ## Documents and Excel files
 
@@ -18,12 +18,9 @@ Every authorized member can create, read and comment on all tickets. Authors and
 
 The former campaign and station-update forms/review cards are removed from the interface. Their existing stored records and legacy API are retained; nothing was deleted or republished to the scientific station register.
 
-## Sampling overview
+## Retained sampling backend
 
-1. Download **Sampling overview → Import a sampling workbook → Download Excel template**.
-2. Fill `Samples` (one collected sample per row) and `Extractions` (one completed DNA extraction per row). `Stations` supplies the current station IDs.
-3. Upload the XLSX through Documents & files.
-4. Select it under Import a sampling workbook, preview the validated counts, then publish to the private overview.
+Sampling overview, workbook import and Join enquiries are removed from the workspace interface at the owner’s request. Their private records and protected backend endpoints remain stored; no records were deleted. The following describes the retained sampling data format, not an available workspace menu.
 
 `Samples`: sample_id and station_id are required; collection_date, latitude, longitude and material are optional. `Extractions`: extraction_id and matching sample_id are required; extraction_date, dna_concentration_ng_ul, dna_yield_ng and method are optional. Multiple extractions may refer to one sample. Dates use YYYY-MM-DD or genuine Excel serial dates. Numeric cells preserve raw precision; blanks stay null. Coordinates must be a valid pair of recorded decimal degrees. Formulas, duplicate IDs, unknown stations, orphan extractions and impossible dates are rejected. A workbook supports at most 5,000 combined rows and a 2-MiB normalized payload.
 

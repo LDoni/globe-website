@@ -1,4 +1,4 @@
-"""Synthetic-only integration: shared tickets, protected files and Excel counts."""
+"""Synthetic-only integration: shared tickets, protected file uploads and downloads."""
 import asyncio,os,socket,subprocess,urllib.request,time,base64
 from pathlib import Path
 from playwright.async_api import async_playwright
@@ -45,6 +45,7 @@ async def main():
   assert await page.locator('#comment-list li').count()==2
   await page.select_option('#ticket-filter','resolved');assert await page.locator('#ticket-list article').count()==1
   await page.fill('#ticket-search','missing-ticket');assert await page.locator('#ticket-empty').is_visible();await page.fill('#ticket-search','')
+  await cp.add_script_tag(url=BASE+'/vendor/sheetjs/xlsx.mini.min.js')
   # Generate a genuine XLSX entirely in the browser; no real scientific records.
   workbook=await cp.evaluate('''()=>{const X=window.XLSX,b=X.utils.book_new();X.utils.book_append_sheet(b,X.utils.aoa_to_sheet([['sample_id','station_id','collection_date','latitude','longitude'],['TEST-S1','GLOBO-001','2026-11-01',0,179.9],['TEST-S2','GLOBO-001'],['TEST-S3','GLOBO-002','2026-11-01',-1,-179.9]]),'Samples');X.utils.book_append_sheet(b,X.utils.aoa_to_sheet([['extraction_id','sample_id','dna_yield_ng'],['TEST-E1','TEST-S1',10],['TEST-E2','TEST-S1',0],['TEST-E3','TEST-S3']]),'Extractions');return X.write(b,{bookType:'xlsx',type:'base64'});}''')
   await cp.locator('#upload-panel summary').click()
@@ -52,13 +53,8 @@ async def main():
   await cp.locator('#upload-form [name=title]').fill('Synthetic sampling records');await cp.locator('#upload-form button').click();await cp.locator('#upload-form [data-result]').filter(has_text='File uploaded').wait_for()
   entry=cp.locator('#resource-list li').filter(has_text='Synthetic sampling records');link=entry.locator('a');r=await cp.request.get(BASE+await link.get_attribute('href'));assert r.status==200 and await r.body()==base64.b64decode(workbook)
   assert r.headers.get('content-disposition','').startswith('attachment;') and r.headers.get('cache-control')=='private, no-store'
-  await cp.locator('#sampling-import summary').click();await cp.select_option('#sampling-file',index=1);await cp.locator('#sampling-form button').click();await cp.locator('#sampling-preview:not([hidden])').wait_for()
-  assert '3 collected samples' in await cp.locator('#sampling-preview-summary').inner_text();assert '3 DNA extractions' in await cp.locator('#sampling-preview-summary').inner_text()
-  await cp.locator('#publish-sampling').click();await cp.locator('#sampling-publish-result').filter(has_text='Sampling overview saved').wait_for()
-  assert await cp.locator('.sampling-metrics strong').all_inner_texts()==['3','3','2']
-  await page.reload();await page.locator('#workspace:not([hidden])').wait_for();await page.select_option('#sampling-workbook',index=1);await page.locator('.sampling-metrics').wait_for();assert await page.locator('.sampling-metrics strong').all_inner_texts()==['3','3','2']
-  assert await page.locator('.sampling-table tbody tr').count()==2
-  assert not await page.locator('#sampling-import').is_visible()
+  for view in [page,cp]:
+   assert await view.locator('#coordination-inbox,#inbox-nav,#sampling,a[href="#sampling"]').count()==0
   for width in [375,768,1440]:
    await page.set_viewport_size({'width':width,'height':900})
    assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth+1'),f'Workspace overflow at {width}'
@@ -68,7 +64,7 @@ async def main():
   await page.route('**/api/tickets',lambda route:route.fulfill(status=503,json={'error':'The ticket could not be saved.'}))
   await page.locator('#tickets details summary').click();await form.locator('[name=title]').fill('Synthetic failure');await form.locator('[name=description]').fill('Keep this draft on failure.');await form.locator('button').click();await form.locator('[data-result]').filter(has_text='could not be saved').wait_for();assert await form.locator('[name=title]').input_value()=='Synthetic failure'
   assert not errors,errors
-  await browser.close();print('PASS: shared tickets, cross-member comments, resolution/history, private Excel upload/download, validated sampling counts, failed-save draft and three widths')
+  await browser.close();print('PASS: shared tickets, cross-member comments, resolution/history, private Excel upload/download, failed-save draft and three widths')
 server=subprocess.Popen(['node','tests/portal-preview.mjs'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,env={**os.environ,'GLOBO_PORTAL_PORT':str(PORT)})
 try:
  for _ in range(100):

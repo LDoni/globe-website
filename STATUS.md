@@ -1,5 +1,11 @@
 # GLOBO verification and launch status
 
+## Workspace simplification — 25 November 2026
+
+Removed Join enquiries and Sampling overview (including workbook import) from the private workspace and navigation at the owner's request. Removed their client initialization and the unused automatic spreadsheet-library download. The shared Google workbook, document uploads/downloads and shared ticket discussions remain available. Existing private enquiry/sampling records and protected backend endpoints are retained; no data was deleted. The partner quick guide and workspace README reflect the current interface.
+
+The separate private build, JavaScript syntax check and 16 relevant Node build/API/collaboration tests passed. Synthetic browser integration passed ticket creation, cross-member comments, resolution/history, private Excel upload/download and failed-save drafts at 375/768/1440 px; it also checks that the removed sections are absent for partners and coordinators. These remain local synthetic tests, not authenticated production ticket verification. Public website content is unchanged.
+
 ## Partner quick guide and ticket verification — 25 November 2026
 
 The private workspace now includes a Quick guide link and an English six-step guide at `/guide.html`, covering email-PIN access, Google Sheets permissions, files, ticket creation/comments and retained resolved discussions. Public website content is unchanged.
