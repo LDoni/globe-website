@@ -34,7 +34,7 @@ const script=(middleware+'\n'+app).replace(/^export /gm,'')+`\nexport default {a
  if(!partner)return new Response('Access denied',{status:403});
  return await collaboration({request,env},{email:partner.email,isCoordinator:JSON.parse(fixture.auth.GLOBO_COORDINATOR_EMAILS).includes(partner.email)})||new Response('Not found',{status:404});
 }};`;
-const start=()=>new Miniflare(convertV4MiniflareOptions({modules:true,compatibilityDate:'2026-11-19',bindings:{TEST_FIXTURE:JSON.stringify({auth,jwk})},kvNamespaces:{GLOBO_WORKSPACE:'synthetic-ticket-persistence-only'},resourcePersistencePath:storage,script}));
+const start=()=>new Miniflare(convertV4MiniflareOptions({modules:true,compatibilityDate:'2026-11-19',bindings:{TEST_FIXTURE:JSON.stringify({auth,jwk}),GLOBO_TICKET_ADMIN_EMAIL:author},kvNamespaces:{GLOBO_WORKSPACE:'synthetic-ticket-persistence-only'},resourcePersistencePath:storage,script}));
 let runtime=start();
 const call=(url,method='GET',body,email=author)=>runtime.dispatchFetch('http://localhost'+url,{method,headers:{Origin:'http://localhost','Content-Type':'application/json',...(email?{'Cf-Access-Jwt-Assertion':tokens[email]}:{})},...(body?{body:JSON.stringify(body)}:{})});
 try{
@@ -54,5 +54,11 @@ try{
  data=await(await call(url)).json();assert.equal(data.ticket.status,'open');assert.equal(data.comments.length,2);
  await new Promise(resolve=>setTimeout(resolve,1100));
  assert.equal((await call(url+'/status','PATCH',{status:'resolved'},author)).status,200);
- console.log('PASS: actual workerd signed-user ticket creation, concurrent cross-member comments, role denial, resolve/reopen/history and native local KV persistence after runtime restart');
+ assert.equal((await call(url,'DELETE',null,other)).status,403);
+ assert.equal((await call(url,'DELETE',null,coordinator)).status,403);
+ assert.equal((await call(url,'DELETE',null,author)).status,200);
+ await runtime.dispose();runtime=start();
+ assert.equal((await call(url,'GET',null,other)).status,404);
+ assert.equal((await(await call('/api/tickets')).json()).tickets.length,0);
+ console.log('PASS: owner-only ticket deletion persisted after restart; actual workerd signed-user ticket creation, concurrent cross-member comments, role denial, resolve/reopen/history and native local KV persistence after runtime restart');
 }finally{await runtime.dispose();}

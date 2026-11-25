@@ -1,5 +1,13 @@
 # GLOBO verification and launch status
 
+## Ticket-owner deletion and simplified workspace — 25 November 2026
+
+Removed Documents & files, its search/category/empty-state controls and Upload file from the interface. Shared Google workbook and tickets remain. Existing private files/requests/sampling data and their protected APIs are retained; no production records were deleted. Updated the English partner guide and READMEs.
+
+Added a confirmed Delete ticket action, restricted by the server to one privately configured `GLOBO_TICKET_ADMIN_EMAIL`; coordinator status alone grants no delete permission. Missing configuration denies deletion for everyone. Removal writes a recoverable audit tombstone, excludes the ticket from all lists and snapshots, and blocks direct reads, comments and reopening. Original ticket/comments are retained privately. The exact owner address is awaiting confirmation because the latest message differs from the existing approved account; no new identity is authorized automatically.
+
+Local private build/syntax checks and 29 access/build/workspace/collaboration Node tests passed. Synthetic Chromium checks passed shared ticket comments/history, owner-only deletion with confirmation cancel, failed-save preservation and successful removal at 375/768/1440 px. Native workerd passed deletion authorization and persistent removal after restart, alongside the existing ticket lifecycle. No authenticated production deletion was executed and no real ticket was modified. Public website content is unchanged.
+
 ## Workspace simplification — 25 November 2026
 
 Removed Join enquiries and Sampling overview (including workbook import) from the private workspace and navigation at the owner's request. Removed their client initialization and the unused automatic spreadsheet-library download. The shared Google workbook, document uploads/downloads and shared ticket discussions remain available. Existing private enquiry/sampling records and protected backend endpoints are retained; no data was deleted. The partner quick guide and workspace README reflect the current interface.

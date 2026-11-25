@@ -5,3 +5,5 @@ details{margin:24px 0}summary{cursor:pointer;font-weight:600;padding:14px 0}form
 #shared-sheet-frame{display:block;width:100%;height:780px;border:1px solid var(--line);border-radius:6px;background:#fff}#shared-sheet-open{margin-top:0}@media(max-width:650px){#shared-sheet-frame{height:600px}}
 
 .quick-guide{max-width:850px}.guide-steps{padding-left:24px}.guide-steps li{margin-bottom:18px}.quick-guide p,.guide-steps li{overflow-wrap:anywhere}
+
+button.danger{background:#a5222c;color:#fff}button.danger:hover{background:#841b24}

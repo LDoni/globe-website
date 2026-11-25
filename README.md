@@ -12,9 +12,9 @@ Station identifiers now use **GLOBO-001 … GLOBO-030**. Historical station code
 
 ## Quick start
 
-Partners: the protected [quick guide](https://globe-partners.pages.dev/guide.html) explains sign-in, shared workbooks, documents, ticket discussions and resolved-ticket history. See [workspace verification](STATUS.md) for the distinction between automated local tests and authenticated production checks.
+Partners: the protected [quick guide](https://globe-partners.pages.dev/guide.html) explains sign-in, the shared workbook, ticket discussions and resolved-ticket history. See [workspace verification](STATUS.md) for the distinction between automated local tests and authenticated production checks.
 
-The private workspace currently shows the shared Google workbook, documents and tickets. Join enquiries and Sampling overview/import were removed from its interface at the owner's request; their existing private records are retained.
+The private workspace currently shows the shared Google workbook and tickets. Documents & files/uploads, Join enquiries and Sampling overview/import were removed from its interface at the owner's request; their existing private records are retained.
 
 Locally verified: R 4.3.3, Quarto 1.11.9, Python 3.12.3, Node 24.14.0 and Chromium 159. CI also verifies R 4.4.3, Quarto 1.8.27 and Node 22. The public website has no runtime R dependency; R is used for preprocessing and the separate Shiny application.
 
@@ -167,7 +167,7 @@ Network country flags are derived from public station rows, using country and lo
 
 ## Private partner workspace
 
-The separate partners-portal application provides coordinator file uploads, shared tickets with member comments and retained resolved conversations, and validated Excel-based sampling/DNA plots by station. The former campaign and station-update forms are removed from its interface. Build and local synthetic preview instructions are in [partners-portal/README.md](partners-portal/README.md). A live Cloudflare origin is deployed and real isolated KV stores are bound. Exact-email Access policies cover three privately configured participants, including one coordinator; only email OTP is enabled on the private applications. The owner has confirmed real production login. New file/ticket/import operations are tested with synthetic data and await authenticated production verification; no confidential material has been uploaded.
+The separate partners-portal application currently displays a shared Google workbook and tickets with member comments, retained resolved discussions and owner-only deletion. Private file and sampling backends are retained but their interface sections are removed. The former campaign and station-update forms are removed from its interface. Build and local synthetic preview instructions are in [partners-portal/README.md](partners-portal/README.md). A live Cloudflare origin is deployed and real isolated KV stores are bound. Exact-email Access policies cover three privately configured participants, including one coordinator; only email OTP is enabled on the private applications. The owner has confirmed real production login. New file/ticket/import operations are tested with synthetic data and await authenticated production verification; no confidential material has been uploaded.
 
 ## Cloudflare partner deployment — 22 November
 

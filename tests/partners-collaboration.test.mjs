@@ -25,3 +25,19 @@ test('scientific counts distinguish samples, multiple extractions and missing me
 test('sampling validation rejects duplicate or orphan identifiers, ambiguous dates and invalid coordinates',()=>{for(const input of [{...records,samples:[...records.samples,records.samples[0]]},{...records,extractions:[...records.extractions,records.extractions[0]]},{...records,extractions:[{extraction_id:'E9',sample_id:'missing'}]},{...records,samples:[{...records.samples[0],station_id:'UNKNOWN'}]},{...records,samples:[{...records.samples[0],latitude:91}]},{...records,samples:[{...records.samples[0],collection_date:'2026-02-30'}]},{...records,extractions:[{extraction_id:'E1',sample_id:'S1',extraction_date:'2026-10-01'}]}])assert.throws(()=>validateSampling(input,stations.features));});
 test('sampling publication is coordinator-only, source-linked and survives subsequent reads',async()=>{const env=setup(),file=(await(await call(env,'/api/files','POST',upload(),coord)).json()).file,b={file_id:file.id,...records};assert.equal((await call(env,'/api/sampling','POST',b)).status,403);const published=await call(env,'/api/sampling','POST',b,coord);assert.equal(published.status,201);const data=await(await call(env,'/api/sampling/'+file.id,'GET',null,other)).json();assert.equal(data.meta.file_id,file.id);assert.equal(data.meta.samples,3);assert.equal(data.samples[1].latitude,null);assert.equal(data.extractions.length,3);assert.equal((await call(env,'/api/sampling','POST',b,coord,'https://outside.invalid')).status,403);});
 test('storage errors never produce a saved ticket, comment or file confirmation',async()=>{const env=setup();env.GLOBO_WORKSPACE.put=async()=>{throw Error('Synthetic outage');};assert.equal((await call(env,'/api/tickets','POST',{title:'x',description:'x'})).status,503);assert.equal((await call(env,'/api/files','POST',upload(),coord)).status,503);});
+test('only the explicitly configured owner can delete; removed tickets cannot be listed, read, commented on or reopened',async()=>{
+ const env=setup(),owner='owner@example.invalid';env.GLOBO_TICKET_ADMIN_EMAIL=owner;const t=await create(env),url='/api/tickets/'+t.id;
+ await call(env,url+'/comments','POST',{body:'Retained synthetic comment'});
+ for(const email of [partner,other,coord]){assert.equal((await(await call(env,url,'GET',null,email)).json()).can_delete,false);assert.equal((await call(env,url,'DELETE',null,email)).status,403);}
+ assert.equal((await(await call(env,url,'GET',null,owner)).json()).can_delete,true);
+ assert.equal((await call(env,url,'DELETE',null,owner,'https://outside.invalid')).status,403);
+ assert.equal((await call(env,url,'DELETE',null,owner)).status,200);
+ assert.equal((await(await call(env,'/api/tickets')).json()).tickets.length,0);
+ const snapshot=await(await call(env,'/api/workspace')).json();assert.equal(snapshot.tickets.length,0);
+ for(const [path,method,body]of [[url,'GET'],[url+'/comments','POST',{body:'x'}],[url+'/status','PATCH',{status:'open'}]])assert.equal((await call(env,path,method,body,owner)).status,404);
+ assert.ok(env.GLOBO_WORKSPACE.rows.has('ticket:'+t.id));assert.ok(env.GLOBO_WORKSPACE.rows.has('ticket-deleted:'+t.id));assert.equal([...env.GLOBO_WORKSPACE.rows.keys()].filter(k=>k.startsWith('ticket-comment:')).length,1);
+});
+test('deletion fails closed without owner configuration and preserves ticket on failed save',async()=>{
+ const env=setup(),t=await create(env),url='/api/tickets/'+t.id;assert.equal((await call(env,url,'DELETE',null,coord)).status,403);
+ env.GLOBO_TICKET_ADMIN_EMAIL=coord;env.GLOBO_WORKSPACE.put=async()=>{throw Error('Synthetic write failure');};assert.equal((await call(env,url,'DELETE',null,coord)).status,503);assert.equal((await call(env,url)).status,200);
+});

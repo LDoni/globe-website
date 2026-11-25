@@ -4,15 +4,21 @@ The private Cloudflare Pages application at https://globe-partners.pages.dev/ is
 
 ## Short partner instructions
 
-The English [quick guide](public/guide.html) is available through **Quick guide** in the workspace header and at https://globe-partners.pages.dev/guide.html after authentication. It covers sign-in, the shared workbook, files, tickets, comments, resolution/history and coordinator-only file uploads. The guide contains no partner identities or confidential documents and uses the same Access/origin guard as the rest of the portal.
+The English [quick guide](public/guide.html) is available through **Quick guide** in the workspace header and at https://globe-partners.pages.dev/guide.html after authentication. It covers sign-in, the shared workbook, tickets, comments, resolution/history and owner-only ticket deletion. The guide contains no partner identities or confidential documents and uses the same Access/origin guard as the rest of the portal.
 
-## Documents and Excel files
+## Retained private file backend
+
+Documents & files and Upload file have been removed from the interface at the owner’s request. Existing stored files and protected endpoints remain preserved. The following describes the retained backend, not an available menu.
+
+### File storage
 
 Coordinators can open **Documents & files → Upload file**, choose a file, enter its title/category/description and upload. All authorized members can search and download it. Supported formats: XLSX, DOCX, PDF, CSV, TXT, PNG and JPEG; maximum 10 MiB each. Files use the existing private GLOBO_WORKSPACE KV binding, not the public repository or Quarto output. Downloads require the same authenticated membership as the workspace and are sent as attachments with no-store/nosniff headers. Executable/HTML/SVG uploads, invalid filenames, mislabeled signatures, empty files and oversized bodies are rejected.
 
 The library checks a 200-file/250-MiB application budget per environment; concurrent uploads and KV eventual consistency mean this is a capacity check, not an atomic global quota. Provider Free account limits remain authoritative. No R2, subscription upgrade or paid seat was enabled. Failed multi-key uploads may leave inaccessible binary objects without a catalogue entry; no automatic deletion job is used.
 
 ## Tickets
+
+Ticket deletion is restricted server-side to a single email configured through the encrypted Pages secret `GLOBO_TICKET_ADMIN_EMAIL`. Without it, deletion is denied to everyone, including coordinators. Membership/JWT verification remains mandatory. The owner confirms the action in the browser; deletion writes a private `ticket-deleted:<id>` tombstone with identity and timestamp. Deleted tickets disappear from lists/snapshots and direct reads, comments and status changes return 404. Original records/comments remain privately stored for recovery; no irreversible purge occurs. KV eventual consistency also applies to deletion visibility.
 
 Every authorized member can create, read and comment on all tickets. Authors and coordinators can mark them Resolved or reopen them. Resolved conversations remain available through the status filter, search and pagination. Each comment has a unique immutable key to avoid overwriting concurrent replies. Ticket status uses a separate current-state key; it never deletes the ticket or its comments. Drafts are retained on failed writes and are kept separately when switching conversations during a session. Sign-in identifies comment authors server-side; client-supplied authors/roles are rejected.
 
@@ -57,8 +63,8 @@ The owner-supplied Google workbook is linked and embedded through the authentica
 
 Google Drive permissions are a separate boundary: Cloudflare does not restrict the direct Google URL. The initial anonymous XLSX export succeeded (HTTP 200), so the owner must set General access to Restricted and add the three named participants as Editors before claiming partner-only Google access. The Google Drive connector is admin-disabled and no connected document session exists; the agent could not inspect or change Google ACLs. No Google credentials or document content are committed. Google sign-in/editor permission remains necessary even after Cloudflare login.
 
-Uploaded files and sampling previews remain independent of the live shared Google workbook. Automatic private Google-to-plot synchronization requires authorized Google read access and an agreed sample/extraction schema; it is not silently enabled by embedding the editor. The existing XLSX import/template workflow remains available.
+Uploaded files and sampling previews remain independent of the live shared Google workbook. Automatic private Google-to-plot synchronization requires authorized Google read access and an agreed sample/extraction schema; it is not silently enabled by embedding the editor. The XLSX import/template workflow is retained in source and backend but removed from the workspace interface.
 
-## Prepared direct-enquiry inbox
+## Retained direct-enquiry backend
 
-Coordinators can read the separate Join enquiry inbox. Additional named reviewers require the encrypted environment list GLOBO_CONTACT_REVIEWERS; ordinary partners receive HTTP 403. This is separate from shared tickets, which remain available to all authorized participants. Intake and notification delivery status use separate KV keys to respect the per-key write limit. No real public intake is enabled until the Worker, Turnstile and genuine mail sender are configured. See [contact setup](../docs/contact-form.md).
+The Join enquiry inbox is removed from the interface. Its protected backend remains restricted to coordinators and explicitly designated reviewers. Additional named reviewers require the encrypted environment list GLOBO_CONTACT_REVIEWERS; ordinary partners receive HTTP 403. This is separate from shared tickets, which remain available to all authorized participants. Intake and notification delivery status use separate KV keys to respect the per-key write limit. No real public intake is enabled until the Worker, Turnstile and genuine mail sender are configured. See [contact setup](../docs/contact-form.md).

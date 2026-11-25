@@ -1,5 +1,5 @@
-"""Synthetic-only integration: shared tickets, protected file uploads and downloads."""
-import asyncio,os,socket,subprocess,urllib.request,time,base64
+"""Synthetic-only integration: shared tickets, owner-only deletion."""
+import asyncio,os,socket,subprocess,urllib.request,time
 from pathlib import Path
 from playwright.async_api import async_playwright
 with socket.socket() as port_probe:
@@ -21,14 +21,11 @@ async def main():
   guide=await partner.new_page()
   await guide.goto(BASE+'/guide.html')
   assert await guide.title()=='Partner quick guide · GLOBO'
-  assert await guide.locator('.guide-steps li').count()==6
+  assert await guide.locator('.guide-steps li').count()==5
   for width in [375,768,1440]:
    await guide.set_viewport_size({'width':width,'height':900})
    assert await guide.evaluate('document.documentElement.scrollWidth <= innerWidth'),f'Guide overflow at {width}'
   await guide.close()
-  assert not await page.locator('#upload-panel').is_visible()
-  assert await page.locator('#resource-list li').count()==1
-  await page.fill('#resource-search','missing-resource');assert await page.locator('#resource-empty').is_visible();await page.fill('#resource-search','')
   form=page.locator('#ticket-form');await page.locator('#tickets details summary').click()
   await form.locator('[name=title]').fill('Synthetic shared ticket');await form.locator('[name=description]').fill('Discussion visible to all test partners.')
   await form.locator('button').click();await form.locator('[data-result]').filter(has_text='Ticket saved').wait_for()
@@ -45,16 +42,9 @@ async def main():
   assert await page.locator('#comment-list li').count()==2
   await page.select_option('#ticket-filter','resolved');assert await page.locator('#ticket-list article').count()==1
   await page.fill('#ticket-search','missing-ticket');assert await page.locator('#ticket-empty').is_visible();await page.fill('#ticket-search','')
-  await cp.add_script_tag(url=BASE+'/vendor/sheetjs/xlsx.mini.min.js')
-  # Generate a genuine XLSX entirely in the browser; no real scientific records.
-  workbook=await cp.evaluate('''()=>{const X=window.XLSX,b=X.utils.book_new();X.utils.book_append_sheet(b,X.utils.aoa_to_sheet([['sample_id','station_id','collection_date','latitude','longitude'],['TEST-S1','GLOBO-001','2026-11-01',0,179.9],['TEST-S2','GLOBO-001'],['TEST-S3','GLOBO-002','2026-11-01',-1,-179.9]]),'Samples');X.utils.book_append_sheet(b,X.utils.aoa_to_sheet([['extraction_id','sample_id','dna_yield_ng'],['TEST-E1','TEST-S1',10],['TEST-E2','TEST-S1',0],['TEST-E3','TEST-S3']]),'Extractions');return X.write(b,{bookType:'xlsx',type:'base64'});}''')
-  await cp.locator('#upload-panel summary').click()
-  await cp.locator('#upload-form input[type=file]').set_input_files({'name':'synthetic-sampling.xlsx','mimeType':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','buffer':base64.b64decode(workbook)})
-  await cp.locator('#upload-form [name=title]').fill('Synthetic sampling records');await cp.locator('#upload-form button').click();await cp.locator('#upload-form [data-result]').filter(has_text='File uploaded').wait_for()
-  entry=cp.locator('#resource-list li').filter(has_text='Synthetic sampling records');link=entry.locator('a');r=await cp.request.get(BASE+await link.get_attribute('href'));assert r.status==200 and await r.body()==base64.b64decode(workbook)
-  assert r.headers.get('content-disposition','').startswith('attachment;') and r.headers.get('cache-control')=='private, no-store'
   for view in [page,cp]:
-   assert await view.locator('#coordination-inbox,#inbox-nav,#sampling,a[href="#sampling"]').count()==0
+   assert await view.locator('#coordination-inbox,#inbox-nav,#sampling,#documents,#upload-panel').count()==0
+   assert not await view.locator('#delete-ticket').is_visible()
   for width in [375,768,1440]:
    await page.set_viewport_size({'width':width,'height':900})
    assert await page.evaluate('document.documentElement.scrollWidth <= innerWidth+1'),f'Workspace overflow at {width}'
@@ -63,8 +53,22 @@ async def main():
   # A rejected write preserves the draft and never claims success.
   await page.route('**/api/tickets',lambda route:route.fulfill(status=503,json={'error':'The ticket could not be saved.'}))
   await page.locator('#tickets details summary').click();await form.locator('[name=title]').fill('Synthetic failure');await form.locator('[name=description]').fill('Keep this draft on failure.');await form.locator('button').click();await form.locator('[data-result]').filter(has_text='could not be saved').wait_for();assert await form.locator('[name=title]').input_value()=='Synthetic failure'
+  owner=await browser.new_context(extra_http_headers={'X-Synthetic-User':'owner@example.invalid'})
+  admin=await owner.new_page();admin.on('pageerror',lambda e:errors.append(str(e)))
+  await admin.route('https://docs.google.com/**',lambda route:route.fulfill(status=200,content_type='text/html',body='<p>Synthetic shared workbook</p>'))
+  await admin.goto(BASE);await admin.locator('#ticket-list button').click();await admin.locator('#delete-ticket').wait_for()
+  admin.once('dialog',lambda dialog:dialog.dismiss());await admin.locator('#delete-ticket').click();assert await admin.locator('#ticket-detail').is_visible()
+  await admin.route('**/api/tickets/*',lambda route:route.fulfill(status=503,json={'error':'Deletion unavailable'}) if route.request.method=='DELETE' else route.continue_())
+  admin.once('dialog',lambda dialog:dialog.accept());await admin.locator('#delete-ticket').click();await admin.locator('#detail-error').filter(has_text='Deletion unavailable').wait_for();assert await admin.locator('#ticket-detail').is_visible()
+  await admin.unroute('**/api/tickets/*')
+  ticket_url=admin.url
+  admin.once('dialog',lambda dialog:dialog.accept());await admin.locator('#delete-ticket').click();await admin.locator('#status').filter(has_text='Ticket deleted.').wait_for()
+  assert await admin.locator('#ticket-list article').count()==0
+  assert not await admin.locator('#ticket-detail').is_visible()
+  await page.unroute('**/api/tickets');await page.reload();await page.locator('#workspace:not([hidden])').wait_for();assert await page.locator('#ticket-list article').count()==0
+  await admin.goto(ticket_url);await admin.locator('#detail-error').filter(has_text='Ticket not found.').wait_for()
   assert not errors,errors
-  await browser.close();print('PASS: shared tickets, cross-member comments, resolution/history, private Excel upload/download, failed-save draft and three widths')
+  await browser.close();print('PASS: shared tickets, cross-member comments, resolution/history, failed-save draft, owner-only deletion (cancel/failure/success) and three widths')
 server=subprocess.Popen(['node','tests/portal-preview.mjs'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,env={**os.environ,'GLOBO_PORTAL_PORT':str(PORT)})
 try:
  for _ in range(100):
