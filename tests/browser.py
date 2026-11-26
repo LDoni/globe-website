@@ -213,9 +213,26 @@ async def main():
      assert await page.locator('.project-email a').get_attribute('href')=='mailto:globo-initiative@googlegroups.com'
      assert await page.locator('.project-email a').is_visible()
     if slug=='pages/network.html':
+     preview=page.locator('.observatory-preview')
+     assert await preview.locator('h3').inner_text()=='Italian Omics Observatory Network of Marine Biodiversity'
+     assert await preview.locator('.observatory-image').get_attribute('href')=='https://www.marineomics.it/'
+     await preview.scroll_into_view_if_needed()
+     await page.wait_for_function("document.querySelector('.observatory-preview img').complete&&document.querySelector('.observatory-preview img').naturalWidth>0")
+     await preview.screenshot(path=f'test-results/marineomics-{width}.png',style='header.site-nav{visibility:hidden}')
      assert await page.locator('[data-country-flags] img').first.evaluate('(i)=>i.getBoundingClientRect().width') >= (40 if width<=550 else 48)
      station_ids=await page.evaluate("fetch(new URL('../data/network-stations.geojson',location.href)).then(r=>r.json()).then(d=>d.features.map(f=>f.properties.station_id))")
      assert all(s.startswith('GLOBO-') for s in station_ids)
+    if slug=='pages/protocol.html':
+     assert await page.locator('.protocol-document iframe,.protocol-document embed,.protocol-document object').count()==0
+     sheet=page.locator('.protocol-sheet img')
+     await sheet.wait_for()
+     await page.wait_for_function("document.querySelector('.protocol-sheet img').complete&&document.querySelector('.protocol-sheet img').naturalWidth>0")
+     box=await sheet.bounding_box();assert abs(box['height']/box['width']-1135/720)<.01
+     assert await sheet.evaluate('(i)=>getComputedStyle(i).height!=="0px"&&i.parentElement.scrollHeight<=i.parentElement.clientHeight+1')
+     pdf=await page.request.get(BASE+'/assets/documents/globo-sampling-protocol.pdf');assert pdf.status==200
+     assert await page.locator('.protocol-document a[download]').count()==1
+     await sheet.scroll_into_view_if_needed()
+     await sheet.screenshot(path=f'test-results/protocol-{width}.png',style='header.site-nav{visibility:hidden}')
     body=await page.locator('body').inner_text()
     assert 'Reading the two map modes' not in body
     assert 'Interactive Shiny application' not in body

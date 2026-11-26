@@ -197,7 +197,7 @@ The Sheets publication pipeline validates and stages the scientific registry and
 
 The direct Join Worker compiles and has synthetic client/server/email tests. The Worker and Turnstile are deployed; genuine email delivery remains disabled pending sender authorization. No receipt is fabricated. The private coordination inbox is separate from shared partner tickets and is restricted by role. No confidential file has been uploaded.
 
-Protocol is available directly in the main menu. Its page displays the PDF immediately below the title, without an intermediate resource page or required download click.
+Protocol is available directly in the main menu. Its page displays the complete supplied protocol below the title as a responsive high-resolution image, without a PDF frame, toolbar or inner scrollbar. The unchanged PDF remains downloadable and a separate link opens the protected Sampling Tracker. Network includes a credited Marine Omics preview below “A network for shared scientific initiatives”, introducing the four Italian observatories and linking to their own site. Rendering commands and asset provenance are in [visual assets](docs/visual-assets.md).
 
 24 November contact deployment: the globo-contact Worker is online with the existing KV and a production Turnstile secret. Sending remains disabled pending an authorized sender; the public fallback remains available. Eight real endpoint security checks and 13 contact/mail tests passed. Shiny hosting is optional for the current browser-based maps/charts; its separate application remains locally verified.
 

@@ -47,11 +47,11 @@ html{scroll-padding-top:156px}.coordinator-logos{margin:0;gap:24px}.coordinator-
 @media(min-width:851px){header.site-nav{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}.brand{grid-column:1;min-width:0}.brand img{max-width:100%}.coordinator-logos{grid-column:2;width:max-content;justify-content:center}.nav-links{grid-column:1/-1;justify-content:flex-end;gap:28px}.nav-links a{font-size:16px;font-weight:600}}
 @media(min-width:851px) and (max-width:950px){.brand img{width:145px}.coordinator-logos{gap:14px}.coordinator-logos a{width:140px}}
 @media(max-width:850px){.nav-links a{font-size:18px;font-weight:600}}
-.network-section{padding-top:34px;padding-bottom:42px}.network-section .section-head{margin-bottom:20px}.protocol-viewer{display:block;width:100%;height:1050px;border:1px solid var(--line);background:var(--surface)}@media(max-width:650px){.network-section{padding-top:26px}.protocol-viewer{height:660px}}
+.network-section{padding-top:34px;padding-bottom:42px}.network-section .section-head{margin-bottom:20px}@media(max-width:650px){.network-section{padding-top:26px}}
 .station-status-legend{display:block;flex-basis:100%;font-size:12px;color:var(--muted)}
 .join-honeypot{position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden}[data-join-availability]:empty{display:none}
 
-.protocol-intro{padding-top:36px;padding-bottom:20px}.protocol-intro h1{margin-bottom:12px}.protocol-document{padding-top:0}.protocol-viewer{height:calc(100vh - 210px);min-height:560px}@media(max-width:850px){.protocol-intro{padding-top:24px}.protocol-viewer{height:75vh;min-height:480px}}
+.protocol-intro{padding-top:36px;padding-bottom:20px}.protocol-intro h1{margin-bottom:12px}.protocol-document{padding-top:0}@media(max-width:850px){.protocol-intro{padding-top:24px}}
 
 /* Blend the supplied white-backed static wordmark into the light navigation. */
 .brand img{mix-blend-mode:multiply}
@@ -69,3 +69,5 @@ html{scroll-padding-top:156px}.coordinator-logos{margin:0;gap:24px}.coordinator-
 
 .country-flags img { width: 48px; height: 36px; }
 @media(max-width:550px) { .country-flags img { width: 40px; height: 30px; } }
+
+.observatory-preview{display:grid;grid-template-columns:minmax(220px,340px) minmax(0,1fr);align-items:center;gap:42px;margin-top:32px;padding:32px;border:1px solid var(--line);border-radius:12px;background:#fff}.observatory-image{display:block}.observatory-image img{display:block;width:100%;height:auto}.observatory-copy h3{font-size:clamp(24px,3vw,34px);margin:0 0 18px}.observatory-copy .eyebrow{margin-bottom:12px}.observatory-credit{font-size:12px;color:var(--muted);margin-bottom:0}.protocol-document{max-width:1440px;margin-inline:auto}.protocol-sheet{margin:0}.protocol-sheet img{display:block;width:100%;height:auto;background:#fff}@media(max-width:650px){.observatory-preview{grid-template-columns:1fr;gap:24px;padding:24px}.observatory-image{width:min(100%,300px);margin-inline:auto}}
