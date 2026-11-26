@@ -4,6 +4,8 @@
 
 Reduced the centered protocol container again, from 1240 to 1080 px (1000-px image on desktop, down from 1160 px). The complete document and responsive phone/tablet width remain available. Removed the visible “Map: Marine Omics.” credit line at the owner's request; the single Explore Marine Omics link remains. Image provenance is retained in docs/visual-assets.md. Real Quarto render and 12-page link/output checks passed; targeted Chromium checks cover the centered 1000-px image, full aspect ratio, absence of the map caption and no overflow at 375/768/1440 px. Original assets and the private workspace are unchanged. Publication of this revision still requires a successful Pages deployment; earlier attempts hit the documented stale hosting lock.
 
+Publication is now verified: [GitHub Pages run 45849704475](https://github.com/globe-ocean/globe-ocean.github.io/actions/runs/45849704475) succeeded for `7a517b9`, including the full build/browser checks and deployment. Live HTTP 200 responses confirm the 1080-px protocol container and absence of the Marine Omics map caption. The earlier hosting lock no longer blocks this release; the revised layout is online.
+
 ## Protocol size and Marine Omics link refinement — 26 November 2026
 
 Reduced the centered protocol container from 1440 to 1240 px, making the displayed document about 15% narrower on wide desktops (1160 px image width rather than 1360 px). Phone/tablet layout retains available width and the complete original aspect ratio. Updated responsive image size hints. Marine Omics now has one external link, “Explore Marine Omics”; the map attribution remains as plain text and the image is no longer a duplicate link.
