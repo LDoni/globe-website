@@ -1,5 +1,11 @@
 # GLOBO verification and launch status
 
+## Protocol size and Marine Omics link refinement — 26 November 2026
+
+Reduced the centered protocol container from 1440 to 1240 px, making the displayed document about 15% narrower on wide desktops (1160 px image width rather than 1360 px). Phone/tablet layout retains available width and the complete original aspect ratio. Updated responsive image size hints. Marine Omics now has one external link, “Explore Marine Omics”; the map attribution remains as plain text and the image is no longer a duplicate link.
+
+Real Quarto render and 12-page link/output checks passed. Targeted Chromium checks verified the centered 1160-px desktop image, uncropped protocol aspect ratio and no overflow at 375/768/1440 px, plus the single Marine Omics destination and unlinked attribution. Original PDF/images and private workspace are unchanged.
+
 ## Marine Omics preview and complete protocol display — 26 November 2026
 
 Network now includes a linked preview of the Italian Omics Observatory Network of Marine Biodiversity below “A network for shared scientific initiatives”. The map is cached unchanged from Marine Omics' own Open Graph image, credited and linked to https://www.marineomics.it/. The four observatory names follow its mission description. The Italian network remains a participant in the independent international GLOBO collaboration; no station register, coordinate or approval was changed.

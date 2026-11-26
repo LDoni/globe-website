@@ -215,7 +215,7 @@ async def main():
     if slug=='pages/network.html':
      preview=page.locator('.observatory-preview')
      assert await preview.locator('h3').inner_text()=='Italian Omics Observatory Network of Marine Biodiversity'
-     assert await preview.locator('.observatory-image').get_attribute('href')=='https://www.marineomics.it/'
+     assert await preview.locator('a[href="https://www.marineomics.it/"]').get_attribute('href')=='https://www.marineomics.it/'
      await preview.scroll_into_view_if_needed()
      await page.wait_for_function("document.querySelector('.observatory-preview img').complete&&document.querySelector('.observatory-preview img').naturalWidth>0")
      await preview.screenshot(path=f'test-results/marineomics-{width}.png',style='header.site-nav{visibility:hidden}')
