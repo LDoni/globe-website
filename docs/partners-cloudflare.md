@@ -6,7 +6,7 @@ Public hosting remains GitHub Pages at https://globe-ocean.github.io/. The priva
 
 - Cloudflare reports a successful private build with root `partners-portal`, command `node ../scripts/build_partner_portal.mjs`, output `.build`, production branch `main`.
 - The Zero Trust organization is active. Two self-hosted Access applications cover `globe-partners.pages.dev` and `*.globe-partners.pages.dev`. The wildcard covers per-deployment and branch hostnames.
-- Both applications have only an exact-email Allow policy. Three participants, including one coordinator, are authorized; addresses are held outside Git and in encrypted Cloudflare environment secrets. No Everyone, email-domain-wide Allow or bypass rule was introduced.
+- Both applications have only an exact-email Allow policy. Forty-two participants, including one coordinator, are authorized; addresses are held outside Git and in encrypted Cloudflare environment secrets. No Everyone, email-domain-wide Allow or bypass rule was introduced.
 - Both runtime environments have the correct issuer and their respective application audience, encrypted partner/coordinator lists and `fail_open=false`.
 - Existing `GLOBO_WORKSPACE` KV namespaces are reused, with production and preview isolated. Previous harmless real-KV setup write/read checks passed. Real authenticated application persistence has not yet been tested.
 - Across all eight observed hostnames, 48 anonymous and forged-identity requests to root, API, direct document canary and image returned HTTP 302 to the account's real Access login. An undeployed alias returning 404 is not counted as a security test.

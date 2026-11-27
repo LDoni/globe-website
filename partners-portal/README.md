@@ -1,6 +1,6 @@
 # GLOBO partner workspace
 
-The private Cloudflare Pages application at https://globe-partners.pages.dev/ is separate from public GitHub Pages. Production and wildcard previews require email one-time PIN, an exact-email Access policy and a verified origin JWT. Three participants are configured privately, including one coordinator; the owner confirmed that real production login opens after the Workers redirect-mode fix. The configuration rejects more than 50 distinct participants. No confidential content or partner-address list is committed.
+The private Cloudflare Pages application at https://globe-partners.pages.dev/ is separate from public GitHub Pages. Production and wildcard previews require email one-time PIN, an exact-email Access policy and a verified origin JWT. Forty-two participants are configured privately, including one coordinator; the owner confirmed that real production login opens after the Workers redirect-mode fix. The configuration rejects more than 50 distinct participants. No confidential content or partner-address list is committed.
 
 ## Short partner instructions
 

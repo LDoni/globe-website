@@ -1,5 +1,11 @@
 # GLOBO verification and launch status
 
+## Partner access expansion — 27 November 2026
+
+The owner supplied 40 distinct partner email addresses. One was already authorized, so the requested expansion adds 39 people to the existing three: 42 authorized users in total, including the unchanged single coordinator, with eight places remaining under the application limit of 50. All new identities are ordinary partners; ticket deletion remains restricted to the previously designated owner. Personal addresses and backups are outside Git and public deployments.
+
+Updated the encrypted GLOBO_PARTNER_EMAILS setting in production and preview, preserving all other secrets, coordinator/reviewer permissions, KV bindings and fail-closed guards. The private local role register is updated. Thirteen existing Access/configuration tests passed; synthetic signed assertions using the actual middleware admitted all 42 configured addresses with case normalization and rejected an unknown address. No real OTP codes or emails were sent by the agent. Deployment and exact-email Access policy readback must complete before treating the new addresses as active; results will be recorded below.
+
 ## Further protocol reduction and map caption removal — 26 November 2026
 
 Reduced the centered protocol container again, from 1240 to 1080 px (1000-px image on desktop, down from 1160 px). The complete document and responsive phone/tablet width remain available. Removed the visible “Map: Marine Omics.” credit line at the owner's request; the single Explore Marine Omics link remains. Image provenance is retained in docs/visual-assets.md. Real Quarto render and 12-page link/output checks passed; targeted Chromium checks cover the centered 1000-px image, full aspect ratio, absence of the map caption and no overflow at 375/768/1440 px. Original assets and the private workspace are unchanged. Publication of this revision still requires a successful Pages deployment; earlier attempts hit the documented stale hosting lock.
